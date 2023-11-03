@@ -1,0 +1,67 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+.bg-secondary {
+  background-color: #E3856B;
+}
+
+.fs-1 {
+  font-size: 16px;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.justify-space-between {
+  justify-content: space-between;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.button-secondary {
+  transition: 0.1s;
+  border: 2px solid #E3856B;
+  border-radius: 10px;
+  outline: none;
+  background-color: transparent;
+  color: #E3856B;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.button-secondary:hover {
+  background-color: #E3856B;
+  color: white;
+}
+
+* {
+  box-sizing: border-box !important;
+  font-family: "Raleway", sans-serif;
+}
+
+#navbar {
+  padding: 5px;
+}
+
+#register {
+  width: 100vw;
+  height: 100vh;
+}
+#register .form {
+  background-color: white;
+  padding: 10px;
+}
+#register .form h1 {
+  margin: 0;
+}

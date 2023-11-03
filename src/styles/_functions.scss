@@ -1,0 +1,69 @@
+// Generate colors with defined colors in variables
+
+@each $colorname, $color in $colors {
+  .bg-#{$colorname} {
+    background-color: $color;
+  }
+
+  .text-#{$colorname} {
+    color: $color
+  }
+}
+
+// Generate colors with defined colors in variables with opacity
+
+@each $colorname, $color in $colors {
+  @for $opacity from 1 through 9 {
+    .bg-#{$colorname}-#{$opacity} {
+      background-color: $color;
+      opacity: calc($opacity / 10);
+    }
+
+    .text-#{$colorname}-#{$opacity} {
+      color: $color;
+      opacity: calc($opacity / 10);
+    }
+  }
+}
+
+// Generate font-weights from defined variables.
+
+@each $fontWeightName, $fontWeight in $font-weights {
+  .fw-#{$fontWeightName} {
+    font-weight: $fontWeight;
+  }
+}
+
+// Generate font sizes
+
+@each $fontSizeName, $fontSize in $font-sizes {
+  .fs-#{$fontSizeName} {
+    font-size: $fontSize;
+  }
+}
+
+// Generate displays
+
+@each $displayName, $display in $displays {
+  .d-#{$displayName} {
+    display: $display
+  }
+}
+
+@each $justifyName, $justify in $justify-content {
+  .justify-#{$justifyName} {
+    justify-content: $justify;
+  }   
+}
+
+@each $alignName, $align in $align-items {
+  .align-#{$alignName} {
+    align-items: $align;
+  }
+}
+
+@each $direction, $directionValue in $flex-directions {
+  .flex-#{$direction} {
+    flex-direction: $directionValue;
+  }
+}

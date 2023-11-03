@@ -1,0 +1,37 @@
+// Import neccessary sass files.
+// It's important to follow the sequence.
+
+@import "./variables";
+@import "./functions";
+@import "./components";
+
+// General styles
+
+* {
+  box-sizing: border-box !important;
+  font-family: $primary-font, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: $primary;
+}
+
+#navbar {
+  padding: calc($base-padding / 2);
+}
+
+#register {
+  width: 100vw;
+  height: 100vh;
+
+  .form {
+    background-color: $form-background;
+    padding: $base-padding;
+
+    h1 {
+      margin: 0;
+    }
+  }
+}
