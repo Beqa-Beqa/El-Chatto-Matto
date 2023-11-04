@@ -1,15 +1,57 @@
 // Import neccessary sass files.
 // It's important to follow the sequence.
+@use "sass:list";
+
 
 @import "./variables";
 @import "./functions";
 @import "./components";
+
+
+// Mixins 
+@mixin mobile-small {
+  @media screen and (max-width: $mobile-small) {
+    @content
+  }
+};
+
+@mixin mobile-medium {
+  @media screen and (max-width: $mobile-medium) {
+    @content
+  }
+};
+
+@mixin mobile-large {
+  @media screen and (max-width: $mobile-large) {
+    @content
+  }
+};
+
+@mixin tablet {
+  @media screen and (max-width: $tablet) {
+    @content
+  }
+};
+
+@mixin laptop-medium {
+  @media screen and (max-width: $laptop-medium) {
+    @content
+  }
+};
+
+@mixin laptop-large {
+  @media screen and (max-width: $laptop-large) {
+    @content
+  }
+};
 
 // General styles
 
 * {
   box-sizing: border-box !important;
   font-family: $primary-font, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -22,16 +64,100 @@ body {
   padding: calc($base-padding / 2);
 }
 
-#register {
+#spinning-circle {
+  width: 200px;
+  height: 200px;
+  border: 80px dashed lightblue;
+  border-radius: 50%;
+  animation-name: rotate;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+// Registration page
+
+#register, #login {
   width: 100vw;
   height: 100vh;
 
   .form {
     background-color: $form-background;
-    padding: $base-padding;
+    padding: calc($base-padding * 2) calc($base-padding * 4);
+    border-radius: 10px;
+    min-width: 290px;
+    
+    @include laptop-medium {
+      min-width: 550px;
+    }
+
+    @include tablet {
+      padding: calc($base-padding * 2) calc($base-padding * 2);
+      width: 350px;
+    }
+
+    @include mobile-medium {
+      padding: calc($base-padding * 2) calc($base-padding * 2);
+      width: 290px;
+    }
+
+
+    .input {
+      margin: calc($base-margin / 2) 0;
+      border: none;
+      border-bottom: 1px solid $primary;
+      padding: $base-padding 0;
+      font-size: $base-font-size;
+      font-weight: 600;
+      width: 100%;
+
+      @include laptop-medium {
+        min-width: 400px;
+      }
+      
+      &::placeholder {
+        opacity: 0.5;
+      }
+    }
+
+    label {
+      margin: $base-margin 0;
+
+      #icon {
+        width: 30px;
+        height: 30px;
+      }
+    }
 
     h1 {
-      margin: 0;
+      margin: $base-margin 0;
     }
+
+    p {
+      font-size: $base-font-size;
+      margin: $base-margin auto;
+    }
+
+    button {
+      margin: $base-margin 0;
+      width: 100%;
+    }
+
+    .sign-button {
+      text-decoration: none;
+      color: $secondary;
+      font-weight: 600;
+    }
+  }
+}
+
+// Keyframes
+
+@keyframes rotate {
+  0% {
+    transform: rotate(-360deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

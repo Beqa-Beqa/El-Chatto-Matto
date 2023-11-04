@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+$desktop: 1980px;
+$laptop-large: 1440px;
+$laptop-medium: 1024px;
+$tablet: 768px;
+$mobile-large: 425px;
+$mobile-medium: 375px;
+$mobile-small: 300px;
+
 
 $primary: #80C4B7;
 $secondary: #E3856B;
@@ -50,7 +58,8 @@ $displays: (
   "grid": grid,
   "inline": inline,
   "in-block": inline-block,
-  "block": block
+  "block": block,
+  "none": none
 );
 
 $justify-content: (

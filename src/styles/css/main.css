@@ -12,6 +12,10 @@
   display: flex;
 }
 
+.d-none {
+  display: none;
+}
+
 .justify-space-between {
   justify-content: space-between;
 }
@@ -48,20 +52,87 @@
 * {
   box-sizing: border-box !important;
   font-family: "Raleway", sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 #navbar {
   padding: 5px;
 }
 
-#register {
+#register, #login {
   width: 100vw;
   height: 100vh;
 }
-#register .form {
+#register .form, #login .form {
   background-color: white;
-  padding: 10px;
+  padding: 20px 40px;
+  border-radius: 10px;
+  min-width: 290px;
 }
-#register .form h1 {
-  margin: 0;
+@media screen and (max-width: 1024px) {
+  #register .form, #login .form {
+    min-width: 550px;
+  }
+}
+@media screen and (max-width: 768px) {
+  #register .form, #login .form {
+    padding: 20px 20px;
+    width: 350px;
+  }
+}
+@media screen and (max-width: 375px) {
+  #register .form, #login .form {
+    padding: 20px 20px;
+    width: 290px;
+  }
+}
+#register .form .input, #login .form .input {
+  margin: 5px 0;
+  border: none;
+  border-bottom: 1px solid #80C4B7;
+  padding: 10px 0;
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;
+}
+@media screen and (max-width: 1024px) {
+  #register .form .input, #login .form .input {
+    min-width: 400px;
+  }
+}
+#register .form .input::placeholder, #login .form .input::placeholder {
+  opacity: 0.5;
+}
+#register .form label, #login .form label {
+  margin: 10px 0;
+}
+#register .form label #icon, #login .form label #icon {
+  width: 30px;
+  height: 30px;
+}
+#register .form h1, #login .form h1 {
+  margin: 10px 0;
+}
+#register .form p, #login .form p {
+  font-size: 16px;
+  margin: 10px auto;
+}
+#register .form button, #login .form button {
+  margin: 10px 0;
+  width: 100%;
+}
+#register .form .sign-button, #login .form .sign-button {
+  text-decoration: none;
+  color: #E3856B;
+  font-weight: 600;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(-360deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
