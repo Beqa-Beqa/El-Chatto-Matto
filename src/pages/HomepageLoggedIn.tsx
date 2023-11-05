@@ -1,8 +1,16 @@
+import { MessagingWindow, Navbar } from "../containers";
+
+// Homepage for authorized users
 const HomepageLoggedIn = () => {
   return (
-    <div>
-      Welcome to homepage
-    </div>
+    <>
+      <header>
+        <Navbar />
+      </header>
+      <main className="d-flex align-center justify-center mt-5">
+        <MessagingWindow />
+      </main>
+    </>
   );
 }
 

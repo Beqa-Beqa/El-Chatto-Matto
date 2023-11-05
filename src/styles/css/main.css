@@ -1,11 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 .bg-secondary {
-  background-color: #E3856B;
+  background-color: #7C8363;
 }
 
-.fs-1 {
-  font-size: 16px;
+.bg-tertiary {
+  background-color: #EDF4F2;
+}
+
+.fs-3 {
+  font-size: 32px;
 }
 
 .d-flex {
@@ -20,6 +24,10 @@
   justify-content: space-between;
 }
 
+.justify-space-evenly {
+  justify-content: space-evenly;
+}
+
 .justify-center {
   justify-content: center;
 }
@@ -32,20 +40,40 @@
   flex-direction: column;
 }
 
+.w-100 {
+  width: "100";
+}
+
+.mb-1 {
+  margin-bottom: 10px;
+}
+
+.mt-2 {
+  margin-top: 20px;
+}
+
+.mb-2 {
+  margin-bottom: 20px;
+}
+
+.mt-5 {
+  margin-top: 50px;
+}
+
 .button-secondary {
   transition: 0.1s;
-  border: 2px solid #E3856B;
+  border: 2px solid #7C8363;
   border-radius: 10px;
   outline: none;
   background-color: transparent;
-  color: #E3856B;
+  color: #7C8363;
   font-weight: 700;
   font-size: 16px;
   padding: 10px 20px;
   cursor: pointer;
 }
 .button-secondary:hover {
-  background-color: #E3856B;
+  background-color: #7C8363;
   color: white;
 }
 
@@ -56,56 +84,52 @@
   padding: 0;
 }
 
-#navbar {
-  padding: 5px;
-}
-
 #register, #login {
   width: 100vw;
   height: 100vh;
 }
 #register .form, #login .form {
-  background-color: white;
+  background-color: #EDF4F2;
   padding: 20px 40px;
   border-radius: 10px;
-  min-width: 290px;
-}
-@media screen and (max-width: 1024px) {
-  #register .form, #login .form {
-    min-width: 550px;
-  }
+  min-width: 550px;
 }
 @media screen and (max-width: 768px) {
   #register .form, #login .form {
-    padding: 20px 20px;
-    width: 350px;
+    min-width: 400px;
+  }
+}
+@media screen and (max-width: 425px) {
+  #register .form, #login .form {
+    min-width: 350px;
   }
 }
 @media screen and (max-width: 375px) {
   #register .form, #login .form {
-    padding: 20px 20px;
-    width: 290px;
+    min-width: 320px;
+  }
+}
+@media screen and (max-width: 320px) {
+  #register .form, #login .form {
+    min-width: 300px;
   }
 }
 #register .form .input, #login .form .input {
+  background-color: #EDF4F2;
   margin: 5px 0;
   border: none;
-  border-bottom: 1px solid #80C4B7;
+  border-bottom: 1px solid #31473A;
   padding: 10px 0;
   font-size: 16px;
   font-weight: 600;
   width: 100%;
-}
-@media screen and (max-width: 1024px) {
-  #register .form .input, #login .form .input {
-    min-width: 400px;
-  }
 }
 #register .form .input::placeholder, #login .form .input::placeholder {
   opacity: 0.5;
 }
 #register .form label, #login .form label {
   margin: 10px 0;
+  cursor: pointer;
 }
 #register .form label #icon, #login .form label #icon {
   width: 30px;
@@ -118,14 +142,40 @@
   font-size: 16px;
   margin: 10px auto;
 }
-#register .form button, #login .form button {
-  margin: 10px 0;
-  width: 100%;
-}
-#register .form .sign-button, #login .form .sign-button {
+#register .form .link-button, #login .form .link-button {
   text-decoration: none;
-  color: #E3856B;
+  color: #7C8363;
   font-weight: 600;
+}
+
+#navbar {
+  border-bottom: 1px solid #EDF4F2;
+  padding: 20px 100px;
+}
+#navbar .authorisation button {
+  margin: 0 1rem;
+}
+
+#messaging-window {
+  background-color: #7C8363;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 500px;
+}
+#messaging-window .side-bar {
+  flex: 1;
+}
+#messaging-window .side-bar .sidebar-navbar {
+  padding: 10px;
+  width: fit-content;
+}
+#messaging-window .side-bar .sidebar-navbar img {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+}
+#messaging-window .chat-box {
+  flex: 2;
 }
 
 @keyframes rotate {

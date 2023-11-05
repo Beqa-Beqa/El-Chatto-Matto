@@ -1,8 +1,13 @@
+import { Navbar } from "../containers";
+
+// This is homepage for unauthorized users.
 const HomepageNotLoggedIn = () => {
   return (
-    <div>
-
-    </div>
+    <>
+      <header>
+        <Navbar />
+      </header>
+    </>
   );
 }
 

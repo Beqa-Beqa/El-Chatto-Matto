@@ -67,3 +67,61 @@
     flex-direction: $directionValue;
   }
 }
+
+// Widths
+
+@each $widthAndHeight, $widthAndHeightValue in $widthsAndHeights {
+  .w-#{$widthAndHeight} {
+    width: $widthAndHeightValue;
+  }
+
+  .h-#{$widthAndHeight} {
+    height: $widthAndHeightValue;
+  }
+}
+
+// Padding / Margin
+
+@each $padding, $paddingVal in $paddings {
+  .p-#{$padding} {
+    padding: $paddingVal;
+  }
+
+  .pl-#{$padding} {
+    padding-left: $paddingVal;
+  }
+
+  .pr-#{$padding} {
+    padding-right: $paddingVal;
+  }
+
+  .pt-#{$padding} {
+    padding-top: $paddingVal;
+  }
+
+  .pb-#{$padding} {
+    padding-bottom: $paddingVal;
+  }
+}
+
+@each $margin, $marginVal in $margins {
+  .m-#{$margin} {
+    margin: $marginVal;
+  }
+
+  .ml-#{$margin} {
+    margin-left: $marginVal;
+  }
+
+  .mr-#{$margin} {
+    margin-right: $marginVal;
+  }
+
+  .mt-#{$margin} {
+    margin-top: $marginVal;
+  }
+
+  .mb-#{$margin} {
+    margin-bottom: $marginVal;
+  }
+}

@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -14,5 +14,9 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+// Get authentication of the firebase application.
 export const auth = getAuth(app);
+// Get firestore of the FB application
 export const firestore = getFirestore(app);
+// Get google provider. Used for google sign in.
+export const googleProvider = new GoogleAuthProvider();
