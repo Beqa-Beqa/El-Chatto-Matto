@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCAd6JNFdbt-n5fHZUI1aPSNZob1-e3mW8",
@@ -20,3 +21,5 @@ export const auth = getAuth(app);
 export const firestore = getFirestore(app);
 // Get google provider. Used for google sign in.
 export const googleProvider = new GoogleAuthProvider();
+// Get storage of the firebase application.
+export const storage = getStorage(app);

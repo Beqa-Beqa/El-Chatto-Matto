@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { UserIcon } from "../assets/images";
 import { CiImageOn } from "react-icons/ci";
 import { Link, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../config/firebase";
+import { auth, firestore, storage } from "../config/firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
 
 const Register = () => {
   // Navigate state for navigating through different routes.
@@ -15,25 +17,52 @@ const Register = () => {
   // Password state for user input.
   const [password, setPassword] = useState<string>("");
   // Image state for user input.
-  const [image, setImage] = useState<null | File | String>(null);
+  const [image, setImage] = useState<null | File>(null);
   // Error state. Used for conditional rendering if error occurs.
   const [err, setErr] = useState<boolean>(false);
+
 
   // Handle registration of the user with email and password.
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     // Prevent default action of form submit.
     event.preventDefault();
-
+    
     try {
       // Try and create account for the user with given email and password.
-      await createUserWithEmailAndPassword(auth, email, password);
+      // Upload data on firestore about the user.
+      const userData = await createUserWithEmailAndPassword(auth, email, password);
+      console.log(userData);
+
+      // Upload user image on firebase storage if image exists.
+      let downloadUrl: undefined | string;
+
+      if(image) {
+        // Upload image.
+        const imageRef = ref(storage, `userImages/${userData.user.uid}.img`);
+        await uploadBytesResumable(imageRef, image);
+
+        // Get download url
+        const url = await getDownloadURL(imageRef);
+        downloadUrl = url;
+      }
+
+
+      // Save user data on firestore.
+      const docRef = doc(firestore, "users", userData.user.uid);
+      await setDoc(docRef, {
+        uid: userData.user.uid,
+        displayName: username,
+        email: email,
+        photoURL: downloadUrl || null
+      });
       // If successfull navigate to homepage.
       navigate("/");
-      
+
     } catch (error) {
       // If any errors, catch and log them, set error state to true.
       console.error(error);
       setErr(true);
+
     }
   }
 
@@ -51,7 +80,7 @@ const Register = () => {
             <span>Upload an image</span>
           </label>
           <input id="fileInput" className="d-none" onChange={(e) => {
-            const image = e.target.files ? e.target.files[0] : UserIcon;
+            const image = e.target.files ? e.target.files[0] : null;
             setImage(image);
           }} type="file" />
           <button type="submit" className="button-secondary w-100">Sign Up</button>
