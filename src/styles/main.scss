@@ -61,10 +61,11 @@ body {
 }
 
 #spinning-circle {
-  background-color: $tertiary;
+  margin: calc(50vh - 100px) auto;
+  background-color: transparent;
   width: 200px;
   height: 200px;
-  border: 80px dashed lightblue;
+  border: 70px dashed rgb(99, 137, 150);
   border-radius: 50%;
   animation-name: rotate;
   animation-duration: 5s;

@@ -84,6 +84,19 @@
   padding: 0;
 }
 
+#spinning-circle {
+  margin: calc(50vh - 100px) auto;
+  background-color: transparent;
+  width: 200px;
+  height: 200px;
+  border: 70px dashed rgb(99, 137, 150);
+  border-radius: 50%;
+  animation-name: rotate;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
 #register, #login {
   width: 100vw;
   height: 100vh;

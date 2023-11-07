@@ -17,7 +17,7 @@ function App() {
 
   if(isLoading) {
 
-    return <div id="spinningCircle" />
+    return <div id="spinning-circle" />
 
   } else {
     

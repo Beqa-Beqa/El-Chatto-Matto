@@ -1,7 +1,8 @@
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, googleProvider } from "../config/firebase";
+import { AuthContext } from "../contexts/AuthContextProvider";
 
 const Login = () => {
   // Error state used for conditional rendering if error occurs.
@@ -12,11 +13,14 @@ const Login = () => {
   const [password, setPassword] = useState<string>("");
   // navigate hook to navigate through different routes.
   const navigate = useNavigate();
+  // Usecontext to manage loading state.
+  const {setIsLoading} = useContext(AuthContext);
 
   // Sign in handler.
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     // Prevent default form submit action.
     event.preventDefault();
+    setIsLoading(true);
 
     try {
       // Try to sign in user to it's account.
@@ -27,6 +31,8 @@ const Login = () => {
       // Othervise log an error and set error state to true.
       console.error(err);
       setErr(true);
+    } finally {
+      setIsLoading(false);
     }
   }
 

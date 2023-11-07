@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { CiImageOn } from "react-icons/ci";
 import { Link, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, firestore, storage } from "../config/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { AuthContext } from "../contexts/AuthContextProvider";
 
 
 const Register = () => {
@@ -20,12 +21,16 @@ const Register = () => {
   const [image, setImage] = useState<null | File>(null);
   // Error state. Used for conditional rendering if error occurs.
   const [err, setErr] = useState<boolean>(false);
-
+  // UseContext for loading state managment.
+  const {setIsLoading} = useContext(AuthContext);
+  
 
   // Handle registration of the user with email and password.
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     // Prevent default action of form submit.
     event.preventDefault();
+    // Set loading state to true to show spinning circle.
+    setIsLoading(true);
     
     try {
       // Try and create account for the user with given email and password.
@@ -33,8 +38,8 @@ const Register = () => {
       const userData = await createUserWithEmailAndPassword(auth, email, password);
       console.log(userData);
 
-      // Upload user image on firebase storage if image exists.
-      let downloadUrl: undefined | string;
+      // Upload user image on firebase storage if image exists, if not use default one.
+      let downloadUrl: Promise<string> | string;
 
       if(image) {
         // Upload image.
@@ -44,6 +49,11 @@ const Register = () => {
         // Get download url
         const url = await getDownloadURL(imageRef);
         downloadUrl = url;
+
+      } else {
+
+        const defaultImage = ref(storage, "userImages/user-icon.jpg");
+        downloadUrl = await getDownloadURL(defaultImage)
       }
 
 
@@ -53,7 +63,7 @@ const Register = () => {
         uid: userData.user.uid,
         displayName: username,
         email: email,
-        photoURL: downloadUrl || null
+        photoURL: downloadUrl
       });
       // If successfull navigate to homepage.
       navigate("/");
@@ -63,10 +73,13 @@ const Register = () => {
       console.error(error);
       setErr(true);
 
+    } finally {
+      // Set loading state to false to remove spinning circle.
+      setIsLoading(false);
     }
   }
 
-  return (
+   return (
     <div id="register" className="d-flex justify-center align-center">
       <div className="form d-flex flex-column align-center">
         <h1>Logo</h1>

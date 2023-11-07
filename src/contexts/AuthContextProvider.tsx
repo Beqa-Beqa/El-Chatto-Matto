@@ -1,4 +1,4 @@
-import { onAuthStateChanged } from "firebase/auth";
+import { User, onAuthStateChanged } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import { auth } from "../config/firebase"; 
 
@@ -9,16 +9,18 @@ import { auth } from "../config/firebase";
 export const AuthContext = createContext<{
   // Type definitions
   currentUser: any,
-  isLoading: boolean
+  isLoading: boolean,
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }>({
   // These are default values if none is given to provider
   currentUser: null,
-  isLoading: true
+  isLoading: true,
+  setIsLoading: () => {}
 });
 
 const AuthContextProvider = ({children}: any) => {
   // States that represent context values
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   
   // Useffect checks if there is an user already signed in.
@@ -48,7 +50,7 @@ const AuthContextProvider = ({children}: any) => {
     // Other components will be able to use this context with
     // Importing `useContext` from react and `AuthContext` from here.
     // With the script {const variable = useContext(AuthContext)}.
-    <AuthContext.Provider value={{currentUser, isLoading}}>
+    <AuthContext.Provider value={{currentUser, isLoading, setIsLoading}}>
       {children}
     </AuthContext.Provider>
   );
