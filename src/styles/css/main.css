@@ -145,6 +145,7 @@
 #register, #login {
   width: 100vw;
   height: 100vh;
+  color: rgb(128, 128, 128);
 }
 #register .form, #login .form {
   background-color: #EDF4F2;

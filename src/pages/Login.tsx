@@ -1,8 +1,9 @@
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, googleProvider } from "../config/firebase";
+import { auth, firestore, googleProvider } from "../config/firebase";
 import { AuthContext } from "../contexts/AuthContextProvider";
+import { setDoc, doc } from "firebase/firestore";
 
 const Login = () => {
   // Error state used for conditional rendering if error occurs.
@@ -38,13 +39,23 @@ const Login = () => {
 
   // Google sign in handler, everything is same except this signs in user with google account.
   const handleGoogleSignIn = async () => {
+    setIsLoading(true);
     try {
-      await signInWithPopup(auth, googleProvider);
-      console.log(auth.currentUser);
+      const signedUser = await signInWithPopup(auth, googleProvider);
+      // Save user info in docs
+      await setDoc(doc(firestore, "users", signedUser.user.uid), {
+        displayName: signedUser.user.displayName,
+        email: signedUser.user.email,
+        photoURL: signedUser.user.photoURL,
+        uid: signedUser.user.uid
+      });
+
       navigate("/");
     } catch (err) {
       console.error(err);
       setErr(true);
+    } finally {
+      setIsLoading(false);
     }
   }
 
