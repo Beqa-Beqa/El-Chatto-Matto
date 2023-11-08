@@ -3,7 +3,7 @@ import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, firestore, googleProvider } from "../config/firebase";
 import { AuthContext } from "../contexts/AuthContextProvider";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, getDoc } from "firebase/firestore";
 
 const Login = () => {
   // Error state used for conditional rendering if error occurs.
@@ -43,12 +43,20 @@ const Login = () => {
     try {
       const signedUser = await signInWithPopup(auth, googleProvider);
       // Save user info in docs
-      await setDoc(doc(firestore, "users", signedUser.user.uid), {
-        displayName: signedUser.user.displayName,
-        email: signedUser.user.email,
-        photoURL: signedUser.user.photoURL,
-        uid: signedUser.user.uid
-      });
+      const existingDoc = await getDoc(doc(firestore, "users", signedUser.user.uid));
+
+      !existingDoc.exists() &&
+        await setDoc(doc(firestore, "users", signedUser.user.uid), {
+          displayName: signedUser.user.displayName?.toLowerCase(),
+          email: signedUser.user.email,
+          photoURL: signedUser.user.photoURL,
+          uid: signedUser.user.uid
+        });
+
+      const existingUserChats = await getDoc(doc(firestore, "userChats", signedUser.user.uid));
+
+      !existingUserChats.exists() && 
+        await setDoc(doc(firestore, "userChats", signedUser.user.uid), {});
 
       navigate("/");
     } catch (err) {

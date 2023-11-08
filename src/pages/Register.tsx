@@ -36,7 +36,6 @@ const Register = () => {
       // Try and create account for the user with given email and password.
       // Upload data on firestore about the user.
       const userData = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(userData);
 
       // Upload user image on firebase storage if image exists, if not use default one.
       let downloadUrl: Promise<string> | string;
@@ -61,7 +60,7 @@ const Register = () => {
       const docRef = doc(firestore, "users", userData.user.uid);
       await setDoc(docRef, {
         uid: userData.user.uid,
-        displayName: username,
+        displayName: username.toLowerCase(),
         email: email,
         photoURL: downloadUrl
       });
@@ -72,8 +71,12 @@ const Register = () => {
         photoURL: downloadUrl
       });
 
+      // Set userChat info for user
+      const userChatRef = doc(firestore, "userChats", userData.user.uid!);
+      await setDoc(userChatRef, {});
+
       // Send user a verification email.
-      await sendEmailVerification(auth.currentUser!);
+      await sendEmailVerification(userData.user);
 
       // If successfull navigate to homepage.
       navigate("/");
