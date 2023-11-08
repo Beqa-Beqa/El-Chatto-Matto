@@ -11,12 +11,10 @@
 }
 
 // Generate colors with defined colors in variables with opacity
-
 @each $colorname, $color in $colors {
   @for $opacity from 1 through 9 {
     .bg-#{$colorname}-#{$opacity} {
-      background-color: $color;
-      opacity: calc($opacity / 10);
+      background-color: rgba($color, $opacity / 10);
     }
 
     .text-#{$colorname}-#{$opacity} {

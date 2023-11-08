@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { CiImageOn } from "react-icons/ci";
 import { Link, useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
 import { auth, firestore, storage } from "../config/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -51,7 +51,7 @@ const Register = () => {
         downloadUrl = url;
 
       } else {
-
+        // Set default image if no image is provided.
         const defaultImage = ref(storage, "userImages/user-icon.jpg");
         downloadUrl = await getDownloadURL(defaultImage)
       }
@@ -65,6 +65,16 @@ const Register = () => {
         email: email,
         photoURL: downloadUrl
       });
+
+      // Update user's profile.
+      await updateProfile(auth.currentUser!, {
+        displayName: username,
+        photoURL: downloadUrl
+      });
+
+      // Send user a verification email.
+      await sendEmailVerification(auth.currentUser!);
+
       // If successfull navigate to homepage.
       navigate("/");
 

@@ -4,8 +4,24 @@
   background-color: #7C8363;
 }
 
-.bg-tertiary {
-  background-color: #EDF4F2;
+.text-tertiary {
+  color: #EDF4F2;
+}
+
+.bg-secondary-6 {
+  background-color: rgba(124, 131, 99, 0.6);
+}
+
+.fw-6 {
+  font-weight: 600;
+}
+
+.fs-1 {
+  font-size: 16px;
+}
+
+.fs-2 {
+  font-size: 24px;
 }
 
 .fs-3 {
@@ -44,6 +60,14 @@
   width: 100%;
 }
 
+.p-1 {
+  padding: 10px;
+}
+
+.ml-1 {
+  margin-left: 10px;
+}
+
 .mb-1 {
   margin-bottom: 10px;
 }
@@ -54,6 +78,10 @@
 
 .mb-2 {
   margin-bottom: 20px;
+}
+
+.mt-3 {
+  margin-top: 30px;
 }
 
 .mt-5 {
@@ -84,6 +112,18 @@
   padding: 0;
 }
 
+.bg-transparent {
+  background-color: transparent;
+}
+
+.border-none {
+  border: none;
+}
+
+.outline-none {
+  outline: none;
+}
+
 #spinning-circle {
   margin: calc(50vh - 100px) auto;
   background-color: transparent;
@@ -95,6 +135,11 @@
   animation-duration: 5s;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
+}
+
+#verify-email {
+  width: 100vw;
+  height: 100vh;
 }
 
 #register, #login {
@@ -170,25 +215,26 @@
 }
 
 #messaging-window {
-  background-color: #7C8363;
   border-radius: 10px;
   overflow: hidden;
   width: 500px;
 }
 #messaging-window .side-bar {
   flex: 1;
+  width: 100%;
 }
 #messaging-window .side-bar .sidebar-navbar {
   padding: 10px;
-  width: fit-content;
 }
 #messaging-window .side-bar .sidebar-navbar img {
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
 }
 #messaging-window .chat-box {
   flex: 2;
+  width: 100%;
 }
 
 @keyframes rotate {

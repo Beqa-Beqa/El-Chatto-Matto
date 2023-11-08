@@ -4,8 +4,9 @@ const SidebarChats = () => {
   const [userName, setUserName] = useState<string>("");
 
   return (
-    <div className="bg-secondary">
-      <input type="text" onChange={(e) => setUserName(e.target.value)} />
+    <div>
+      <input className="w-100 bg-transparent border-none outline-none fs-1 p-1 text-tertiary" type="text" onChange={(e) => setUserName(e.target.value)} />
+      <hr />
     </div>
   );
 }

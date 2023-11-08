@@ -8,7 +8,7 @@ import { auth } from "../config/firebase";
 
 export const AuthContext = createContext<{
   // Type definitions
-  currentUser: any,
+  currentUser: User | null,
   isLoading: boolean,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }>({
