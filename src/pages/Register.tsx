@@ -6,6 +6,7 @@ import { auth, firestore, storage } from "../config/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { AuthContext } from "../contexts/AuthContextProvider";
+import { genSubStrings } from "../functions";
 
 
 const Register = () => {
@@ -55,14 +56,14 @@ const Register = () => {
         downloadUrl = await getDownloadURL(defaultImage)
       }
 
-
       // Save user data on firestore.
       const docRef = doc(firestore, "users", userData.user.uid);
       await setDoc(docRef, {
         uid: userData.user.uid,
-        displayName: username.toLowerCase(),
+        displayName: username,
         email: email,
-        photoURL: downloadUrl
+        photoURL: downloadUrl,
+        searchArray: genSubStrings(username)
       });
 
       // Update user's profile.
@@ -73,7 +74,9 @@ const Register = () => {
 
       // Set userChat info for user
       const userChatRef = doc(firestore, "userChats", userData.user.uid!);
-      await setDoc(userChatRef, {});
+      await setDoc(userChatRef, {
+        chats: []
+      });
 
       // Send user a verification email.
       await sendEmailVerification(userData.user);

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { auth, firestore, googleProvider } from "../config/firebase";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { setDoc, doc, getDoc } from "firebase/firestore";
+import { genSubStrings } from "../functions";
 
 const Login = () => {
   // Error state used for conditional rendering if error occurs.
@@ -29,7 +30,7 @@ const Login = () => {
       // If successfull navigate to homepage.
       navigate("/");
     } catch (err) {
-      // Othervise log an error and set error state to true.
+      // Otherwise log an error and set error state to true.
       console.error(err);
       setErr(true);
     } finally {
@@ -41,22 +42,25 @@ const Login = () => {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
+      // Sign the user with google provider
       const signedUser = await signInWithPopup(auth, googleProvider);
-      // Save user info in docs
+
+      // Get info about the user from docs.
       const existingDoc = await getDoc(doc(firestore, "users", signedUser.user.uid));
 
+      // If the user docs does not exists create user instance document in firestore.
       !existingDoc.exists() &&
         await setDoc(doc(firestore, "users", signedUser.user.uid), {
-          displayName: signedUser.user.displayName?.toLowerCase(),
+          displayName: signedUser.user.displayName!,
           email: signedUser.user.email,
           photoURL: signedUser.user.photoURL,
-          uid: signedUser.user.uid
+          uid: signedUser.user.uid,
+          searchArray: genSubStrings(signedUser.user.displayName!)
         });
 
-      const existingUserChats = await getDoc(doc(firestore, "userChats", signedUser.user.uid));
-
-      !existingUserChats.exists() && 
-        await setDoc(doc(firestore, "userChats", signedUser.user.uid), {});
+      // If the user docs does not exists, therefore user chats does not exist as well so we create one.
+      !existingDoc.exists() && 
+        await setDoc(doc(firestore, "userChats", signedUser.user.uid), {chats: []});
 
       navigate("/");
     } catch (err) {

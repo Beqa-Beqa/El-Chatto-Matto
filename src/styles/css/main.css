@@ -241,6 +241,7 @@
 }
 #messaging-window .side-bar .found-users {
   cursor: pointer;
+  z-index: 5;
 }
 #messaging-window .side-bar .found-users:hover {
   background-color: rgba(49, 71, 58, 0.5);
@@ -250,6 +251,10 @@
   width: 35px;
   height: 35px;
   object-fit: cover;
+  z-index: 2;
+}
+#messaging-window .side-bar .found-users p {
+  z-index: 2;
 }
 #messaging-window .chat-box {
   flex: 2;
