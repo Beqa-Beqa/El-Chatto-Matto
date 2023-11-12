@@ -23,15 +23,17 @@ export const genSubStrings = (str: string) => {
     subStringsArray.push(helper(oneWord));
   }
 
-  // After splitting all the words seperately, then we split first word + letters of second word (if exists) + letters of third word (if exists) and so on ...
-  for(let index = str.indexOf(splitWordsArray[1][0]); index <= str.length; index++) {
-    // Start from index of first letter of second word.
-    const subString = str.slice(0, index);
-    subStringsArray.push([subString.toLowerCase().trim()]);
+  if(splitWordsArray.length > 1) {
+    // After splitting all the words seperately, then we split first word + letters of second word (if exists) + letters of third word (if exists) and so on ...
+    for(let index = str.indexOf(splitWordsArray[1][0]); index < str.length; index++) {
+      // Start from index of first letter of second word.
+      const subString = str.slice(0, index + 1);
+      subStringsArray.push([subString.toLowerCase().trim()]);
+    }
   }
 
   // We flatten and return substringarray so we will avoid nested arrays.
-  return subStringsArray.flat();
+  return Array.from(new Set(subStringsArray.flat()));
 }
 
 

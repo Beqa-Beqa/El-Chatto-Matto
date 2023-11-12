@@ -30,6 +30,9 @@ $base-font-size: 16px;
 
 $primary-font: "Raleway";
 
+$base-icon-width: 25px;
+$base-icon-height: 25px;
+
 $font-weights: (
   "1": 100,
   "2": 200,
@@ -67,8 +70,8 @@ $justify-content: (
   "space-between": space-between,
   "space-around": space-around,
   "space-evenly": space-evenly,
-  "start": start,
-  "end": end,
+  "start": flex-start,
+  "end": flex-end,
   "center": center
 );
 
@@ -76,8 +79,8 @@ $align-items: (
   "space-around": space-around,
   "space-between": space-between,
   "space-evenly": space-evenly,
-  "start": start,
-  "end": end,
+  "start": flex-start,
+  "end": flex-end,
   "center": center
 );
 
@@ -89,6 +92,8 @@ $flex-directions: (
 );
 
 $widthsAndHeights: (
+  "10": 10%,
+  "15": 15%,
   "25": 25%,
   "50": 50%,
   "75": 75%,

@@ -1,10 +1,11 @@
 import "./styles/main.scss";
 import { Register, Login, HomepageLoggedIn, HomepageNotLoggedIn } from "./pages";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./contexts/AuthContextProvider";
 import { signOut } from "firebase/auth";
 import { auth } from "./config/firebase";
+import { UserChatsContextProvider } from "./contexts";
 
 function App() {
   const {currentUser, isLoading} = useContext(AuthContext);
@@ -14,6 +15,14 @@ function App() {
   const ProtectedRoute = ({children}: any) => {
     if(!currentUser && !isLoading) {
       return <HomepageNotLoggedIn />
+    } else {
+      return children;
+    }
+  }
+
+  const ProtectedFromLoggedInRoute = ({children}: any) => {
+    if(currentUser && !isLoading) {
+      return <Navigate to="/" />
     } else {
       return children;
     }
@@ -37,12 +46,22 @@ function App() {
         <Route path="/">
           <Route index element={
             <ProtectedRoute>
-              <HomepageLoggedIn />
+              <UserChatsContextProvider>
+                <HomepageLoggedIn />
+              </UserChatsContextProvider>
             </ProtectedRoute>
           } />
           <Route index element={<HomepageNotLoggedIn />} />
-          <Route path="register" element={<Register />} />
-          <Route path="login" element={<Login />} />
+          <Route path="register" element={
+            <ProtectedFromLoggedInRoute>
+              <Register />
+            </ProtectedFromLoggedInRoute>
+          } />
+          <Route path="login" element={
+            <ProtectedFromLoggedInRoute>
+              <Login />
+            </ProtectedFromLoggedInRoute>
+          } />
         </Route>
       </Routes>
     );
