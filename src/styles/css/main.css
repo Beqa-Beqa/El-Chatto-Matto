@@ -56,8 +56,20 @@
   justify-content: space-between;
 }
 
+.justify-space-around {
+  justify-content: space-around;
+}
+
 .justify-space-evenly {
   justify-content: space-evenly;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-end {
+  justify-content: flex-end;
 }
 
 .justify-center {
@@ -84,6 +96,10 @@
   width: 75%;
 }
 
+.h-75 {
+  height: 75%;
+}
+
 .w-100 {
   width: 100%;
 }
@@ -98,6 +114,10 @@
 
 .pl-1 {
   padding-left: 10px;
+}
+
+.pr-1 {
+  padding-right: 10px;
 }
 
 .pt-1 {
@@ -164,10 +184,6 @@
   padding: 0;
 }
 
-.bg-transparent {
-  background-color: transparent;
-}
-
 .border-none {
   border: none;
 }
@@ -197,6 +213,14 @@
 .icon {
   width: 25px;
   height: 25px;
+  cursor: pointer;
+}
+
+.image {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  object-fit: cover;
 }
 
 #register, #login {
@@ -246,10 +270,6 @@
 #register .form label, #login .form label {
   margin: 10px 0;
   cursor: pointer;
-}
-#register .form label #icon, #login .form label #icon {
-  width: 30px;
-  height: 30px;
 }
 #register .form h1, #login .form h1 {
   margin: 10px 0;
@@ -304,13 +324,6 @@
 #messaging-window .side-bar .found-users:hover {
   background-color: rgba(49, 71, 58, 0.5);
 }
-#messaging-window .side-bar .found-users img {
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
-  object-fit: cover;
-  z-index: 2;
-}
 #messaging-window .side-bar .found-users p {
   z-index: 2;
 }
@@ -326,11 +339,53 @@
   width: 35px;
   height: 35px;
   object-fit: cover;
-  z-index: 2;
+}
+#messaging-window .chat-box .navbar .navbar-icons {
+  max-width: 70px;
 }
 #messaging-window .chat-box .messages {
   height: 80%;
+  word-wrap: break-word;
+  word-break: break-all;
+  width: 100%;
+  overflow-y: scroll;
 }
+#messaging-window .chat-box .messages::-webkit-scrollbar {
+  display: none;
+}
+#messaging-window .chat-box .messages .recieved img {
+  width: 30px;
+  height: 30px;
+}
+#messaging-window .chat-box .messages .recieved p {
+  margin-left: 10px;
+  background-color: #EDF4F2;
+  color: black;
+  padding: 5px;
+  border-radius: 0 10px 10px 10px;
+}
+#messaging-window .chat-box .messages .sent img {
+  width: 30px;
+  height: 30px;
+}
+#messaging-window .chat-box .messages .sent p {
+  margin-right: 10px;
+  background-color: #31473A;
+  color: white;
+  padding: 5px;
+  border-radius: 10px 0 10px 10px;
+}
+#messaging-window .chat-box textarea {
+  border-radius: 10px;
+  resize: none;
+  padding: 5px;
+  width: 80%;
+  font-size: 13.9130434783px;
+}
+#messaging-window .chat-box textarea::-webkit-scrollbar {
+  display: none;
+}
+
 @keyframes rotate {
   0% {
     transform: rotate(-360deg);

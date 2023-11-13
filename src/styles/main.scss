@@ -94,6 +94,14 @@ body {
 .icon {
   width: $base-icon-width;
   height: $base-icon-height;
+  cursor: pointer;
+}
+
+.image {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  object-fit: cover;
 }
 
 // Registration page
@@ -143,11 +151,6 @@ body {
     label {
       margin: $base-margin 0;
       cursor: pointer;
-
-      #icon {
-        width: 30px;
-        height: 30px;
-      }
     }
 
     h1 {
@@ -219,14 +222,6 @@ body {
         background-color: rgba($primary, 0.5);
       }
 
-      img {
-        border-radius: 50%;
-        width: 35px;
-        height: 35px;
-        object-fit: cover;
-        z-index: 2;
-      }
-
       p {
         z-index: 2;
       }
@@ -246,17 +241,66 @@ body {
           width: 35px;
           height: 35px;
           object-fit: cover;
-          z-index: 2;
         }
+      }
+
+      .navbar-icons {
+        max-width: 70px;
       }
     }
 
     .messages {
       height: 80%;
+      word-wrap: break-word;
+      word-break: break-all;
+      width: 100%;
+      overflow-y: scroll;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .recieved {
+        img {
+          width: 30px;
+          height: 30px;
+        }
+
+        p {
+          margin-left: $base-margin;
+          background-color: $tertiary;
+          color: black;
+          padding: calc($base-padding / 2);
+          border-radius: 0 10px 10px 10px;
+        }
+      }
+
+      .sent {
+        img {
+          width: 30px;
+          height: 30px;
+        }
+
+        p {
+          margin-right: $base-margin;
+          background-color: $primary;
+          color: white;
+          padding: calc($base-padding / 2);
+          border-radius: 10px 0 10px 10px;
+        }
+      }
     }
 
-    #chat-box-input {
+    textarea {
+      border-radius: 10px;
+      resize: none;
+      padding: calc($base-padding / 2);
+      width: 80%;
+      font-size: calc($base-font-size / 1.15);
 
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
   }
 }

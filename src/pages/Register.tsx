@@ -104,8 +104,8 @@ const Register = () => {
           <input className="input" onChange={(e) => setUsername(e.target.value)} value={username} type="text" placeholder="Username" />
           <input className="input" onChange={(e) => setEmail(e.target.value)} value={email} type="email" placeholder="Email" />
           <input className="input" onChange={(e) => setPassword(e.target.value)} value={password} type="password" placeholder="Password" />
-          <label className="d-flex align-center w-100" htmlFor="fileInput">
-            <CiImageOn id="icon" />
+          <label className="d-flex align-center" htmlFor="fileInput">
+            <CiImageOn className="icon" />
             <span>Upload an image</span>
           </label>
           <input id="fileInput" className="d-none" onChange={(e) => {
