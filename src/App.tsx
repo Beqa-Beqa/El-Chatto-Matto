@@ -5,7 +5,6 @@ import { useContext } from "react";
 import { AuthContext } from "./contexts/AuthContextProvider";
 import { signOut } from "firebase/auth";
 import { auth } from "./config/firebase";
-import { UserChatsContextProvider } from "./contexts";
 
 function App() {
   const {currentUser, isLoading} = useContext(AuthContext);
@@ -46,9 +45,7 @@ function App() {
         <Route path="/">
           <Route index element={
             <ProtectedRoute>
-              <UserChatsContextProvider>
-                <HomepageLoggedIn />
-              </UserChatsContextProvider>
+              <HomepageLoggedIn />
             </ProtectedRoute>
           } />
           <Route index element={<HomepageNotLoggedIn />} />

@@ -4,7 +4,6 @@ import { arrayUnion, collection, doc, getDocs, query, setDoc, updateDoc, where }
 import { DocUser } from "../interfaces/UserInterfaces";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { combineIds } from "../functions";
-import { UserChatsContext } from "../contexts/UserChatsContextProvider";
 
 const SidebarChats = () => {
   // Username for search.
@@ -13,7 +12,6 @@ const SidebarChats = () => {
   const [userData, setUserData] = useState<DocUser[]>([]);
   // Context for getting information about current user.
   const {currentUser} = useContext(AuthContext);
-  const {chats, updateChats} = useContext(UserChatsContext);
 
   const getUserData = async () => {
     if(userName) {
@@ -59,7 +57,7 @@ const SidebarChats = () => {
 
   // Useffect calls getUserData anytime when username for search field changes.
   useEffect(() => {
-   getUserData();
+    getUserData();
   }, [userName]);
 
   // Handle click on found user
@@ -74,9 +72,6 @@ const SidebarChats = () => {
       await updateDoc(currentUserChatsRef, {
         chats: arrayUnion(targetUserData.uid)
       });
-
-      // We update chats right after data is saved on currentuser's side.
-      updateChats(!chats);
       
       // Update <target user's> <userChat's> <chats> array with current user's id. 
       const targetUserChatsRef = doc(firestore, "userChats", targetUserData.uid);
@@ -99,7 +94,7 @@ const SidebarChats = () => {
       <input placeholder="Find users" className="w-100 bg-tertiary-6 border-none outline-none fs-1 p-1 text-tertiary" type="text" onChange={(e) => setUserName(e.target.value)} value={userName} />
       {userName && userData.map((data: DocUser, key: number) => {
         return <div onClick={() => handleUserClick(data)} key={key} className="found-users d-flex align-center pt-1 pb-1">
-          <img className="ml-1" src={data.photoURL} alt="user image" />
+          <img className="ml-1 image" src={data.photoURL} alt="user image" />
           <p className="fs-1 fw-600 ml-1">{data.displayName}</p>
         </div>
       })}

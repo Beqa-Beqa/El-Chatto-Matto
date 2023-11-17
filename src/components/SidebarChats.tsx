@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContextProvider";
-import { UserChatsContext } from "../contexts/UserChatsContextProvider";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { firestore } from "../config/firebase";
 import { DocUser } from "../interfaces/UserInterfaces";
 
@@ -11,10 +10,11 @@ const SidebarChats = (props: {
 }) => {
   // context for retrieving currentuser info.
   const {currentUser} = useContext(AuthContext);
-  // chats context just for update purposes, chats is nothing but a boolean value.
-  const {chats} = useContext(UserChatsContext);
   // update user data whenever chats change. Chats change is triggered in sidebarsearch.tsx
+  const [userDataArray, setUserDataArray] = useState<string[]>([]);
   const [userData, setUserData] = useState<DocUser[]>([]);
+
+
 
   useEffect(() => {
     // Fetch all the current users already stored.
@@ -42,7 +42,7 @@ const SidebarChats = (props: {
 
     // run the function
     fetchData();
-  }, [chats]);
+  }, [userDataArray]);
 
   return (
     <div className="sidebar-chats">
