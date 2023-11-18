@@ -1,9 +1,9 @@
 import { FcVideoCall } from "react-icons/fc";
 import { MdCall } from "react-icons/md";
-import { DocUser } from "../interfaces/UserInterfaces";
+import { DocumentData } from "firebase/firestore";
 
 const ChatBoxNavbar = (props: {
-  user: DocUser | null
+  user: DocumentData | null
 }) => {
   if(props.user) {
     return (

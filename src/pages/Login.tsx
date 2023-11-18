@@ -3,7 +3,7 @@ import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, firestore, googleProvider } from "../config/firebase";
 import { AuthContext } from "../contexts/AuthContextProvider";
-import { setDoc, doc, getDoc } from "firebase/firestore";
+import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { genSubStrings } from "../functions";
 
 const Login = () => {
@@ -26,7 +26,12 @@ const Login = () => {
 
     try {
       // Try to sign in user to it's account.
-      await signInWithEmailAndPassword(auth, email, password);
+      const signedUser = await signInWithEmailAndPassword(auth, email, password);
+      // Update user's online status.
+      const curUserStatusRef = doc(firestore, "userChats", signedUser.user.uid);
+      await updateDoc(curUserStatusRef, {
+        isOnline: true
+      });
       // If successfull navigate to homepage.
       navigate("/");
     } catch (err) {
@@ -59,8 +64,17 @@ const Login = () => {
         });
 
       // If the user docs does not exists, therefore user chats does not exist as well so we create one.
-      !existingDoc.exists() && 
-        await setDoc(doc(firestore, "userChats", signedUser.user.uid), {chats: []});
+      // isOnline and isWriting are for chatting purposes.
+      !existingDoc.exists() ?
+        await setDoc(doc(firestore, "userChats", signedUser.user.uid), {
+          chats: [],
+          isOnline: true,
+          isWriting: false
+        })
+      : 
+        await updateDoc(doc(firestore, "userChats", signedUser.user.uid), {
+          isOnline: true
+        })
 
       navigate("/");
     } catch (err) {

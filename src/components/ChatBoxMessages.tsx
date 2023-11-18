@@ -1,27 +1,30 @@
 import { AuthContext } from "../contexts/AuthContextProvider";
-import { DocUser } from "../interfaces/UserInterfaces";
 import { useContext, useEffect, useRef, useState } from "react";
 import { combineIds } from "../functions";
 import { DocumentData, doc, onSnapshot } from "firebase/firestore";
 import { firestore } from "../config/firebase";
 
 const ChatBoxMessages = (props: {
-  user: DocUser | null
+  user: DocumentData | null
 }) => {
   // currentuser context for current user info.
   const {currentUser} = useContext(AuthContext);
   // messages data that will be updated and messages in it will be displayed on screen.
   const [messages, setMessages] = useState<DocumentData>({});
   // useref for sent or recieved div reference. used to scroll to newly sent or recieved message.
-  const ref = useRef<any>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   // Whenever user or messages change useffect will be triggered.
   useEffect(() => {
     if(props.user) {
       // If props.user is present and we have reference already, scroll to that ref.
-      ref.current && ref.current.scrollIntoView({behavior: "smooth"});
+      ref.current && ref.current.scrollIntoView();
+    }
+  }, [messages]);
 
-      // Combined ids for 2 users chat reference. (for 2 same user generated combined id will be the same
+  useEffect(() => {
+    if(props.user) {
+      // Combined ids for 2 users chat reference. (for 2 same user (user1, user2 and user2, user1) generated combined id will be the same
       // for that we have only one object saved in docs with the combined value and not two for each of the user).
       const combIds = combineIds(currentUser?.uid!, props.user.uid);
       // 2 users chat doc reference.
@@ -35,7 +38,7 @@ const ChatBoxMessages = (props: {
       // Snapshot cleaner.
       return () => unsub();
     }
-  }, [props.user, messages]);
+  }, [props.user]);
 
   if(props.user) {
       // 80% of height | see main.scss

@@ -72,10 +72,12 @@ const Register = () => {
         photoURL: downloadUrl
       });
 
-      // Set userChat info for user
+      // Set userChat info for user, isOnline, isWriting for chatting purposes.
       const userChatRef = doc(firestore, "userChats", userData.user.uid!);
       await setDoc(userChatRef, {
-        chats: []
+        chats: [],
+        isOnline: true,
+        isWriting: false,
       });
 
       // Send user a verification email.

@@ -2,13 +2,20 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { signOut } from "firebase/auth";
-import { auth } from "../config/firebase";
+import { auth, firestore } from "../config/firebase";
+import { updateDoc, doc } from "firebase/firestore";
 
 const Navbar = () => {
   const {currentUser} = useContext(AuthContext);
 
   const handleSignOut = async () => {
     try {
+      // Set online status to false.
+      const curUserStatusRef = doc(firestore, "userChats", currentUser!.uid);
+      await updateDoc(curUserStatusRef, {
+        isOnline: false
+      });
+      // Sign out the user.
       await signOut(auth);
     } catch (err) {
       console.error(err);

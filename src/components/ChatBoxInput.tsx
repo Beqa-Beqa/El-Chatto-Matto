@@ -1,13 +1,12 @@
-import { DocUser } from "../interfaces/UserInterfaces"
 import { useState, useContext } from "react";
 import { AiOutlineSend } from "react-icons/ai";
 import { combineIds } from "../functions";
 import { AuthContext } from "../contexts/AuthContextProvider";
-import { doc, updateDoc } from "firebase/firestore";
+import { DocumentData, doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../config/firebase";
 
 const ChatBoxInput = (props: {
-  user: DocUser | null
+  user: DocumentData | null
 }) => {
   // Current user context to get info of currentuser.
   const {currentUser} = useContext(AuthContext);

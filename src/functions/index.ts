@@ -55,3 +55,21 @@ export const combineIds = (id1: string, id2: string) => {
 
   return combinedId;
 }
+
+
+// <---------------------------------------------------------------------------------------------------------->
+
+
+// Filter username for any whitespace, duplication, uppercase.
+export const filterUsername = (str: string) => {
+  // Transform to lowercase.
+  const lowerCase = str.toLowerCase();
+  // Trim any whitespaces.
+  const trimmed = lowerCase.trim();
+  // Split it without duplicate whitespaces, (OR WORD, I HOPE IT WON'T CAUSE A BUG).
+  const splitted = Array.from(new Set(trimmed.split(" ")));
+  // Join back together
+  const joined = splitted.join(" ");
+
+  return joined;
+}
