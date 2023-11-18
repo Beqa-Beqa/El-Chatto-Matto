@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { AiOutlineSend } from "react-icons/ai";
 import { combineIds } from "../functions";
 import { AuthContext } from "../contexts/AuthContextProvider";
@@ -6,12 +6,14 @@ import { DocumentData, doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../config/firebase";
 
 const ChatBoxInput = (props: {
-  user: DocumentData | null
+  user: DocumentData | null,
 }) => {
   // Current user context to get info of currentuser.
   const {currentUser} = useContext(AuthContext);
   // message state for written message in input field of message window (it's textarea actually).
   const [message, setMessage] = useState<string>("");
+  // State for user if they are writing a message or not.
+  const [writing, isWriting] = useState<boolean>(false);
   
   // We handle keydown to be able to send message with Enter.
   const handleKeyDown = async (event: any) => {
@@ -44,6 +46,7 @@ const ChatBoxInput = (props: {
       } else {
         // If message is just an empty string or a whitespace it does nothing, not even new line is written.
         event.preventDefault();
+        setMessage(message + `\n`);
       }
     }
   }
@@ -74,10 +77,47 @@ const ChatBoxInput = (props: {
     }
   }
 
+  useEffect(() => {
+    const updateWritingStatus = async () => {
+      // Current users userChats ref.
+      const curUserChatsRef = doc(firestore, "userChats", currentUser?.uid!);
+      try {
+        if(message && !writing) {
+          // If there is a message and writing state is set to false:
+          isWriting(true);
+          
+          // Update current user writing status and set it to true.
+          await updateDoc(curUserChatsRef, {
+            isWriting: true,
+          });
+          
+        } else if(!message && writing) {
+          // If there is not a message and writing state is set to true:
+          isWriting(false);
+  
+          // Update current user writing status and set it to false.
+          await updateDoc(curUserChatsRef, {
+            isWriting: false
+          });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    updateWritingStatus();
+  }, [message]);
+
+
   if(props.user) {
     return (
       <div className="w-100 h-10 bg-tertiary text-primary d-flex align-center justify-space-around">
-        <textarea value={message} onChange={(e) => setMessage(e.target.value)} onKeyDown={(e) => handleKeyDown(e)} className="h-75 border-none outline-none" />
+        <textarea 
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={(e) => handleKeyDown(e)}
+          className="h-75 border-none outline-none"
+         />
         <AiOutlineSend onClick={handleClick} className="icon cursor-pointer" />
       </div>
     );
