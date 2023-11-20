@@ -1,4 +1,4 @@
-import "./styles/main.scss";
+import "./styles/sass/main.scss";
 import { Register, Login, HomepageLoggedIn, HomepageNotLoggedIn } from "./pages";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
@@ -29,7 +29,7 @@ function App() {
 
   if(isLoading) {
     // On loading state show spinning circle instead of content.
-    return <div id="spinning-circle" />
+    return <div className="roller-wrapper"><div className="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
 
   } else if (currentUser && !currentUser?.emailVerified) {
     // If the registration was successful and email is not verified we demand from user to verify an email.

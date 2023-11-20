@@ -1,11 +1,11 @@
-import { MessagingWindow, Navbar } from "../containers";
+import { MessagingWindow, NavbarLoggedIn } from "../containers";
 
 // Homepage for authorized users
 const HomepageLoggedIn = () => {
   return (
     <>
       <header>
-        <Navbar />
+        <NavbarLoggedIn />
       </header>
       <main className="d-flex align-center justify-center mt-5">
         <MessagingWindow />

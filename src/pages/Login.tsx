@@ -44,7 +44,8 @@ const Login = () => {
   }
 
   // Google sign in handler, everything is same except this signs in user with google account.
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = async (event: React.FormEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     setIsLoading(true);
     try {
       // Sign the user with google provider
@@ -74,7 +75,7 @@ const Login = () => {
       : 
         await updateDoc(doc(firestore, "userChats", signedUser.user.uid), {
           isOnline: true
-        })
+        });
 
       navigate("/");
     } catch (err) {

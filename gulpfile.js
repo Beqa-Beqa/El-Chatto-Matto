@@ -6,7 +6,7 @@ function buildStyles() {
   return src("./src/styles/**/*.scss")
     .pipe(sass())
     .pipe(purgecss({ content: ['./src/**/*.tsx']}))
-    .pipe(dest("./src/styles/css"));
+    .pipe(dest("./src/styles/sass-compiled-css"));
 }
 
 function watchTask() {
