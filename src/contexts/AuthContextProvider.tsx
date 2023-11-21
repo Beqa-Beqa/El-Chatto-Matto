@@ -22,11 +22,28 @@ const AuthContextProvider = ({children}: any) => {
   // States that represent context values
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [contentLoaded, setContentLoaded] = useState<boolean>(false);
   
   // Useffect checks if there is an user already signed in.
   // If yes then currentUser value updates to current user.
   // This check is needed due to short time data loss from database.
   // After that loading is set to off. When it's on, spinning circle is shown.
+  
+  useEffect(() => {
+    const loadListener: any = window.addEventListener("load", () => {
+      setContentLoaded(true);
+    });
+
+    const refreshListener: any = window.addEventListener("beforeunload", () => {
+      setIsLoading(true);
+    })
+
+    return () => {
+      window.removeEventListener("load", loadListener);
+      window.removeEventListener("beforeunload", refreshListener);
+    }
+  }, [])
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if(!user) {
@@ -34,14 +51,14 @@ const AuthContextProvider = ({children}: any) => {
       } else {
         setCurrentUser(user);
       }
-
-      setIsLoading(false);
-    });
-
-    // Cleaner
-    return () => unsubscribe();
-  }, []);
   
+      contentLoaded && setIsLoading(false);
+    });
+  // Cleaner
+  return () => {
+    unsubscribe();
+  };
+}, [contentLoaded]);
 
   return (
     // Provide context values to all the children elements 
