@@ -1,4 +1,4 @@
-import { Footer, HomeContentNotLoggedIn, NavbarNotLoggedIn } from "../containers";
+import { Footer, NavbarNotLoggedIn } from "../containers";
 import { NotLoggedInSlider } from "../containers";
 
 // This is homepage for unauthorized users.
@@ -9,7 +9,6 @@ const HomepageNotLoggedIn = () => {
         <NavbarNotLoggedIn />
       </header>
       <main>
-        <HomeContentNotLoggedIn />
         <NotLoggedInSlider />
       </main>
       <footer>
