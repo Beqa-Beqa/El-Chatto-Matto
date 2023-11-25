@@ -5,6 +5,7 @@ import { auth, firestore, googleProvider } from "../config/firebase";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { genSubStrings } from "../functions";
+import { Button } from "react-bootstrap";
 
 const Login = () => {
   // Error state used for conditional rendering if error occurs.
@@ -87,18 +88,18 @@ const Login = () => {
   }
 
   return (
-    <div id="login" className="d-flex justify-center align-center">
-      <div className="form d-flex flex-column align-center">
-        <h1>Logo</h1>
-        <span>Login</span>
+    <div id="login" className="d-flex justify-content-center align-items-center bg-primary">
+      <div className="form d-flex flex-column sign-form rounded p-4 container">
+        <h1 className="gradient-text text-center fs-3">Logo</h1>
+        <span className="text-center mb-3 fs-3 text-primary fs-4">Login</span>
         <form onSubmit={handleSubmit} className="d-flex flex-column align-center w-100">
           <input className="input" onChange={(e) => setEmail(e.target.value)} value={email} type="email" placeholder="Email" />
           <input className="input" onChange={(e) => setPassword(e.target.value)} value={password} type="password" placeholder="Password" />
-          <button type="submit" className="button-secondary w-100 mt-2 mb-2">Sign In</button>
+          <Button type="submit" className="w-100 sign-button mb-1" variant="outline-primary">Sign In</Button>
         </form>
-        <button onClick={handleGoogleSignIn} className="w-100 mb-1 button-secondary">Sign In With Google</button>
+        <Button type="submit" onClick={handleGoogleSignIn} className="w-100 sign-button mt-2" variant="outline-primary" >Sign In With Google</Button>
         {err && <span>Something went wrong!</span>}
-        <p>Don't have an account? <Link className="link-button" to="/register">Sign Up</Link></p>
+        <p className="text-center mt-2 mb-0">Don't have an account? <Link className="link-button" to="/register">Sign Up</Link></p>
       </div>
     </div>
   );

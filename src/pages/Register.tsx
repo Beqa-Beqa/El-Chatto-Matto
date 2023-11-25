@@ -7,6 +7,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { genSubStrings } from "../functions";
+import { Button } from "react-bootstrap";
 
 
 const Register = () => {
@@ -98,26 +99,26 @@ const Register = () => {
   }
 
    return (
-    <div id="register" className="d-flex justify-center align-center">
-      <div className="form d-flex flex-column align-center">
-        <h1>Logo</h1>
-        <span>Register</span>
+    <div id="register" className="d-flex justify-content-center align-items-center bg-primary">
+      <div className="form d-flex flex-column sign-form rounded p-4 container">
+        <h1 className="gradient-text text-center fs-3">El Chatto Matto</h1>
+        <span className="text-center mb-3 fs-3 text-primary fs-4">Register</span>
         <form onSubmit={handleSubmit} className="d-flex flex-column align-center w-100">
           <input className="input" onChange={(e) => setUsername(e.target.value)} value={username} type="text" placeholder="Username" />
           <input className="input" onChange={(e) => setEmail(e.target.value)} value={email} type="email" placeholder="Email" />
           <input className="input" onChange={(e) => setPassword(e.target.value)} value={password} type="password" placeholder="Password" />
-          <label className="d-flex align-center" htmlFor="fileInput">
+          <label className="upload-image-label d-flex align-items-center mx-auto mb-1 justify-content-center" htmlFor="fileInput">
             <CiImageOn className="icon" />
-            <span>Upload an image</span>
+            <span className="mx-2">Upload an image</span>
           </label>
           <input id="fileInput" className="d-none" onChange={(e) => {
             const image = e.target.files ? e.target.files[0] : null;
             setImage(image);
           }} type="file" />
-          <button type="submit" className="button-secondary w-100">Sign Up</button>
+          <Button type="submit" className="w-100 sign-button" variant="outline-primary">Sign Up</Button>
           {err && <span>Something went wrong!</span>}
         </form>
-        <p>Already have an account? <Link className="link-button" to="/login">Sign In</Link></p>
+        <p className="text-center mt-2 mb-0">Already have an account? <Link className="link-button" to="/login">Sign In</Link></p>
       </div>
     </div>
   );

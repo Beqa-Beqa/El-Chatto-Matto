@@ -177,7 +177,49 @@ video {
 }
 
 
+#register, #login {
+  width: 100vw;
+  height: 100vh;
 
+  .sign-form {
+    background: rgba($secondary, 0.8);
+  }
+
+  .form {
+    max-width: 540px;
+
+    .input {
+      background-color: rgba($primary, 0.5);
+      color: $secondary;
+      border: none;
+      outline: none;
+      border-bottom: $primary solid 1px;
+      margin-bottom: 13px;
+      border-radius: 5px;
+      padding: 0 1rem;
+      height: 29px;
+      font-family: "Inter", sans-serif;
+      
+      &::placeholder {
+        color: rgba($secondary, 0.6);
+      }
+    }
+
+    .icon {
+      width: 35px;
+      height: 35px;
+    }
+
+    .upload-image-label {
+      cursor: pointer;
+    }
+
+    .sign-button {
+      height: 29px;
+      padding: 0;
+    }
+  }
+}
 
 
 
