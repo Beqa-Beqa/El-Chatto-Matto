@@ -90,8 +90,8 @@ const Login = () => {
   return (
     <div id="login" className="d-flex justify-content-center align-items-center bg-primary">
       <div className="form d-flex flex-column sign-form rounded p-4 container">
-        <h1 className="gradient-text text-center fs-3">Logo</h1>
-        <span className="text-center mb-3 fs-3 text-primary fs-4">Login</span>
+        <h1 className="gradient-text text-center fs-3">El Chatto Matto</h1>
+        <span className="text-center mb-3 fs-3 text-primary fs-4">Sign In</span>
         <form onSubmit={handleSubmit} className="d-flex flex-column align-center w-100">
           <input className="input" onChange={(e) => setEmail(e.target.value)} value={email} type="email" placeholder="Email" />
           <input className="input" onChange={(e) => setPassword(e.target.value)} value={password} type="password" placeholder="Password" />
