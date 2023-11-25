@@ -3,6 +3,7 @@ import { HomeContentNotLoggedIn } from "..";
 import { useEffect, useState } from "react";
 
 const NotLoggedInSlider = () => {
+  // Videos list with information.
   const vidProps = [
     {
       id: 0,
@@ -36,9 +37,13 @@ const NotLoggedInSlider = () => {
     },
   ]
 
+  // State for video index.
   const [vidIndex, setVidIndex] = useState<number>(Math.floor(Math.random() * vidProps.length));
+  // State for next video index. Next video is needed for preloading, otherwise there is a 
+  // white flash on the screen between video changes on background.
   const [nextVidIndex, setNextVidIndex] = useState<number>(vidIndex + 1);
 
+  // Useffect for interval to change videos.
   useEffect(() => {
     const interval = setInterval(() => {
       vidIndex + 1 < vidProps.length ? setVidIndex(vidIndex + 1) : setVidIndex(0);
@@ -47,7 +52,7 @@ const NotLoggedInSlider = () => {
     }, vidProps[vidIndex].playingTime || 10000);
 
     return () => clearInterval(interval);
-  }, [vidIndex])
+  }, [vidIndex]);
 
   return (
     <div id="vid-container" className="container-fluid p-0 video-container">
