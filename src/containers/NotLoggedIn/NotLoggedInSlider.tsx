@@ -36,8 +36,8 @@ const NotLoggedInSlider = () => {
     },
   ]
 
-  const [vidIndex, setVidIndex] = useState<number>(0);
-  const [nextVidIndex, setNextVidIndex] = useState<number>(1);
+  const [vidIndex, setVidIndex] = useState<number>(Math.floor(Math.random() * vidProps.length));
+  const [nextVidIndex, setNextVidIndex] = useState<number>(vidIndex + 1);
 
   useEffect(() => {
     const interval = setInterval(() => {
