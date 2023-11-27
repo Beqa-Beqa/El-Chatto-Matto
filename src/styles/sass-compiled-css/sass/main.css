@@ -855,15 +855,18 @@ video {
 #register .sign-form, #login .sign-form {
   background: rgba(255, 255, 255, 0.8);
 }
+#register .error, #login .error {
+  color: #FF4081;
+  margin-bottom: 8px;
+}
 #register .form, #login .form {
   max-width: 540px;
 }
 #register .form .input, #login .form .input {
-  background-color: rgba(64, 64, 64, 0.5);
+  background-color: rgba(64, 64, 64, 0.3);
   color: #fff;
   border: none;
   outline: none;
-  border-bottom: #404040 solid 1px;
   margin-bottom: 13px;
   border-radius: 5px;
   padding: 0 1rem;

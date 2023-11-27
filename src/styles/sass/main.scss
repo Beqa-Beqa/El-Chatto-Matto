@@ -185,15 +185,20 @@ video {
     background: rgba($secondary, 0.8);
   }
 
+  .error {
+    margin-top: 0;
+    color: $tertiary-second;
+    margin-bottom: 8px;
+  }
+
   .form {
     max-width: 540px;
 
     .input {
-      background-color: rgba($primary, 0.5);
+      background-color: rgba($primary, 0.3);
       color: $secondary;
       border: none;
       outline: none;
-      border-bottom: $primary solid 1px;
       margin-bottom: 13px;
       border-radius: 5px;
       padding: 0 1rem;

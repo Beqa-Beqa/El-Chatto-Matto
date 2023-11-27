@@ -23,7 +23,7 @@ const Login = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     // Prevent default form submit action.
     event.preventDefault();
-    setIsLoading(true);
+    // setIsLoading(true);
 
     try {
       // Try to sign in user to it's account.
@@ -40,7 +40,7 @@ const Login = () => {
       console.error(err);
       setErr(true);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   }
 
@@ -92,13 +92,13 @@ const Login = () => {
       <div className="form d-flex flex-column sign-form rounded p-4 container">
         <h1 className="gradient-text text-center fs-3">El Chatto Matto</h1>
         <span className="text-center mb-3 fs-3 text-primary fs-4">Sign In</span>
+        {err && <span className="error">Invalid Credentials</span>}
         <form onSubmit={handleSubmit} className="d-flex flex-column align-center w-100">
           <input className="input" onChange={(e) => setEmail(e.target.value)} value={email} type="email" placeholder="Email" />
           <input className="input" onChange={(e) => setPassword(e.target.value)} value={password} type="password" placeholder="Password" />
           <Button type="submit" className="w-100 sign-button mb-1" variant="outline-primary">Sign In</Button>
         </form>
         <Button type="submit" onClick={handleGoogleSignIn} className="w-100 sign-button mt-2" variant="outline-primary" >Sign In With Google</Button>
-        {err && <span>Something went wrong!</span>}
         <p className="text-center mt-2 mb-0">Don't have an account? <Link className="link-button" to="/register">Sign Up</Link></p>
       </div>
     </div>

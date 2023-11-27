@@ -3,12 +3,14 @@ import { AuthContext } from "../../contexts/AuthContextProvider";
 import { signOut } from "firebase/auth";
 import { auth, firestore } from "../../config/firebase";
 import { updateDoc, doc } from "firebase/firestore";
+import { Navigate } from "react-router-dom";
 
 const Navbar = () => {
-  const {currentUser} = useContext(AuthContext);
+  const {currentUser, setIsLoading} = useContext(AuthContext);
 
   const handleSignOut = async () => {
     try {
+      setIsLoading(true);
       // Set online status to false.
       const curUserStatusRef = doc(firestore, "userChats", currentUser!.uid);
       await updateDoc(curUserStatusRef, {
@@ -16,8 +18,13 @@ const Navbar = () => {
       });
       // Sign out the user.
       await signOut(auth);
+
+      // Navigate back to homescreen, otherwise bug may occur of white screen after sign out.
+      <Navigate to="/" />
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   }
 
