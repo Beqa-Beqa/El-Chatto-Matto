@@ -1,8 +1,7 @@
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, firestore, googleProvider } from "../config/firebase";
-import { AuthContext } from "../contexts/AuthContextProvider";
 import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { genSubStrings } from "../functions";
 import { Button } from "react-bootstrap";
@@ -16,8 +15,6 @@ const Login = () => {
   const [password, setPassword] = useState<string>("");
   // navigate hook to navigate through different routes.
   const navigate = useNavigate();
-  // Usecontext to manage loading state.
-  const {setIsLoading} = useContext(AuthContext);
 
   // Sign in handler.
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -47,7 +44,7 @@ const Login = () => {
   // Google sign in handler, everything is same except this signs in user with google account.
   const handleGoogleSignIn = async (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setIsLoading(true);
+
     try {
       // Sign the user with google provider
       const signedUser = await signInWithPopup(auth, googleProvider);
@@ -82,8 +79,6 @@ const Login = () => {
     } catch (err) {
       console.error(err);
       setErr(true);
-    } finally {
-      setIsLoading(false);
     }
   }
 

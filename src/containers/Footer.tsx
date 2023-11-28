@@ -1,4 +1,4 @@
-import { LinkedIn, Envelope, GitHub } from "../../assets/images";
+import { LinkedIn, Envelope, GitHub } from "../assets/images";
 
 const Footer = () => {
   return(

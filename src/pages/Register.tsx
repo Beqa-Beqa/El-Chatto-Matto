@@ -1,11 +1,10 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { CiImageOn } from "react-icons/ci";
 import { Link, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
 import { auth, firestore, storage } from "../config/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { AuthContext } from "../contexts/AuthContextProvider";
 import { genSubStrings } from "../functions";
 import { Button } from "react-bootstrap";
 
@@ -23,8 +22,6 @@ const Register = () => {
   const [image, setImage] = useState<null | File>(null);
   // Error state. Used for conditional rendering if error occurs.
   const [err, setErr] = useState<string>("");
-  // UseContext for loading state managment.
-  const {setIsLoading} = useContext(AuthContext);
   
 
   // Handle registration of the user with email and password.
@@ -114,10 +111,6 @@ const Register = () => {
           }
         })
       }
-
-    } finally {
-      // Set loading state to false to remove spinning circle.
-      setIsLoading(false);
     }
   }
 
