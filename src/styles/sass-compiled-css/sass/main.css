@@ -731,11 +731,6 @@ textarea {
   background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-secondary {
-  --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity)) !important;
-}
-
 .rounded {
   border-radius: var(--bs-border-radius) !important;
 }
@@ -813,7 +808,7 @@ video {
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.5);
   position: relative;
   top: -20px;
-  z-index: 99;
+  z-index: 999;
 }
 .navbar .navbar-image {
   width: 100px;
@@ -914,6 +909,22 @@ video {
   width: 40px;
   height: 40px;
   object-fit: cover;
+}
+.homepage-logged-in .notification-icon {
+  width: 20px;
+  height: 20px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-right: 8px;
+  transition: 0.1s;
+}
+.homepage-logged-in .notification-icon:hover {
+  color: #fff;
+  cursor: pointer;
+}
+
+.home-content-logged-in {
+  width: 100%;
+  min-height: 80vh;
 }
 
 .roller-wrapper {

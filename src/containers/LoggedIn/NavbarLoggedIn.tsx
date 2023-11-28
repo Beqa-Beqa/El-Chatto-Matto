@@ -6,6 +6,7 @@ import { updateDoc, doc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { LogoWhite } from "../../assets/images";
 import { NavDropdown } from "react-bootstrap";
+import { IoIosNotifications } from "react-icons/io";
 
 const Navbar = () => {
   const {currentUser, setIsLoading} = useContext(AuthContext);
@@ -35,6 +36,7 @@ const Navbar = () => {
     <div className="navbar py-0 px-md-5 px-3 bg-primary position-fixed w-100">
       <img className="navbar-image" src={LogoWhite} alt="logo" />
       <div className="d-flex align-items-center">
+        <IoIosNotifications className="notification-icon" />
         <img className="user-photo me-1 rounded-circle" src={currentUser?.photoURL!} alt="user photo" />
         <NavDropdown className="navbar-button" title={currentUser?.displayName} id="nav-dropdown">
           <NavDropdown.Item onClick={() => navigate("/profile")}>Your Profile</NavDropdown.Item>
