@@ -1,7 +1,9 @@
+import { MessagingWindow } from "..";
+
 const HomeContentLoggedIn = () => {
   return(
-    <div className="home-content-logged-in mt-3 bg-blue">
-      asdasd
+    <div className="home-content-logged-in pt-4 px-md-5 px-3">
+      {/* <MessagingWindow /> */}
     </div>
   );
 }

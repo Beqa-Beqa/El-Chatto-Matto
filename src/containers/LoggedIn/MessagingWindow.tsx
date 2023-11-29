@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../contexts/AuthContextProvider";
-import { SidebarSearch, SidebarChats, ChatBoxNavbar, ChatBoxMessages, ChatBoxInput } from "../../components";
+import { SidebarChats, ChatBoxNavbar, ChatBoxMessages, ChatBoxInput } from "../../components";
 import { DocumentData, query, collection, where, onSnapshot } from "firebase/firestore";
 import { firestore } from "../../config/firebase";
 
@@ -42,7 +42,6 @@ const MessagingWindow = () => {
   return (
     <div id="messaging-window" className="d-flex bg-secondary-6 mt-3">
       <div className="side-bar">
-        <SidebarSearch />
         <SidebarChats setUser={setUser} userIdArray={userIdArray} online={online} />
       </div>
       <div className="chat-box">

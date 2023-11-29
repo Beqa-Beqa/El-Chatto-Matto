@@ -3,7 +3,7 @@ import { LogoWhite } from "../../assets/images";
 
 const Navbar = () => {
   return (
-    <div className="navbar py-0 px-5 bg-primary position-fixed w-100">
+    <div className="navbar py-0 px-md-5 px-3 bg-primary position-fixed w-100">
       <img className="navbar-image" src={LogoWhite} alt="logo" />
       <div>
         <Link className="navbar-button me-3" to="/login">Sign In</Link>

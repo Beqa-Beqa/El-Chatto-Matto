@@ -1,4 +1,4 @@
-import { Footer, HomeContentLoggedIn, MessagingWindow, NavbarLoggedIn } from "../containers";
+import { Footer, HomeContentLoggedIn, NavbarLoggedIn } from "../containers";
 
 // Homepage for authorized users
 const HomepageLoggedIn = () => {
@@ -7,9 +7,8 @@ const HomepageLoggedIn = () => {
       <header>
         <NavbarLoggedIn />
       </header>
-      <main className="d-flex align-center justify-center mt-5">
+      <main>
         <HomeContentLoggedIn />
-        <MessagingWindow />
       </main>
       <footer>
         <Footer />

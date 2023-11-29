@@ -1,5 +1,5 @@
 import "./styles/sass/main.scss";
-import { Register, Login, HomepageLoggedIn, HomepageNotLoggedIn } from "./pages";
+import { Register, Login, HomepageLoggedIn, HomepageNotLoggedIn, Friends } from "./pages";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./contexts/AuthContextProvider";
@@ -46,6 +46,11 @@ function App() {
           <Route index element={
             <ProtectedRoute>
               <HomepageLoggedIn />
+            </ProtectedRoute>
+          } />
+          <Route path="/friends" element={
+            <ProtectedRoute>
+              <Friends />
             </ProtectedRoute>
           } />
           <Route index element={<HomepageNotLoggedIn />} />

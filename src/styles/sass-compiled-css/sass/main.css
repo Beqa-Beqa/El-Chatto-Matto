@@ -161,14 +161,6 @@ footer, header {
   }
 }
 
-hr {
-  margin: 1rem 0;
-  color: inherit;
-  border: 0;
-  border-top: var(--bs-border-width) solid;
-  opacity: 0.25;
-}
-
  h3, .h3, h2, .h2, h1, .h1 {
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -531,6 +523,14 @@ textarea {
   position: fixed !important;
 }
 
+.border {
+  border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+}
+
+.border-0 {
+  border: 0 !important;
+}
+
 .w-25 {
   width: 25% !important;
 }
@@ -563,6 +563,10 @@ textarea {
   justify-content: center !important;
 }
 
+.justify-content-between {
+  justify-content: space-between !important;
+}
+
 .align-items-center {
   align-items: center !important;
 }
@@ -584,6 +588,11 @@ textarea {
 .mx-auto {
   margin-right: auto !important;
   margin-left: auto !important;
+}
+
+.my-1 {
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
 }
 
 .my-4 {
@@ -608,12 +617,24 @@ textarea {
   margin-top: 3rem !important;
 }
 
+.me-0 {
+  margin-right: 0 !important;
+}
+
 .me-1 {
   margin-right: 0.25rem !important;
 }
 
+.me-2 {
+  margin-right: 0.5rem !important;
+}
+
 .me-3 {
   margin-right: 1rem !important;
+}
+
+.me-5 {
+  margin-right: 3rem !important;
 }
 
 .mb-0 {
@@ -632,6 +653,10 @@ textarea {
   margin-bottom: 3rem !important;
 }
 
+.ms-1 {
+  margin-left: 0.25rem !important;
+}
+
 .p-0 {
   padding: 0 !important;
 }
@@ -646,6 +671,16 @@ textarea {
 
 .p-4 {
   padding: 1.5rem !important;
+}
+
+.px-1 {
+  padding-right: 0.25rem !important;
+  padding-left: 0.25rem !important;
+}
+
+.px-2 {
+  padding-right: 0.5rem !important;
+  padding-left: 0.5rem !important;
 }
 
 .px-3 {
@@ -675,6 +710,10 @@ textarea {
 
 .pt-1 {
   padding-top: 0.25rem !important;
+}
+
+.pt-4 {
+  padding-top: 1.5rem !important;
 }
 
 .pb-0 {
@@ -738,9 +777,19 @@ textarea {
 .rounded-circle {
   border-radius: 50% !important;
 }
+
+@media (min-width: 576px) {
+  .px-sm-4 {
+    padding-right: 1.5rem !important;
+    padding-left: 1.5rem !important;
+  }
+}
 @media (min-width: 768px) {
   .mt-md-0 {
     margin-top: 0 !important;
+  }
+  .ms-md-3 {
+    margin-left: 1rem !important;
   }
   .px-md-5 {
     padding-right: 3rem !important;
@@ -803,12 +852,26 @@ video {
   min-height: 100vh !important;
 }
 
+.navbar-wrapper {
+  background-color: rgba(30, 47, 151, 0.8);
+}
+
 .navbar {
   height: 85px;
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.5);
   position: relative;
   top: -20px;
   z-index: 999;
+}
+.navbar .notifications {
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+}
+.navbar .notifications:hover {
+  color: #fff;
+}
+.navbar .notifications:hover .navbar-icon {
+  color: #fff;
 }
 .navbar .navbar-image {
   width: 100px;
@@ -910,21 +973,61 @@ video {
   height: 40px;
   object-fit: cover;
 }
-.homepage-logged-in .notification-icon {
+.homepage-logged-in .navbar-icon {
   width: 20px;
   height: 20px;
   color: rgba(255, 255, 255, 0.6);
   margin-right: 8px;
   transition: 0.1s;
 }
-.homepage-logged-in .notification-icon:hover {
+.homepage-logged-in .navbar-icon:hover {
   color: #fff;
   cursor: pointer;
+}
+.homepage-logged-in .image {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.homepage-logged-in .found-users-container {
+  top: 75px;
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+}
+.homepage-logged-in .found-users-container .found-users {
+  transition: 0.1s;
+  cursor: pointer;
+}
+.homepage-logged-in .found-users-container .found-users:hover {
+  background-color: rgba(33, 37, 41, 0.1);
+}
+.homepage-logged-in .friend-request {
+  background-color: transparent;
+  border: 1px solid #6B1E7B !important;
+  transition: 0.1s;
+}
+.homepage-logged-in .friend-request .friend-request-icon {
+  width: 20px;
+  height: 20px;
+  color: rgba(107, 30, 123, 0.6);
+  margin-right: 8px;
+  transition: 0.1s;
+}
+.homepage-logged-in .friend-request:hover {
+  background-color: #6B1E7B;
+  color: #fff;
+  cursor: pointer;
+}
+.homepage-logged-in .friend-request:hover .friend-request-icon {
+  color: #fff;
 }
 
 .home-content-logged-in {
   width: 100%;
-  min-height: 80vh;
+  min-height: 100vh;
+  background-color: rgba(30, 47, 151, 0.8);
+  color: #fff;
 }
 
 .roller-wrapper {

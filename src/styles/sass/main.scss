@@ -54,6 +54,7 @@ $primary:#404040;
 $secondary: #fff;
 $tertiary: #6B1E7B;
 $tertiary-second: #FF4081;
+$background: #1E2F97;
 $base-transition-duration: 0.1s;
 
 @import '../../../node_modules/bootstrap/scss/bootstrap'; // Import Bootstrap styles
@@ -92,12 +93,29 @@ video {
   min-height: 100vh !important;
 }
 
+.navbar-wrapper {
+  background-color: rgba($background, 0.8);
+}
+
 .navbar {
   height: 85px;
   box-shadow: 0 2px 10px 0 rgba(0,0,0,.5);
   position: relative;
   top: -20px;
   z-index: 999;
+
+  .notifications {
+    cursor: pointer;
+    color: rgba($secondary, 0.8);
+
+    &:hover {
+      color: $secondary;
+
+      .navbar-icon {
+        color: $secondary;
+      }
+    }
+  }
 
   .navbar-image {
     width: 100px;
@@ -244,7 +262,7 @@ video {
     margin-top: 1.3rem;
   }
   
-  .notification-icon {
+  .navbar-icon {
     width: 20px;
     height: 20px;
     color: rgba($secondary, 0.6);
@@ -256,11 +274,60 @@ video {
       cursor: pointer;
     }
   }
+
+  .image {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .found-users-container {
+    top: 75px;
+    background-color: rgba($secondary, 0.8);
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+
+    .found-users {
+      transition: $base-transition-duration;
+      cursor: pointer;
+  
+      &:hover {
+        background-color: rgba(#212529, 0.1);
+      }
+    }
+  }
+  .friend-request {
+    background-color: transparent;
+    border: 1px solid $tertiary !important;
+    transition: $base-transition-duration;
+    
+    .friend-request-icon {
+      width: 20px;
+      height: 20px;
+      color: rgba($tertiary, 0.6);
+      margin-right: 8px;
+      transition: $base-transition-duration;
+    }
+
+    &:hover {
+      background-color: $tertiary;
+      color: $secondary;
+      cursor: pointer;
+
+      .friend-request-icon {
+        color: $secondary;
+      }
+    }
+
+  }
 }
 
 .home-content-logged-in {
   width: 100%;
-  min-height: 80vh;
+  min-height: 100vh;
+
+  background-color: rgba($background, 0.8);
+  color: $secondary;
 }
 
 

@@ -1,4 +1,4 @@
-export {default as SidebarSearch} from "./LoggedIn/SidebarSearch";
+export {default as UserSearch} from "./LoggedIn/UserSearch";
 export {default as SidebarChats} from "./LoggedIn/SidebarChats";
 export {default as ChatBoxNavbar} from "./LoggedIn/ChatBoxNavbar";
 export {default as ChatBoxMessages} from "./LoggedIn/ChatBoxMessages";
