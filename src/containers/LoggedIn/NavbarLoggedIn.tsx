@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContextProvider";
 import { signOut } from "firebase/auth";
 import { auth, firestore } from "../../config/firebase";
-import { updateDoc, doc, DocumentData, arrayUnion, setDoc, arrayRemove } from "firebase/firestore";
+import { updateDoc, doc, DocumentData, arrayUnion, getDoc, setDoc, arrayRemove, deleteField, writeBatch } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { LogoWhite } from "../../assets/images";
 import { NavDropdown } from "react-bootstrap";
@@ -13,19 +13,30 @@ import { GeneralContext } from "../../contexts/GeneralContextProvider";
 import { UserChatsContext } from "../../contexts/UserChatsContextProvider";
 
 const Navbar = () => {
+  // Window inner width served by general context provider.
   const {width} = useContext(GeneralContext);
-  const {requestsSent, requestsRecieved} = useContext(UserChatsContext);
-
-  const notifications = {
-    requestsRecieved,
-  };
-
-  const [notiCount, setNotiCount] = useState<number>(requestsRecieved.length);
+  // userChats information of currentuser served by user chats context provider.
+  const {requestsSent, filteredNotifications, notifications, notiCount} = useContext(UserChatsContext);
+  // current user and loading state setter served by auth context provider.
+  const {currentUser, setIsLoading} = useContext(AuthContext);
+  // function to navigate through different routes.
+  const navigate = useNavigate();
 
   const logoStyles = width > 574 ? {width: 100, height: 100} : {width: 70, height: 70};
-  const notiStyle = notiCount > 0 ? {backgroundColor: "#FF4081", border: "1px solid white"} : {border: "1px solid white"};
 
+  let notiStyle: string;
+  let iconStyle: string;
+  if(notiCount) {
+    notiStyle = "notification-active";
+    iconStyle = "navbar-icon-noti";
+  } else {
+    notiStyle = "d-none",
+    iconStyle = "navbar-icon"
+  }
+
+  // State for showing input field or not, (responsive purposes)
   const [showInput, setShowInput] = useState<boolean>(false);
+  // State for showing "X" button or not (logical purposes)
   const [showClose, setShowClose] = useState<boolean>(false);
 
   // Username for search.
@@ -33,9 +44,6 @@ const Navbar = () => {
 
   // User data that contains searched users.
   const [userData, setUserData] = useState<DocumentData[]>([]);
-
-  const {currentUser, setIsLoading} = useContext(AuthContext);
-  const navigate = useNavigate();
 
   // Handle sign out action.
   const handleSignOut = async () => {
@@ -49,8 +57,8 @@ const Navbar = () => {
       // Sign out the user.
       await signOut(auth);
 
-      // Navigate back to homescreen, otherwise bug may occur of white screen after sign out.
-      navigate("/");
+      // Refresh the page to avoid white screen bug.
+      window.location.reload();
     } catch (err) {
       console.error(err);
     } finally {
@@ -94,19 +102,39 @@ const Navbar = () => {
 
   // Send friend request.
   const handleFriendRequest = async (userData: DocumentData) => {
+    const batch = writeBatch(firestore);
     try {
+      // Get target user's data so override won't happen while sneding notification.
+      const targUserData = await getDoc(doc(firestore, "userChats", userData.uid));
+      const parsedData = targUserData.data();
+
       // Save current user's id as recieved request in target user's array.
       const targetUserdocRef = doc(firestore, "userChats", userData.uid);
-      await updateDoc(targetUserdocRef, {
-        requestsRecieved: arrayUnion(currentUser?.uid!)
-      });
+      // Current date.
+      const userIndex = currentUser?.uid;
+      // We initialzie data for serving to target user because we need current time as a reference.
+      const targetUserDataToServe: any = {
+        notifications: {
+          ...parsedData?.notifications
+        }
+      };
+      // Set notification with current time with respective information.
+      targetUserDataToServe.notifications[userIndex!] = {}
+      targetUserDataToServe.notifications[userIndex!]["friendRequest"] = {
+        timestamp: new Date().getTime(),
+        isRead: false
+      }
+
+      // Update doc.
+      batch.update(targetUserdocRef, targetUserDataToServe);
 
       // Save target user's id as sent request in current user's array.
       const currentUserDocRef = doc(firestore, "userChats", currentUser?.uid!);
-      await updateDoc(currentUserDocRef, {
+      batch.update(currentUserDocRef, {
         requestsSent: arrayUnion(userData.uid)
       });
 
+      await batch.commit();
     } catch (err) {
       console.log(err)
     }
@@ -114,21 +142,52 @@ const Navbar = () => {
 
   // Cancel friend request.
   const handleCancelFriendRequest = async (userData: DocumentData) => {
+    const batch = writeBatch(firestore);
     try {
       // Remove target user's id from sent requests array in current user docs.
       const currentUserDocRef = doc(firestore, "userChats", currentUser?.uid!);
-      await updateDoc(currentUserDocRef, {
+      batch.update(currentUserDocRef, {
         requestsSent: arrayRemove(userData.uid)
       });
       // Remove current user's id from recieved requests array in target user docs.
       const targetUserdocRef = doc(firestore, "userChats", userData.uid);
-      await updateDoc(targetUserdocRef, {
-        requestsRecieved: arrayRemove(currentUser?.uid!)
-      });
+      const targetUserDataToServe: any = {}
+      targetUserDataToServe[`notifications.${currentUser?.uid}.friendRequest`] = deleteField();
 
+      batch.update(targetUserdocRef, targetUserDataToServe);
+
+      await batch.commit();
     } catch (err) {
       console.log(err);
     }
+  }
+
+  // handle notification reading.
+  const handleNotificationRead = async () => {
+    const batch = writeBatch(firestore);
+    const currentUserDocRef = doc(firestore, "userChats", currentUser?.uid!);
+
+    for(let timestamp of Object.keys(filteredNotifications)) {
+      if(timestamp){
+        const timestampNotification = filteredNotifications[timestamp];
+        console.log(timestampNotification);
+
+        if(!timestampNotification["isRead"]) {
+          const from = timestampNotification["from"];
+          const type = timestampNotification["type"];
+
+          const updateChunk: any = {notifications};
+          updateChunk.notifications[from][type]["isRead"] = true;
+
+          batch.update(currentUserDocRef, updateChunk);
+
+        } else {
+          break;
+        }
+      }
+    }
+
+    batch.commit();
   }
 
   return (
@@ -149,9 +208,9 @@ const Navbar = () => {
           />
         </div>
         {(width > 574 || !showInput) && <div className="d-flex align-items-center mt-3">
-          <div onClick={() => setNotiCount(0)} style={notiStyle} className="notifications d-flex align-items-center me-2 rounded">
-            <span className="d-flex align-items-center justify-content-center" style={{width: 20, height: 20}}>{notiCount > 0 ? notiCount : null}</span>
-            <IoIosNotifications className="navbar-icon me-0" />
+          <div onClick={handleNotificationRead} className="notifications d-flex align-items-center me-2 rounded">
+            <span className={`${notiStyle} d-flex align-items-center justify-content-center rounded`}>{notiCount}</span>
+            <IoIosNotifications className={`${iconStyle} me-0`} />
           </div>
           <img className="user-photo rounded-circle me-1" src={currentUser?.photoURL!} alt="user photo" />
           <NavDropdown className="navbar-button" title={currentUser?.displayName} id="nav-dropdown">
@@ -169,7 +228,7 @@ const Navbar = () => {
               <img className="me-1 image" src={userData.photoURL} alt="user image" />
               <p className="fw-600 ms-1 me-5 mb-0">{userData.displayName}</p>
             </div>
-            {!requestsSent.includes(userData.uid) ?
+            {!requestsSent?.includes(userData.uid) ?
               <button onClick={() => handleFriendRequest(userData)} className="friend-request d-flex align-items-center">
                 <IoMdPersonAdd className="friend-request-icon" />
                 Send Friend Request

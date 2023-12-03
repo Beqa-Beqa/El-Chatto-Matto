@@ -106,14 +106,18 @@ video {
 
   .notifications {
     cursor: pointer;
-    color: rgba($secondary, 0.8);
+    color: $secondary;
+    transition: $base-transition-duration;
 
-    &:hover {
-      color: $secondary;
-
-      .navbar-icon {
-        color: $secondary;
-      }
+    .notification-active {
+      position: relative;
+      top: -10px;
+      right: -10px;
+      font-size: 13px;
+      height: 20px;
+      min-width: 20px;
+      width: fit-content;
+      background-color: $tertiary-second;
     }
   }
 
@@ -262,16 +266,19 @@ video {
     margin-top: 1.3rem;
   }
   
-  .navbar-icon {
+  .navbar-icon, .navbar-icon-noti {
+    cursor: pointer;
     width: 20px;
     height: 20px;
-    color: rgba($secondary, 0.6);
     margin-right: 8px;
+  }
+  
+  .navbar-icon {
+    color: rgba($secondary, 0.6);
     transition: $base-transition-duration;
-
+  
     &:hover {
       color: $secondary;
-      cursor: pointer;
     }
   }
 

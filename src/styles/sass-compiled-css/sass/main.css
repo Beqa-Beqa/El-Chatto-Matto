@@ -523,10 +523,6 @@ textarea {
   position: fixed !important;
 }
 
-.border {
-  border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
-}
-
 .border-0 {
   border: 0 !important;
 }
@@ -865,13 +861,18 @@ video {
 }
 .navbar .notifications {
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.8);
-}
-.navbar .notifications:hover {
   color: #fff;
+  transition: 0.1s;
 }
-.navbar .notifications:hover .navbar-icon {
-  color: #fff;
+.navbar .notifications .notification-active {
+  position: relative;
+  top: -10px;
+  right: -10px;
+  font-size: 13px;
+  height: 20px;
+  min-width: 20px;
+  width: fit-content;
+  background-color: #FF4081;
 }
 .navbar .navbar-image {
   width: 100px;
@@ -973,16 +974,18 @@ video {
   height: 40px;
   object-fit: cover;
 }
-.homepage-logged-in .navbar-icon {
+.homepage-logged-in .navbar-icon, .homepage-logged-in .navbar-icon-noti {
+  cursor: pointer;
   width: 20px;
   height: 20px;
-  color: rgba(255, 255, 255, 0.6);
   margin-right: 8px;
+}
+.homepage-logged-in .navbar-icon {
+  color: rgba(255, 255, 255, 0.6);
   transition: 0.1s;
 }
 .homepage-logged-in .navbar-icon:hover {
   color: #fff;
-  cursor: pointer;
 }
 .homepage-logged-in .image {
   width: 35px;

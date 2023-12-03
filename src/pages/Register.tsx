@@ -114,9 +114,7 @@ const Register = () => {
     }
   }
 
-  console.log(err);
-
-   return (
+  return (
     <div id="register" className="d-flex justify-content-center align-items-center bg-primary">
       <div className="form d-flex flex-column sign-form rounded p-4 container">
         <h1 className="gradient-text text-center fs-3">El Chatto Matto</h1>
