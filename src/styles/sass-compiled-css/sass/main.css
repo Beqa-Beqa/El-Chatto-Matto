@@ -7,7 +7,7 @@
  div, span, object,
 h1,
 .h1, h2, .h2, h3, .h3, p,
-a, code, img, s,
+a, code, img, s, strong,
 b, form, label, footer, header,
 time, video {
   margin: 0;
@@ -201,7 +201,8 @@ p {
   margin-bottom: 1rem;
 }
 
-b {
+b,
+strong {
   font-weight: bolder;
 }
 
@@ -555,6 +556,10 @@ textarea {
   flex-direction: column !important;
 }
 
+.justify-content-start {
+  justify-content: flex-start !important;
+}
+
 .justify-content-center {
   justify-content: center !important;
 }
@@ -629,10 +634,6 @@ textarea {
   margin-right: 1rem !important;
 }
 
-.me-5 {
-  margin-right: 3rem !important;
-}
-
 .mb-0 {
   margin-bottom: 0 !important;
 }
@@ -659,6 +660,10 @@ textarea {
 
 .p-1 {
   padding: 0.25rem !important;
+}
+
+.p-2 {
+  padding: 0.5rem !important;
 }
 
 .p-3 {
@@ -704,6 +709,11 @@ textarea {
   padding-bottom: 0.5rem !important;
 }
 
+.py-4 {
+  padding-top: 1.5rem !important;
+  padding-bottom: 1.5rem !important;
+}
+
 .pt-1 {
   padding-top: 0.25rem !important;
 }
@@ -718,6 +728,10 @@ textarea {
 
 .pb-1 {
   padding-bottom: 0.25rem !important;
+}
+
+.gap-1 {
+  gap: 0.25rem !important;
 }
 
 .gap-3 {
@@ -781,8 +795,18 @@ textarea {
   }
 }
 @media (min-width: 768px) {
+  .mx-md-5 {
+    margin-right: 3rem !important;
+    margin-left: 3rem !important;
+  }
   .mt-md-0 {
     margin-top: 0 !important;
+  }
+  .me-md-1 {
+    margin-right: 0.25rem !important;
+  }
+  .me-md-5 {
+    margin-right: 3rem !important;
   }
   .ms-md-3 {
     margin-left: 1rem !important;
@@ -993,10 +1017,13 @@ video {
   border-radius: 50%;
   object-fit: cover;
 }
-.homepage-logged-in .found-users-container {
+.homepage-logged-in .found-users-container, .homepage-logged-in .notifications-container {
   top: 75px;
   background-color: rgba(255, 255, 255, 0.8);
   box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+}
+.homepage-logged-in .notifications-container {
+  right: 0;
 }
 .homepage-logged-in .found-users-container .found-users {
   transition: 0.1s;
@@ -1014,7 +1041,6 @@ video {
   width: 20px;
   height: 20px;
   color: rgba(107, 30, 123, 0.6);
-  margin-right: 8px;
   transition: 0.1s;
 }
 .homepage-logged-in .friend-request:hover {

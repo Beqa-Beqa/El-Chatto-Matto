@@ -289,15 +289,21 @@ video {
     object-fit: cover;
   }
 
-  .found-users-container {
+  .found-users-container, .notifications-container {
     top: 75px;
     background-color: rgba($secondary, 0.8);
     box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+  }
 
+  .notifications-container {
+    right: 0;
+  }
+
+  .found-users-container {
     .found-users {
       transition: $base-transition-duration;
       cursor: pointer;
-  
+      
       &:hover {
         background-color: rgba(#212529, 0.1);
       }
@@ -312,7 +318,6 @@ video {
       width: 20px;
       height: 20px;
       color: rgba($tertiary, 0.6);
-      margin-right: 8px;
       transition: $base-transition-duration;
     }
 
