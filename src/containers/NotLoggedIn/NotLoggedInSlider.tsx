@@ -9,39 +9,33 @@ const NotLoggedInSlider = () => {
       id: 0,
       title: "Video1",
       url: vids.Video1,
-      playingTime: 16000
+      playingTime: 12000
     },
     {
       id: 1,
       title: "Video2",
       url: vids.Video2,
-      playingTime: 9500
+      playingTime: 15000
     },
     {
       id: 2,
       title: "Video3",
       url: vids.Video3,
-      playingTime: 10000
+      playingTime: 5000
     },
     {
       id: 3,
       title: "Video4",
       url: vids.Video4,
-      playingTime: 14000
-    },
-    {
-      id: 4,
-      title: "Video5",
-      url: vids.Video5,
-      playingTime: 20000
-    },
+      playingTime: 10000
+    }
   ]
 
   // State for video index.
   const [vidIndex, setVidIndex] = useState<number>(Math.floor(Math.random() * vidProps.length));
   // State for next video index. Next video is needed for preloading, otherwise there is a 
   // white flash on the screen between video changes on background.
-  const [nextVidIndex, setNextVidIndex] = useState<number>(vidIndex + 1);
+  const [nextVidIndex, setNextVidIndex] = useState<number>(vidIndex + 1 <  vidProps.length ? vidIndex + 1 : 0);
 
   // Useffect for interval to change videos.
   useEffect(() => {

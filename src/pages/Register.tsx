@@ -7,7 +7,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { genSubStrings } from "../functions";
 import { Button } from "react-bootstrap";
-
+import Compressor from "compressorjs";
 
 const Register = () => {
   // Navigate state for navigating through different routes.
@@ -51,11 +51,27 @@ const Register = () => {
       if(image) {
         // Upload image.
         const imageRef = ref(storage, `userImages/${userData.user.uid}.img`);
-        await uploadBytesResumable(imageRef, image);
+
+        await new Promise((resolve, reject) => {new Compressor(image, {
+            quality: 0.6,
+            // The compression process is asynchronous,
+            // which means you have to access the `result` in the `success` function.
+            success: async (result) => {
+              const imageFile = new File([result], "user-image", {type: "image/jpeg"});
+              await uploadBytesResumable(imageRef, imageFile);
+
+              resolve(imageFile);
+            },
+            
+            error(error) {
+              console.log(error.message);
+              reject(error);
+            }
+          })
+        });
 
         // Get download url
-        const url = await getDownloadURL(imageRef);
-        downloadUrl = url;
+        downloadUrl = await getDownloadURL(imageRef);
 
       } else {
         // Set default image if no image is provided.
@@ -82,9 +98,11 @@ const Register = () => {
       // Set userChat info for user, isOnline, isWriting for chatting purposes.
       const userChatRef = doc(firestore, "userChats", userData.user.uid!);
       await setDoc(userChatRef, {
-        chats: [],
+        friends: [],
         isOnline: true,
         isWriting: false,
+        notifications: {},
+        requestsSent: []
       });
 
       // Send user a verification email.
