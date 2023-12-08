@@ -111,14 +111,14 @@ const ChatBoxInput = (props: {
 
   if(props.user) {
     return (
-      <div className="w-100 h-10 bg-tertiary text-primary d-flex align-center justify-space-around">
+      <div className="py-2 px-1 d-flex align-items-center justify-content-between gap-2">
         <textarea 
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => handleKeyDown(e)}
-          className="h-75 border-none outline-none"
+          className="chat-box-input rounded"
          />
-        <AiOutlineSend onClick={handleClick} className="icon cursor-pointer" />
+        <AiOutlineSend onClick={handleClick} calssName="chat-box-input-icon mx-2" />
       </div>
     );
   }

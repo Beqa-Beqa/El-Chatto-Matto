@@ -4,16 +4,20 @@ import React from "react";
 import { combineIds } from "../../functions";
 import { DocumentData, doc, onSnapshot } from "firebase/firestore";
 import { firestore } from "../../config/firebase";
+import { GeneralContext } from "../../contexts/GeneralContextProvider";
 
 const ChatBoxMessages = (props: {
   user: DocumentData | null
 }) => {
   // currentuser context for current user info.
   const {currentUser} = useContext(AuthContext);
+  // window innerwidth
+  const {width} = useContext(GeneralContext);
   // messages data that will be updated and messages in it will be displayed on screen.
   const [messages, setMessages] = useState<DocumentData>({});
   // useref for sent or recieved div reference. used to scroll to newly sent or recieved message.
   const ref = useRef<HTMLDivElement>(null);
+  const threeDotsRef = useRef<HTMLDivElement>(null);
   // state for checking if user writing status is active.
   const [userWrites, setUserWrites] = useState<boolean>(false);
 
@@ -23,6 +27,12 @@ const ChatBoxMessages = (props: {
       // If props.user is present and we have reference already, scroll to that ref.
       ref.current && ref.current.scrollIntoView();
     }
+
+    const messageBox = document.getElementById("message-box");
+
+    messageBox &&
+      messageBox.scrollHeight - messageBox.scrollTop <= messageBox.clientHeight + 52 && ref.current?.scrollIntoView();
+
   }, [messages]);
 
   useEffect(() => {
@@ -64,36 +74,37 @@ const ChatBoxMessages = (props: {
     });
   }
 
+  const styles = width > 574 ? {height: 320} : {height: "100%"};
+
   if(props.user) {
-      // 80% of height | see main.scss
       // Conditional rendering for sent and recieved messages. Object.keys(messages) is an array of timestamps
       // these timestamps represent when the data was sent and are in unix format, therefore we are able to sort
-      // them from lowest to highest value, which means the earliest message will be rendered first and latest will
+      // them from highest to lowest value, which means the earliest message will be rendered first and latest will
       // render last. in documents we have objects with name of these timestamps (eg: (random timestamp) 1224915912951: {senderId: "id", message: "message"})
-      // we check for senderid and if it's same as current user's id then we render it as sent othervies as recieved.
+      // we check for senderid and if it's same as current user's id then we render it as sent, otherwise as recieved.
       // check the classnames of divs in conditional render.
       const messageElements = Object.keys(messages).sort((a: any, b: any) => a - b).map((doc: string, key:number) => {
         return (
           // If sender's id is equal to current user's id.
           messages[doc].senderId === currentUser?.uid ?
-          <div ref={ref} key={key} className="sent d-flex align-center mb-1 justify-end">
-            <p>{renderMessage(messages[doc].message)}</p>
+          <div ref={ref} key={key} className="sent-message d-flex align-items-center mb-2 justify-content-end">
+            <p className="bg-primary px-2 pb-1 mb-0 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>
             <img className="image" src={currentUser?.photoURL!} alt="icon" />
           </div>
         :
           // If sender's id is equal to remote user's id.
-          <div ref={ref} key={key} className="recieved d-flex align-center mb-1 justify-start">
+          <div ref={ref} key={key} className="recieved-message d-flex align-items-center mb-2 justify-content-start">
             <img className="image" src={props.user!.photoURL} alt="icon" />
-            <p>{renderMessage(messages[doc].message)}</p>
+            <p className="bg-secondary px-2 pb-1 mb-0 ms-1 text-primary">{renderMessage(messages[doc].message)}</p>
           </div> 
         );
       });
 
       return (
-        <div className="messages bg-tertiary-6 pt-1 pl-1 pr-1 d-flex flex-column">
+        <div ref={threeDotsRef} id="message-box" style={styles} className="messages-container p-2">
           {messageElements}
           {userWrites &&
-            <div className="recieved d-flex align-center mb-1 justify-start">
+            <div id="waiting-dots" className="d-flex align-items-center justify-content-start">
               <img className="image" src={props.user!.photoURL} alt="icon" />
               <div id="wave">
                 <span className="dot" />
@@ -105,13 +116,7 @@ const ChatBoxMessages = (props: {
         </div>
       );
 
-  } else {
-    return (
-      <div className="h-100 bg-tertiary-6 d-flex align-center">
-        <p className="fs-2 text-primary ml-2">Find or choose an user to start chatting.</p>
-      </div>
-    );
-  }
+  } 
 }
 
 export default ChatBoxMessages;

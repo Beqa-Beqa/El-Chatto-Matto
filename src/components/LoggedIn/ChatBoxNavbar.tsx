@@ -1,22 +1,26 @@
 import { FcVideoCall } from "react-icons/fc";
-import { MdCall } from "react-icons/md";
+import { MdCall, MdClose } from "react-icons/md";
 import { DocumentData } from "firebase/firestore";
 
 const ChatBoxNavbar = (props: {
   user: DocumentData | null,
-  online: string[]
+  online: string[],
+  setShowMessagingWindow: React.Dispatch<React.SetStateAction<boolean>>,
 }) => {
   if(props.user) {
     return (
-      <div className="navbar w-100 h-10 bg-primary-5 d-flex justify-space-between align-center p-1">
-        <div className="userinfo w-75 d-flex align-center">
-          <img src={props.user?.photoURL} alt="user image" />
+      <div className="chatbox-navbar d-flex align-items-center justify-content-between p-2">
+        <div className="d-flex align-items-center">
+          <img className="image me-2" src={props.user?.photoURL} alt="user image" />
           {props.user && props.online.includes(props.user.uid) ? <div className="onlineCircle" /> : null}
-          <p className={props.user && props.online.includes(props.user.uid) ? "" : "ml-1"}>{props.user && props.user.displayName}</p>
+          <p className={props.user && props.online.includes(props.user.uid) ? "mb-0" : "mb-0 ms-2"}>{props.user && props.user.displayName}</p>
         </div>
-        <div className="w-25 navbar-icons d-flex align-center justify-space-between">
-          <MdCall className="icon" />
-          <FcVideoCall className="icon" />
+        <div className="w-50 d-flex align-items-center justify-content-end gap-2">
+          <div className="w-75 d-flex align-items-center justify-content-end">
+            <MdCall className="chat-icon w-25" />
+            <FcVideoCall className="chat-icon w-25" />
+          </div>
+          <MdClose onClick={() => props.setShowMessagingWindow(false)} className="chat-navbar-icon w-25" />
         </div>
       </div>
     );

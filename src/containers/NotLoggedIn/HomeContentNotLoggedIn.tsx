@@ -10,7 +10,7 @@ const HomeContentNotLoggedIn = () => {
         <img src={LogoPinkish} alt="logo" className="mx-auto w-50 col mt-md-0 mt-5"/>
         <div className="d-flex flex-column h-75 mt-5 col text-lg-start text-center">
           <h1 className="m-0 gradient-text">Connect-Engage-Enjoy</h1>
-          <p className="fs-5 my-4 text-secondary header-description">El Chatto Matto: Your premier platform for engaging discussions and meaningful connections. Unlock a world of interactivedialogue and diverse perspectives, fostering enriching conversations within a dynamic community</p>
+          <p className="fs-5 my-4 text-secondary header-description">El Chatto Matto: Your premier platform for engaging discussions and meaningful connections. Unlock a world of interactive dialogue and diverse perspectives, fostering enriching conversations within a dynamic community</p>
           <div className="d-flex mt-5 mt-lg-0 gap-lg-5 gap-3 flex-lg-row flex-column">
             <Link to="/login"><Button variant="outline-secondary px-4 custom-button w-100">Sign In</Button></Link>
             <Link to="/register"><Button variant="outline-secondary px-4 custom-button w-100">Sign Up</Button></Link>
