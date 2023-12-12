@@ -580,6 +580,10 @@ textarea {
   justify-content: space-between !important;
 }
 
+.justify-content-around {
+  justify-content: space-around !important;
+}
+
 .align-items-center {
   align-items: center !important;
 }
@@ -745,10 +749,6 @@ textarea {
 
 .pb-0 {
   padding-bottom: 0 !important;
-}
-
-.pb-1 {
-  padding-bottom: 0.25rem !important;
 }
 
 .ps-5 {
@@ -1027,11 +1027,11 @@ video {
 .homepage-logged-in .navbar-icon, .homepage-logged-in .navbar-icon-noti {
   margin-right: 8px;
 }
-.homepage-logged-in .navbar-icon {
+.homepage-logged-in .navbar-icon, .homepage-logged-in .chat-navbar-icon {
   color: rgba(255, 255, 255, 0.6);
   transition: 0.1s;
 }
-.homepage-logged-in .navbar-icon:hover {
+.homepage-logged-in .navbar-icon:hover, .homepage-logged-in .chat-navbar-icon:hover {
   color: #fff;
 }
 .homepage-logged-in .image {
@@ -1039,6 +1039,7 @@ video {
   height: 35px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
 }
 .homepage-logged-in .found-users-container, .homepage-logged-in .notifications-container {
   top: 75px;
@@ -1096,17 +1097,28 @@ video {
 }
 .home-content-logged-in .messaging-window .messages-container .sent-message p {
   border-radius: 10px 10px 0 10px;
+  font-size: 15px;
+  width: fit-content;
+  max-width: 100%;
+  text-align: justify;
+  word-break: break-all;
+  word-wrap: break-word;
 }
 .home-content-logged-in .messaging-window .messages-container .recieved-message p {
   border-radius: 10px 10px 10px 0;
+  font-size: 15px;
+  width: fit-content;
+  max-width: 100%;
+  text-align: justify;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 .home-content-logged-in .chat-box-input {
   resize: none;
-  width: 100%;
-  height: 35px;
+  height: 40px;
   outline: none;
   border: none;
-  font-size: 16px;
+  font-size: 15px;
   overflow: hidden;
 }
 .home-content-logged-in .loggedin-friends {

@@ -5,7 +5,7 @@ import { DocumentData } from "firebase/firestore";
 const ChatBoxNavbar = (props: {
   user: DocumentData | null,
   online: string[],
-  setShowMessagingWindow: React.Dispatch<React.SetStateAction<boolean>>,
+  setShowMessagingWindow: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
   if(props.user) {
     return (

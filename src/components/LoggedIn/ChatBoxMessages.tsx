@@ -21,19 +21,16 @@ const ChatBoxMessages = (props: {
   // state for checking if user writing status is active.
   const [userWrites, setUserWrites] = useState<boolean>(false);
 
-  // Whenever user or messages change useffect will be triggered.
+  // Messages length for scroll purposes (if messages length is 0 it will be false at the beginning,
+  // if it will be more than 0 it will be true basically after rendering whole component.)
+  const messagesLength = Object.keys(messages).length > 0;
+
   useEffect(() => {
-    if(props.user) {
+    if(ref.current) {
       // If props.user is present and we have reference already, scroll to that ref.
       ref.current && ref.current.scrollIntoView();
     }
-
-    const messageBox = document.getElementById("message-box");
-
-    messageBox &&
-      messageBox.scrollHeight - messageBox.scrollTop <= messageBox.clientHeight + 52 && ref.current?.scrollIntoView();
-
-  }, [messages]);
+  }, [messagesLength])
 
   useEffect(() => {
     if(props.user) {
@@ -64,6 +61,21 @@ const ChatBoxMessages = (props: {
     }
   }, [props.user]);
 
+  // useEffect decieds whether scroll towards new message or three dots or not.
+  useEffect(() => {
+    const waitingDots = document.getElementById("waiting-dots");
+    const messageBox = document.getElementById("message-box");
+
+    // if both waiting dots and messagebox exist
+    if(waitingDots && messageBox) {
+      // if scroll is at the bottom, when waiting dots appear scroll towards them, otherwise do not scroll towards them.
+      messageBox.scrollHeight - messageBox.scrollTop - 60 <= messageBox.clientHeight && threeDotsRef.current?.scrollIntoView();
+    } else if (messageBox) {
+      messageBox.scrollHeight - messageBox.scrollTop - 60 <= messageBox.clientHeight && ref.current?.scrollIntoView({behavior: "smooth"});
+    }
+
+  }, [threeDotsRef.current, ref.current]);
+
   // Render messages without swallowing shift + enter new lines.
   const renderMessage = (msg: string) => {
     return msg.split("\n").map((line: string, index: number) => {
@@ -74,7 +86,7 @@ const ChatBoxMessages = (props: {
     });
   }
 
-  const styles = width > 574 ? {height: 320} : {height: "100%"};
+  const styles = width > 574 ? {height: 418} : {height: "100%"};
 
   if(props.user) {
       // Conditional rendering for sent and recieved messages. Object.keys(messages) is an array of timestamps
@@ -83,28 +95,42 @@ const ChatBoxMessages = (props: {
       // render last. in documents we have objects with name of these timestamps (eg: (random timestamp) 1224915912951: {senderId: "id", message: "message"})
       // we check for senderid and if it's same as current user's id then we render it as sent, otherwise as recieved.
       // check the classnames of divs in conditional render.
+      
       const messageElements = Object.keys(messages).sort((a: any, b: any) => a - b).map((doc: string, key:number) => {
+        const incomingMessageFrom = messages[Object.keys(messages).sort((a: any, b: any) => a - b)[key + 1]] ? messages[Object.keys(messages).sort((a: any, b: any) => a - b)[key + 1]].senderId : undefined;
+
         return (
           // If sender's id is equal to current user's id.
           messages[doc].senderId === currentUser?.uid ?
-          <div ref={ref} key={key} className="sent-message d-flex align-items-center mb-2 justify-content-end">
-            <p className="bg-primary px-2 pb-1 mb-0 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>
-            <img className="image" src={currentUser?.photoURL!} alt="icon" />
+          <div ref={ref} key={key} className="sent-message d-flex align-items-center justify-content-end">
+            {incomingMessageFrom !== currentUser?.uid ?
+              <p className="bg-primary px-2 py-1 mb-2 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>
+            :
+              <p className="bg-primary px-2 py-1 mb-1 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>
+            }
           </div>
         :
           // If sender's id is equal to remote user's id.
-          <div ref={ref} key={key} className="recieved-message d-flex align-items-center mb-2 justify-content-start">
-            <img className="image" src={props.user!.photoURL} alt="icon" />
-            <p className="bg-secondary px-2 pb-1 mb-0 ms-1 text-primary">{renderMessage(messages[doc].message)}</p>
+          <div ref={ref} key={key} className="recieved-message d-flex align-items-center justify-content-start">
+            {incomingMessageFrom !== props.user!.uid ?
+              <div className="d-flex align-items-center">
+                <img className="image mb-2" src={props.user!.photoURL} alt="icon" /> 
+                <p className="bg-secondary px-2 py-1 mb-2 ms-2 text-primary">{renderMessage(messages[doc].message)}</p>
+              </div>
+            : <div className="d-flex align-items-center">
+                <div className="mb-0" style={{width: 35, height: 35, flexShrink: 0}} />
+                <p className="bg-secondary px-2 py-1 mb-1 ms-2 text-primary">{renderMessage(messages[doc].message)}</p>
+              </div>
+            }
           </div> 
         );
       });
 
       return (
-        <div ref={threeDotsRef} id="message-box" style={styles} className="messages-container p-2">
+        <div id="message-box" style={styles} className="messages-container p-2">
           {messageElements}
           {userWrites &&
-            <div id="waiting-dots" className="d-flex align-items-center justify-content-start">
+            <div ref={threeDotsRef} id="waiting-dots" className="d-flex align-items-center justify-content-start">
               <img className="image" src={props.user!.photoURL} alt="icon" />
               <div id="wave">
                 <span className="dot" />

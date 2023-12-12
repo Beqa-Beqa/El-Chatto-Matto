@@ -50,8 +50,8 @@ const Contacts = (props: {
     };
   }, []);
 
-    // State for user information storing (whole user object)
-    const [userData, setUserData] = useState<(DocumentData | undefined)[]>([]);
+  // State for user information storing (whole user object)
+  const [userData, setUserData] = useState<(DocumentData | undefined)[]>([]);
 
   useEffect(() => {
     // Fetch all the current users already stored.
@@ -80,7 +80,7 @@ const Contacts = (props: {
     fetchData();
   }, [userIdArray]);
   
-  const messagingWindowStyles = width > 574 ? {width: 320, height: 420} : {width: "100%", height: "100vh"};
+  const messagingWindowStyles = width > 574 ? {width: 370, height: 520} : {width: "100%", height: "90vh"};
 
   return (
     <>

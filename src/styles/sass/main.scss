@@ -279,7 +279,7 @@ video {
     margin-right: 8px;
   }
   
-  .navbar-icon {
+  .navbar-icon, .chat-navbar-icon {
     color: rgba($secondary, 0.6);
     transition: $base-transition-duration;
   
@@ -293,6 +293,7 @@ video {
     height: 35px;
     border-radius: 50%;
     object-fit: cover;
+    flex-shrink: 0;
   }
 
   .found-users-container, .notifications-container {
@@ -366,6 +367,12 @@ video {
 
         p {
           border-radius: 10px 10px 0 10px;
+          font-size: 15px;
+          width: fit-content;
+          max-width: 100%;
+          text-align: justify;
+          word-break: break-all;
+          word-wrap: break-word;
         }
       }
 
@@ -373,6 +380,12 @@ video {
         
         p {
           border-radius: 10px 10px 10px 0;
+          font-size: 15px;
+          width: fit-content;
+          max-width: 100%;
+          text-align: justify;
+          word-wrap: break-word;
+          word-break: break-all;
         }
       }
     }
@@ -380,11 +393,10 @@ video {
   
   .chat-box-input {
     resize: none;
-    width: 100%;
-    height: 35px;
+    height: 40px;
     outline: none;
     border: none;
-    font-size: 16px;
+    font-size: 15px;
     overflow: hidden;
   }
 
