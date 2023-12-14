@@ -7,7 +7,10 @@ import { firestore } from "../../config/firebase";
 import { GeneralContext } from "../../contexts/GeneralContextProvider";
 
 const ChatBoxMessages = (props: {
-  user: DocumentData | null
+  user: DocumentData | null,
+  setRef: React.Dispatch<React.SetStateAction<React.RefObject<HTMLDivElement> | null>>,
+  setDotsRef: React.Dispatch<React.SetStateAction<React.RefObject<HTMLDivElement> | null>>
+  setImageRef: React.Dispatch<React.SetStateAction<React.RefObject<HTMLImageElement> | null>>
 }) => {
   // currentuser context for current user info.
   const {currentUser} = useContext(AuthContext);
@@ -18,6 +21,7 @@ const ChatBoxMessages = (props: {
   // useref for sent or recieved div reference. used to scroll to newly sent or recieved message.
   const ref = useRef<HTMLDivElement>(null);
   const threeDotsRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
   // state for checking if user writing status is active.
   const [userWrites, setUserWrites] = useState<boolean>(false);
 
@@ -63,18 +67,27 @@ const ChatBoxMessages = (props: {
 
   // useEffect decieds whether scroll towards new message or three dots or not.
   useEffect(() => {
+    // If refs exists assign update props states.
+    ref && props.setRef(ref);
+    threeDotsRef && props.setDotsRef(threeDotsRef);
+    imageRef && props.setImageRef(imageRef);
+
+    // reference for waiting dots (incoming message)
     const waitingDots = document.getElementById("waiting-dots");
+    // reference for messageBox (where messages are rendered).
     const messageBox = document.getElementById("message-box");
 
     // if both waiting dots and messagebox exist
     if(waitingDots && messageBox) {
       // if scroll is at the bottom, when waiting dots appear scroll towards them, otherwise do not scroll towards them.
+      // padding and waiting dots` height goes up to 60px (approximate values, not exact)
       messageBox.scrollHeight - messageBox.scrollTop - 60 <= messageBox.clientHeight && threeDotsRef.current?.scrollIntoView();
     } else if (messageBox) {
-      messageBox.scrollHeight - messageBox.scrollTop - 60 <= messageBox.clientHeight && ref.current?.scrollIntoView({behavior: "smooth"});
+      // paddings go up to 25px (approximate values, not exact)
+      messageBox.scrollHeight - messageBox.scrollTop - 25 <= messageBox.clientHeight && ref.current?.scrollIntoView({behavior: "smooth"});
     }
 
-  }, [threeDotsRef.current, ref.current]);
+  }, [threeDotsRef.current, ref.current, imageRef.current]);
 
   // Render messages without swallowing shift + enter new lines.
   const renderMessage = (msg: string) => {
@@ -85,8 +98,8 @@ const ChatBoxMessages = (props: {
       </React.Fragment>
     });
   }
-
-  const styles = width > 574 ? {height: 418} : {height: "100%"};
+  
+  const messageBoxStyles = width > 574 ? {width: "100%", height: 418} : {width: "100%", height: "100%"};
 
   if(props.user) {
       // Conditional rendering for sent and recieved messages. Object.keys(messages) is an array of timestamps
@@ -95,7 +108,6 @@ const ChatBoxMessages = (props: {
       // render last. in documents we have objects with name of these timestamps (eg: (random timestamp) 1224915912951: {senderId: "id", message: "message"})
       // we check for senderid and if it's same as current user's id then we render it as sent, otherwise as recieved.
       // check the classnames of divs in conditional render.
-      
       const messageElements = Object.keys(messages).sort((a: any, b: any) => a - b).map((doc: string, key:number) => {
         const incomingMessageFrom = messages[Object.keys(messages).sort((a: any, b: any) => a - b)[key + 1]] ? messages[Object.keys(messages).sort((a: any, b: any) => a - b)[key + 1]].senderId : undefined;
 
@@ -104,22 +116,40 @@ const ChatBoxMessages = (props: {
           messages[doc].senderId === currentUser?.uid ?
           <div ref={ref} key={key} className="sent-message d-flex align-items-center justify-content-end">
             {incomingMessageFrom !== currentUser?.uid ?
-              <p className="bg-primary px-2 py-1 mb-2 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>
+              <div className="d-flex flex-column align-items-end justify-content-end">
+                {messages[doc].message && <p style={{flexShrink: 0}} className="bg-primary px-2 py-1 mb-2 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>}
+                {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-2" src={messages[doc].img} alt="sent resource image" />}
+              </div>
             :
-              <p className="bg-primary px-2 py-1 mb-1 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>
+              <div className="d-flex flex-column align-items-end justify-content-end">
+                {messages[doc].message && <p style={{flexShrink: 0}} className="bg-primary px-2 py-1 mb-1 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>}
+                {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-1" src={messages[doc].img} alt="sent resource image" />}
+              </div>
             }
           </div>
         :
           // If sender's id is equal to remote user's id.
           <div ref={ref} key={key} className="recieved-message d-flex align-items-center justify-content-start">
             {incomingMessageFrom !== props.user!.uid ?
-              <div className="d-flex align-items-center">
-                <img className="image mb-2" src={props.user!.photoURL} alt="icon" /> 
-                <p className="bg-secondary px-2 py-1 mb-2 ms-2 text-primary">{renderMessage(messages[doc].message)}</p>
+              <div className="d-flex flex-column align-items-start justify-content-start">
+                <div className="d-flex align-items-end">
+                  <img style={{flexShrink: 0}} className="image mb-2" src={props.user!.photoURL} alt="icon" /> 
+                  <div className="d-flex flex-column align-items-start">
+                    {messages[doc].message && <p style={{flexShrink: 0}} className="bg-secondary px-2 py-1 mb-2 ms-2 text-primary">{renderMessage(messages[doc].message)}</p>}
+                    {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-1 ms-2" src={messages[doc].img} alt="sent resource image" />}
+                  </div>
+                </div>
               </div>
-            : <div className="d-flex align-items-center">
-                <div className="mb-0" style={{width: 35, height: 35, flexShrink: 0}} />
-                <p className="bg-secondary px-2 py-1 mb-1 ms-2 text-primary">{renderMessage(messages[doc].message)}</p>
+            : 
+              <div className="d-flex flex-column align-items-start justify-content-start">
+                <div className="d-flex align-items-center">
+                  {messages[doc].message && <div className="mb-0" style={{width: 35, height: 35, flexShrink: 0}} />}
+                  {messages[doc].message && <p style={{flexShrink: 0}} className="bg-secondary px-2 py-1 mb-1 ms-2 text-primary">{renderMessage(messages[doc].message)}</p>}
+                </div>
+                <div className="d-flex align-items-center">
+                  {messages[doc].img && <div className="mb-0" style={{width: 35, height: 35, flexShrink: 0}} />}
+                  {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-1 ms-2" src={messages[doc].img} alt="sent resource image" />}
+                </div>
               </div>
             }
           </div> 
@@ -127,7 +157,7 @@ const ChatBoxMessages = (props: {
       });
 
       return (
-        <div id="message-box" style={styles} className="messages-container p-2">
+        <div id="message-box" style={messageBoxStyles} className="messages-container p-2">
           {messageElements}
           {userWrites &&
             <div ref={threeDotsRef} id="waiting-dots" className="d-flex align-items-center justify-content-start">

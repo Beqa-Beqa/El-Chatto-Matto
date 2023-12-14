@@ -75,10 +75,6 @@ html {
   padding: 0;
 }
 
-body {
-  background-color: rgba($background, 0.8);
-}
-
 video {
   filter: brightness(40%);
   width: 100%;
@@ -208,6 +204,14 @@ video {
 .icon {
   width: 35px;
   height: 35px;
+  transition: $base-transition-duration;
+  color: rgba($secondary, 0.8);
+  cursor: pointer;
+  margin-right: 8px;
+
+  &:hover {
+    color: $secondary;
+  }
 }
 
 #register, #login {
@@ -257,6 +261,7 @@ video {
 .homepage-logged-in {
   width: 100%;
   height: 100%;
+  background-color: rgba($background, 0.6);
 
   .user-photo {
     width: 40px;
@@ -362,30 +367,36 @@ video {
     .messages-container {
       background-color: #E0E0E0;
       overflow-y: auto;
+      overflow-wrap: break-word;
+      width: 100%;
+
+      .attachment-image {
+        max-width: 250px;
+        max-height: 250px;
+        object-fit: contain;
+      }
 
       .sent-message {
-
+        width: 100%;
         p {
           border-radius: 10px 10px 0 10px;
           font-size: 15px;
+          max-width: 320px;
           width: fit-content;
-          max-width: 100%;
           text-align: justify;
-          word-break: break-all;
-          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
       }
 
       .recieved-message {
-        
+        width: 100%;
         p {
           border-radius: 10px 10px 10px 0;
           font-size: 15px;
+          max-width: 292px;
           width: fit-content;
-          max-width: 100%;
           text-align: justify;
-          word-wrap: break-word;
-          word-break: break-all;
+          overflow-wrap: break-word;
         }
       }
     }
@@ -398,6 +409,33 @@ video {
     border: none;
     font-size: 15px;
     overflow: hidden;
+  }
+
+  .chat-box-input-icon {
+    color: rgba($secondary, 0.8);
+    cursor: pointer;
+    transition: $base-transition-duration;
+
+    * {
+      width: 25px;
+      height: 25px;
+    }
+
+    &:hover {
+      color: $secondary;
+    }
+  }
+
+  .picker-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 250px;
+
+    * {
+      height: 100%;
+    }
   }
 
   .loggedin-friends {

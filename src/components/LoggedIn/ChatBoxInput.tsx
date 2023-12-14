@@ -3,18 +3,69 @@ import { AiOutlineSend } from "react-icons/ai";
 import { combineIds } from "../../functions";
 import { AuthContext } from "../../contexts/AuthContextProvider";
 import { DocumentData, doc, updateDoc } from "firebase/firestore";
-import { firestore } from "../../config/firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { firestore, storage } from "../../config/firebase";
+import { MdOutlineEmojiEmotions } from "react-icons/md";
+import { FaImage } from "react-icons/fa";
+import Picker from "@emoji-mart/react";
+import data from "@emoji-mart/data";
+import { GeneralContext } from "../../contexts/GeneralContextProvider";
+import Compressor from "compressorjs";
+import uuid from "react-uuid";
 
 const ChatBoxInput = (props: {
   user: DocumentData | null,
+  messageRef: React.RefObject<HTMLDivElement> | null,
+  dotsRef: React.RefObject<HTMLDivElement> | null,
+  imageRef: React.RefObject<HTMLImageElement> | null
 }) => {
   // Current user context to get info of currentuser.
   const {currentUser} = useContext(AuthContext);
+  // window innerwidth
+  const {width} = useContext(GeneralContext);
   // message state for written message in input field of message window (it's textarea actually).
   const [message, setMessage] = useState<string>("");
   // State for user if they are writing a message or not.
   const [writing, isWriting] = useState<boolean>(false);
+  // Emoji picker state.
+  const [showPicker, setShowPicker] = useState<boolean>(false);
+  // Image to send state.
+  const [image, setImage] = useState<File | null>(null);
+
+  // Handle image upload.
+  const handleImageUpload = async (img: File) => {
+    // Image reference where to save it, it's saved with unique uid.
+    const imageRef = ref(storage, `sharedMedia/${combineIds(props.user?.uid, currentUser?.uid!)}/${uuid()}.media`);
+
+    try {
+      // Compression
+      await new Promise((resolve, reject) => {new Compressor(img, {
+        quality: 0.6,
+        // The compression process is asynchronous,
+        // which means you have to access the `result` in the `success` function.
+        success: async (result) => {
+          const imageFile = new File([result], "shared-media", {type: "image/jpeg"});
+          await uploadBytesResumable(imageRef, imageFile);
+          
+          resolve(imageFile);
+          },
+          
+          error(error) {
+            console.log(error.message);
+            reject(error);
+          }
+        })
+      });
   
+      // Clean image state after uploading it.
+      setImage(null);
+      // return download url
+      return await getDownloadURL(imageRef);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   // We handle keydown to be able to send message with Enter.
   const handleKeyDown = async (event: any) => {
     // Combine ids to get respective id to reach database with proper value.
@@ -24,7 +75,7 @@ const ChatBoxInput = (props: {
       // (If shift was pressed it would just write a new line).
       const trimmedMessage = message.trim();
       // Trim the message first so there won't be any leading or ending whitespaces.
-      if(trimmedMessage) {
+      if(trimmedMessage || image) {
         // Prevent event from default action, in this case writing a new line.
         event.preventDefault();
         // Clean message field.
@@ -37,9 +88,12 @@ const ChatBoxInput = (props: {
         // to use variables as keys in created objcet.
         const docData: any = {};
         // Create a new ket with curDate's value and set it as an object with message and senderid fields. 
+        const imageDownloadUrl = image ? await handleImageUpload(image) : null;
+
         docData[curDate] = {
           senderId: currentUser?.uid,
-          message: trimmedMessage
+          message: trimmedMessage ? trimmedMessage : null,
+          img: imageDownloadUrl
         }
         // Update document.
         await updateDoc(docRef, docData);
@@ -58,7 +112,7 @@ const ChatBoxInput = (props: {
     // trim message.
     const trimmedMessage = message.trim();
     // if message exists and it's not whitespace.
-    if(trimmedMessage) {
+    if(trimmedMessage || image) {
       // clean message input field.
       setMessage("");
       // doc ref to which doc should be updated.
@@ -68,13 +122,29 @@ const ChatBoxInput = (props: {
       // create document reference as object.
       const docData: any = {};
       // create new field in docData with curDate's value and set it to an object with fields senderId, message.
+      const imageDownloadUrl = image ? await handleImageUpload(image) : null;
+
       docData[curDate] = {
         senderId: currentUser?.uid,
-        message: trimmedMessage
+        message: trimmedMessage ? trimmedMessage : null,
+        img: imageDownloadUrl
       }
       // update document
       await updateDoc(docRef, docData);
     }
+
+    setShowPicker(false);
+  }
+
+  const handleEmojiClick = () => {
+    // emoji picker is shown based on showPicker
+    setShowPicker(!showPicker);
+    // if three dots ref (waiting for message) exists or message exists (last) or
+    // image exists (last sent image), scroll to that view.
+    props.dotsRef?.current ? props.dotsRef.current.scrollIntoView() :
+    props.messageRef?.current ? props.messageRef.current.scrollIntoView() :
+    props.imageRef?.current ? props.imageRef.current.scrollIntoView() :
+    null;
   }
 
   useEffect(() => {
@@ -108,18 +178,32 @@ const ChatBoxInput = (props: {
     updateWritingStatus();
   }, [message]);
 
-
   if(props.user) {
     return (
-      <div className="py-2 px-1 d-flex align-items-center justify-content-around gap-2">
-        <textarea 
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={(e) => handleKeyDown(e)}
-          className="chat-box-input rounded w-75"
-         />
-        <AiOutlineSend style={{width: 25, height: 25}} onClick={handleClick} />
-      </div>
+      <>
+        <div className="py-2 px-1 d-flex align-items-center justify-content-around gap-2">
+          <textarea 
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => handleKeyDown(e)}
+            className="chat-box-input rounded w-75"
+          />
+          <div>
+            <label className="chat-box-input-icon" htmlFor="imageForSend"><FaImage /></label>
+            <input id="imageForSend" className="d-none" type="file" onChange={(e) => {
+              const image = e.target.files ? e.target.files[0] : null;
+              setImage(image);
+            }} />
+          </div>
+          <div onClick={handleEmojiClick} className="chat-box-input-icon">
+            <MdOutlineEmojiEmotions />
+          </div>
+          <div onClick={handleClick} className="chat-box-input-icon">
+            <AiOutlineSend />
+          </div>
+        </div>
+        {showPicker && <div className="picker-container"><Picker perLine={width > 574 ? "9" : "8"} previewPosition="none" onEmojiSelect={(event: any) => setMessage(message + event.native)} data={data} /> </div>}
+      </>
     );
   }
 }

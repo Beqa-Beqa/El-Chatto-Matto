@@ -12,8 +12,11 @@
     "gulp": "gulp"
   },
   "dependencies": {
+    "@emoji-mart/data": "^1.1.2",
+    "@emoji-mart/react": "^1.1.1",
     "bootstrap": "^5.3.2",
     "compressorjs": "^1.2.1",
+    "emoji-mart": "^5.5.2",
     "firebase": "^10.5.2",
     "gulp": "^4.0.2",
     "gulp-purgecss": "^5.0.0",
@@ -23,6 +26,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
     "react-router-dom": "^6.18.0",
+    "react-uuid": "^2.0.0",
     "reactjs-emoji-keyboard": "^1.0.17",
     "sass": "^1.69.5"
   },

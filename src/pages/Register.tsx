@@ -47,20 +47,20 @@ const Register = () => {
 
       // Upload user image on firebase storage if image exists, if not use default one.
       let downloadUrl: Promise<string> | string;
-
+      
       if(image) {
         // Upload image.
         const imageRef = ref(storage, `userImages/${userData.user.uid}.img`);
-
+        
         await new Promise((resolve, reject) => {new Compressor(image, {
-            quality: 0.6,
-            // The compression process is asynchronous,
-            // which means you have to access the `result` in the `success` function.
-            success: async (result) => {
-              const imageFile = new File([result], "user-image", {type: "image/jpeg"});
-              await uploadBytesResumable(imageRef, imageFile);
-
-              resolve(imageFile);
+          quality: 0.6,
+          // The compression process is asynchronous,
+          // which means you have to access the `result` in the `success` function.
+          success: async (result) => {
+            const imageFile = new File([result], "user-image", {type: "image/jpeg"});
+            await uploadBytesResumable(imageRef, imageFile);
+            
+            resolve(imageFile);
             },
             
             error(error) {
@@ -72,7 +72,6 @@ const Register = () => {
 
         // Get download url
         downloadUrl = await getDownloadURL(imageRef);
-
       } else {
         // Set default image if no image is provided.
         const defaultImage = ref(storage, "userImages/user-icon.jpg");

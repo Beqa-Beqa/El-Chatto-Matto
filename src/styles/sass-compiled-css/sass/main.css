@@ -584,6 +584,14 @@ textarea {
   justify-content: space-around !important;
 }
 
+.align-items-start {
+  align-items: flex-start !important;
+}
+
+.align-items-end {
+  align-items: flex-end !important;
+}
+
 .align-items-center {
   align-items: center !important;
 }
@@ -971,6 +979,13 @@ video {
 .icon {
   width: 35px;
   height: 35px;
+  transition: 0.1s;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  margin-right: 8px;
+}
+.icon:hover {
+  color: #fff;
 }
 
 #register, #login {
@@ -1013,6 +1028,7 @@ video {
 .homepage-logged-in {
   width: 100%;
   height: 100%;
+  background-color: rgba(30, 47, 151, 0.6);
 }
 .homepage-logged-in .user-photo {
   width: 40px;
@@ -1094,24 +1110,28 @@ video {
 .home-content-logged-in .messaging-window .messages-container {
   background-color: #E0E0E0;
   overflow-y: auto;
+  overflow-wrap: break-word;
+}
+.home-content-logged-in .messaging-window .messages-container .attachment-image {
+  max-width: 250px;
+  max-height: 250px;
+  object-fit: contain;
 }
 .home-content-logged-in .messaging-window .messages-container .sent-message p {
   border-radius: 10px 10px 0 10px;
   font-size: 15px;
   width: fit-content;
-  max-width: 100%;
+  max-width: 100px;
   text-align: justify;
-  word-break: break-all;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 .home-content-logged-in .messaging-window .messages-container .recieved-message p {
   border-radius: 10px 10px 10px 0;
   font-size: 15px;
   width: fit-content;
-  max-width: 100%;
+  max-width: 100px;
   text-align: justify;
-  word-wrap: break-word;
-  word-break: break-all;
+  overflow-wrap: break-word;
 }
 .home-content-logged-in .chat-box-input {
   resize: none;
@@ -1120,6 +1140,28 @@ video {
   border: none;
   font-size: 15px;
   overflow: hidden;
+}
+.home-content-logged-in .chat-box-input-icon {
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: 0.1s;
+}
+.home-content-logged-in .chat-box-input-icon * {
+  width: 25px;
+  height: 25px;
+}
+.home-content-logged-in .chat-box-input-icon:hover {
+  color: #fff;
+}
+.home-content-logged-in .picker-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 250px;
+}
+.home-content-logged-in .picker-container * {
+  height: 100%;
 }
 .home-content-logged-in .loggedin-friends {
   z-index: 900;
