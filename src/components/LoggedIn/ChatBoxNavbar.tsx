@@ -12,7 +12,7 @@ const ChatBoxNavbar = (props: {
       <div className="chatbox-navbar d-flex align-items-center justify-content-between p-2">
         <div className="d-flex align-items-center">
           <img className="image me-2" src={props.user?.photoURL} alt="user image" />
-          {props.user && props.online.includes(props.user.uid) ? <div className="onlineCircle" /> : null}
+          {props.online.includes(props.user.uid) ? <div className="onlineCircle" /> : null}
           <p className={props.user && props.online.includes(props.user.uid) ? "mb-0" : "mb-0 ms-2"}>{props.user && props.user.displayName}</p>
         </div>
         <div className="w-50 d-flex align-items-center justify-content-end gap-2">

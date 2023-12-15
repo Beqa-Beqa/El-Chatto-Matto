@@ -1111,25 +1111,32 @@ video {
   background-color: #E0E0E0;
   overflow-y: auto;
   overflow-wrap: break-word;
+  width: 100%;
 }
 .home-content-logged-in .messaging-window .messages-container .attachment-image {
   max-width: 250px;
   max-height: 250px;
   object-fit: contain;
 }
+.home-content-logged-in .messaging-window .messages-container .sent-message {
+  width: 100%;
+}
 .home-content-logged-in .messaging-window .messages-container .sent-message p {
   border-radius: 10px 10px 0 10px;
   font-size: 15px;
+  max-width: 320px;
   width: fit-content;
-  max-width: 100px;
   text-align: justify;
   overflow-wrap: break-word;
+}
+.home-content-logged-in .messaging-window .messages-container .recieved-message {
+  width: 100%;
 }
 .home-content-logged-in .messaging-window .messages-container .recieved-message p {
   border-radius: 10px 10px 10px 0;
   font-size: 15px;
+  max-width: 292px;
   width: fit-content;
-  max-width: 100px;
   text-align: justify;
   overflow-wrap: break-word;
 }
