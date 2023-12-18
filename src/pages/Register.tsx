@@ -133,6 +133,8 @@ const Register = () => {
 
   return (
     <div id="register" className="d-flex justify-content-center align-items-center bg-primary">
+      <div className="bg-image" />
+      <div className="bg-color" />
       <div className="form d-flex flex-column sign-form rounded p-4 container">
         <h1 className="gradient-text text-center fs-3">El Chatto Matto</h1>
         <span className="text-center mb-3 fs-3 text-primary fs-4">Register</span>
@@ -144,7 +146,7 @@ const Register = () => {
           {err === "Weak Password" ? <span className="error">Weak Password</span> : null}
           <input className="input" onChange={(e) => setPassword(e.target.value)} value={password} type="password" placeholder="Password" />
           <label className="upload-image-label d-flex align-items-center mx-auto mb-1 justify-content-center" htmlFor="fileInput">
-            <CiImageOn className="icon" />
+            <CiImageOn />
             <span className="mx-2">Upload an image</span>
           </label>
           <input id="fileInput" className="d-none" onChange={(e) => {

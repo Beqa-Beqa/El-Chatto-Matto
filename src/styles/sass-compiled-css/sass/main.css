@@ -988,23 +988,49 @@ video {
   color: #fff;
 }
 
-#register, #login {
+#register, #login, #verify-email {
   width: 100vw;
   height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
-#register .sign-form, #login .sign-form {
-  background: rgba(255, 255, 255, 0.8);
+#register .verify-email-content, #login .verify-email-content, #verify-email .verify-email-content {
+  z-index: 3;
 }
-#register .error, #login .error {
+#register .bg-image, #register .bg-color, #login .bg-image, #login .bg-color, #verify-email .bg-image, #verify-email .bg-color {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+#register .bg-image, #login .bg-image, #verify-email .bg-image {
+  background-image: url("../../assets/images/LoginRegister/Login-Register-Image.jpeg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: brightness(40%);
+  z-index: 1; /* Ensure the pseudo-element is behind the content */
+}
+#register .bg-color, #login .bg-color, #verify-email .bg-color {
+  background: rgb(107, 30, 123);
+  background: linear-gradient(0deg, rgba(107, 30, 123, 0.3841911765) 0%, rgba(255, 64, 129, 0.1769082633) 100%);
+  z-index: 2;
+}
+#register .sign-form, #login .sign-form, #verify-email .sign-form {
+  background: #fff;
+  z-index: 3;
+}
+#register .error, #login .error, #verify-email .error {
   margin-top: 0;
   color: #FF4081;
   margin-bottom: 8px;
 }
-#register .form, #login .form {
+#register .form, #login .form, #verify-email .form {
   max-width: 540px;
 }
-#register .form .input, #login .form .input {
-  background-color: rgba(64, 64, 64, 0.3);
+#register .form .input, #login .form .input, #verify-email .form .input {
+  background-color: #666;
   color: #fff;
   border: none;
   outline: none;
@@ -1014,13 +1040,17 @@ video {
   height: 29px;
   font-family: "Inter", sans-serif;
 }
-#register .form .input::placeholder, #login .form .input::placeholder {
+#register .form .input::placeholder, #login .form .input::placeholder, #verify-email .form .input::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
-#register .form .upload-image-label, #login .form .upload-image-label {
+#register .form .upload-image-label, #login .form .upload-image-label, #verify-email .form .upload-image-label {
   cursor: pointer;
+  transition: 0.1s;
 }
-#register .form .sign-button, #login .form .sign-button {
+#register .form .upload-image-label:hover, #login .form .upload-image-label:hover, #verify-email .form .upload-image-label:hover {
+  color: #FF4081;
+}
+#register .form .sign-button, #login .form .sign-button, #verify-email .form .sign-button {
   height: 29px;
   padding: 0;
 }
@@ -1106,6 +1136,15 @@ video {
 }
 .home-content-logged-in .messaging-window .chatbox-navbar {
   width: 100%;
+}
+.home-content-logged-in .messaging-window .chatbox-navbar .onlineCircle {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #FF4081;
+  position: relative;
+  left: -15px;
+  top: 10px;
 }
 .home-content-logged-in .messaging-window .messages-container {
   background-color: #E0E0E0;

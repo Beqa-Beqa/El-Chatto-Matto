@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { AuthContext } from "./contexts/AuthContextProvider";
 import { signOut } from "firebase/auth";
 import { auth } from "./config/firebase";
+import { Button } from "react-bootstrap";
 
 function App() {
   const {currentUser, isLoading} = useContext(AuthContext);
@@ -34,8 +35,12 @@ function App() {
   } else if (currentUser && !currentUser?.emailVerified) {
     // If the registration was successful and email is not verified we demand from user to verify an email.
     return <div id="verify-email" className="d-flex flex-column justify-center align-center">
-        <p className="text-tertiary fs-3">Please verify the email to continue.</p>
-        <button className="button-secondary mt-3" onClick={() => signOut(auth)}>Sign Out</button>
+        <div className="bg-image" />
+        <div className="bg-color" />
+        <div className="verify-email-content w-100 h-100 d-flex flex-column justify-content-center align-items-center">
+          <p className="text-center text-secondary fs-3">Please verify the email to continue.</p>
+          <Button className="mt-3" variant="outline-secondary" onClick={() => signOut(auth)}>Sign Out</Button>
+        </div>
       </div>
 
   } else {
