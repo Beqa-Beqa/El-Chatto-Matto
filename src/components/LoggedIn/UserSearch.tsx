@@ -165,7 +165,7 @@ const UserSearch = (props: {
       </div>
       <div ref={ref} className="position-fixed d-flex flex-column found-users-container rounded">
         {showUsers && userData.map((userData: DocumentData, key: number) => {
-          return <div key={key} className="found-users d-flex justify-content-between align-items-center my-1 py-2 px-2">
+          return <div key={key} className="found-users d-flex justify-content-between align-items-center py-2 px-2">
             <div className="d-flex align-items-center">
               <img className="me-1 image" src={userData.photoURL} alt="user image" />
               <p className="fw-600 ms-1 me-md-5 me-3 mb-0">{userData.displayName}</p>

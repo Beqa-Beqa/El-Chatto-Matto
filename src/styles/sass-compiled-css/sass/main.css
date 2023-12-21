@@ -615,11 +615,6 @@ textarea {
   margin-left: auto !important;
 }
 
-.my-1 {
-  margin-top: 0.25rem !important;
-  margin-bottom: 0.25rem !important;
-}
-
 .my-4 {
   margin-top: 1.5rem !important;
   margin-bottom: 1.5rem !important;
@@ -956,11 +951,11 @@ video {
 }
 
 .text-box-container .text-box {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: #E0E0E0;
 }
 
 .footer {
-  color: rgba(255, 255, 255, 0.8);
+  color: #E0E0E0;
 }
 .footer h3, .footer .h3 {
   font-weight: normal;
@@ -980,7 +975,7 @@ video {
   width: 35px;
   height: 35px;
   transition: 0.1s;
-  color: rgba(255, 255, 255, 0.8);
+  color: #E0E0E0;
   cursor: pointer;
   margin-right: 8px;
 }
@@ -1041,7 +1036,7 @@ video {
   font-family: "Inter", sans-serif;
 }
 #register .form .input::placeholder, #login .form .input::placeholder, #verify-email .form .input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: #E0E0E0;
 }
 #register .form .upload-image-label, #login .form .upload-image-label, #verify-email .form .upload-image-label {
   cursor: pointer;
@@ -1074,7 +1069,7 @@ video {
   margin-right: 8px;
 }
 .homepage-logged-in .navbar-icon, .homepage-logged-in .chat-navbar-icon {
-  color: rgba(255, 255, 255, 0.6);
+  color: #E0E0E0;
   transition: 0.1s;
 }
 .homepage-logged-in .navbar-icon:hover, .homepage-logged-in .chat-navbar-icon:hover {
@@ -1089,7 +1084,7 @@ video {
 }
 .homepage-logged-in .found-users-container, .homepage-logged-in .notifications-container {
   top: 75px;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: #E0E0E0;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
 }
 .homepage-logged-in .notifications-container {
@@ -1125,7 +1120,7 @@ video {
 .home-content-logged-in {
   width: 100%;
   min-height: 100vh;
-  color: rgba(255, 255, 255, 0.8);
+  color: #E0E0E0;
 }
 .home-content-logged-in .chat-icon {
   width: 20px;
@@ -1188,7 +1183,7 @@ video {
   overflow: hidden;
 }
 .home-content-logged-in .chat-box-input-icon {
-  color: rgba(255, 255, 255, 0.8);
+  color: #E0E0E0;
   cursor: pointer;
   transition: 0.1s;
 }
@@ -1222,7 +1217,7 @@ video {
   top: 10px;
 }
 .home-content-logged-in .loggedin-friends .friends-container {
-  border-top: 1px solid rgba(255, 255, 255, 0.8);
+  border-top: 1px solid #E0E0E0;
   overflow-y: auto;
   max-height: 100vh;
 }

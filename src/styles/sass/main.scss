@@ -52,6 +52,7 @@ table {
 
 $primary:#404040;
 $secondary: #fff;
+$secondary-second: #E0E0E0;
 $tertiary: #6B1E7B;
 $tertiary-second: #FF4081;
 $background: #1E2F97;
@@ -169,13 +170,13 @@ video {
 
 .text-box-container {
   .text-box {
-    background-color: rgba($secondary, 0.8);
+    background-color: $secondary-second;
   }
 }
 
 
 .footer {
-  color: rgba($secondary, 0.8);
+  color: $secondary-second;
 
   h3 {
     font-weight: normal;
@@ -205,7 +206,7 @@ video {
   width: 35px;
   height: 35px;
   transition: $base-transition-duration;
-  color: rgba($secondary, 0.8);
+  color: $secondary-second;
   cursor: pointer;
   margin-right: 8px;
 
@@ -273,7 +274,7 @@ video {
       font-family: "Inter", sans-serif;
       
       &::placeholder {
-        color: rgba($secondary, 0.6);
+        color: $secondary-second;
       }
     }
 
@@ -330,7 +331,7 @@ video {
   }
   
   .navbar-icon, .chat-navbar-icon {
-    color: rgba($secondary, 0.6);
+    color: $secondary-second;
     transition: $base-transition-duration;
   
     &:hover {
@@ -348,7 +349,7 @@ video {
 
   .found-users-container, .notifications-container {
     top: 75px;
-    background-color: rgba($secondary, 0.8);
+    background-color: $secondary-second;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
   }
 
@@ -395,7 +396,7 @@ video {
   width: 100%;
   min-height: 100vh;
 
-  color: rgba($secondary, 0.8);
+  color: $secondary-second;
 
   .chat-icon {
     width: 20px;
@@ -420,7 +421,7 @@ video {
     }
   
     .messages-container {
-      background-color: #E0E0E0;
+      background-color: $secondary-second;
       overflow-y: auto;
       overflow-wrap: break-word;
       width: 100%;
@@ -467,7 +468,7 @@ video {
   }
 
   .chat-box-input-icon {
-    color: rgba($secondary, 0.8);
+    color: $secondary-second;
     cursor: pointer;
     transition: $base-transition-duration;
 
@@ -507,7 +508,7 @@ video {
     }
 
     .friends-container {
-      border-top: 1px solid rgba($secondary, 0.8);
+      border-top: 1px solid $secondary-second;
       overflow-y: auto;
       max-height: 100vh;
       

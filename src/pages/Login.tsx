@@ -67,8 +67,7 @@ const Login = () => {
       !existingDoc.exists() ?
         await setDoc(doc(firestore, "userChats", signedUser.user.uid), {
           chats: [],
-          isOnline: true,
-          isWriting: false
+          isOnline: true
         })
       : 
         await updateDoc(doc(firestore, "userChats", signedUser.user.uid), {

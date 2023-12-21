@@ -46,21 +46,26 @@ const ChatBoxMessages = (props: {
       // start listening to snapshots and update messages whenever message is sent from current user
       // or from remote user.
       const unsubMessagesListener = onSnapshot(combDocRef, (doc) => {
-        setMessages(doc.data()!);
-      });
+        const data = doc.data() || {};
+        const writingKeys: any = {};
 
-      // snapshot listener for writing status.
-      // remote user's doc ref.
-      const targetUserDocRef = doc(firestore, "userChats", props.user.uid);
-      // If whether isWriting status is set to true or false on remote user's docs, update userWrites state accordingly.
-      const unsubWritingStatusListener = onSnapshot(targetUserDocRef, (userDoc: DocumentData) => {
-        userDoc.data().isWriting ? setUserWrites(true) : setUserWrites(false);
+        const filteredMessages = Object.keys(data).reduce((obj: any, key) => {
+          if(key.split("-")[1] !== "isWriting") {
+            obj[key] = data[key];
+          } else {
+            writingKeys[key] = data[key];
+          }
+          return obj;
+        }, {});
+
+        setMessages(filteredMessages);
+
+        writingKeys[`${props.user!.uid}-isWriting`] === true ? setUserWrites(true) : setUserWrites(false);
       });
       
       // Snapshot cleaner.
       return () => {
         unsubMessagesListener();
-        unsubWritingStatusListener();
       };
     }
   }, [props.user]);
@@ -127,7 +132,7 @@ const ChatBoxMessages = (props: {
               </div>
             }
           </div>
-        :
+          :
           // If sender's id is equal to remote user's id.
           <div ref={ref} key={key} className="recieved-message d-flex align-items-center justify-content-start">
             {incomingMessageFrom !== props.user!.uid ?
@@ -144,11 +149,11 @@ const ChatBoxMessages = (props: {
               <div className="d-flex flex-column align-items-start justify-content-start">
                 <div className="d-flex align-items-center">
                   {messages[doc].message && <div className="mb-0" style={{width: 35, height: 35, flexShrink: 0}} />}
-                  {messages[doc].message && <p style={{flexShrink: 0}} className="bg-secondary px-2 py-1 mb-1 ms-2 text-primary">{renderMessage(messages[doc].message)}</p>}
+                  {messages[doc].message && <p style={{flexShrink: 0}} className="bg-secondary px-2 py-1 mb-0 ms-2 text-primary">{renderMessage(messages[doc].message)}</p>}
                 </div>
                 <div className="d-flex align-items-center">
                   {messages[doc].img && <div className="mb-0" style={{width: 35, height: 35, flexShrink: 0}} />}
-                  {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-1 ms-2" src={messages[doc].img} alt="sent resource image" />}
+                  {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-0 ms-2" src={messages[doc].img} alt="sent resource image" />}
                 </div>
               </div>
             }

@@ -99,7 +99,6 @@ const Register = () => {
       await setDoc(userChatRef, {
         friends: [],
         isOnline: true,
-        isWriting: false,
         notifications: {},
         requestsSent: []
       });

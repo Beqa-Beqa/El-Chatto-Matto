@@ -26,16 +26,28 @@ const ChatBoxInput = (props: {
   // message state for written message in input field of message window (it's textarea actually).
   const [message, setMessage] = useState<string>("");
   // State for user if they are writing a message or not.
-  const [writing, isWriting] = useState<boolean>(false);
+  const [isWriting, setIsWriting] = useState<boolean>(false);
   // Emoji picker state.
   const [showPicker, setShowPicker] = useState<boolean>(false);
   // Image to send state.
   const [image, setImage] = useState<File | null>(null);
 
+  // Combine ids to get respective id to reach database with proper value.
+  const combId = combineIds(currentUser?.uid!, props.user?.uid!);
+
+  const scrollIntoView = () => {
+    // if three dots ref (waiting for message) exists or message exists (last) or
+    // image exists (last sent image), scroll to that view.
+    props.dotsRef?.current ? props.dotsRef.current.scrollIntoView() :
+    props.messageRef?.current ? props.messageRef.current.scrollIntoView() :
+    props.imageRef?.current ? props.imageRef.current.scrollIntoView() :
+    null;
+  }
+
   // Handle image upload.
   const handleImageUpload = async (img: File) => {
     // Image reference where to save it, it's saved with unique uid.
-    const imageRef = ref(storage, `sharedMedia/${combineIds(props.user?.uid, currentUser?.uid!)}/${uuid()}.media`);
+    const imageRef = ref(storage, `sharedMedia/${combId}/${uuid()}.media`);
 
     try {
       // Compression
@@ -68,8 +80,6 @@ const ChatBoxInput = (props: {
 
   // We handle keydown to be able to send message with Enter.
   const handleKeyDown = async (event: any) => {
-    // Combine ids to get respective id to reach database with proper value.
-    const combId = combineIds(currentUser?.uid!, props.user?.uid!);
     if(event.code === "Enter" && !event.shiftKey) {
       // If enter is pressed and simultaneously shift is not pressed do the following:
       // (If shift was pressed it would just write a new line).
@@ -97,6 +107,8 @@ const ChatBoxInput = (props: {
         }
         // Update document.
         await updateDoc(docRef, docData);
+
+        scrollIntoView();
       } else {
         // If message is just an empty string or a whitespace it does nothing, not even new line is written.
         event.preventDefault();
@@ -107,8 +119,6 @@ const ChatBoxInput = (props: {
 
   // Same thing goes here as in handleKeyDown, except here we just click on react-icon's icon.
   const handleClick = async () => {
-    // combine id.
-    const combId = combineIds(currentUser?.uid!, props.user?.uid!);
     // trim message.
     const trimmedMessage = message.trim();
     // if message exists and it's not whitespace.
@@ -131,6 +141,8 @@ const ChatBoxInput = (props: {
       }
       // update document
       await updateDoc(docRef, docData);
+
+      scrollIntoView();
     }
 
     setShowPicker(false);
@@ -139,36 +151,32 @@ const ChatBoxInput = (props: {
   const handleEmojiClick = () => {
     // emoji picker is shown based on showPicker
     setShowPicker(!showPicker);
-    // if three dots ref (waiting for message) exists or message exists (last) or
-    // image exists (last sent image), scroll to that view.
-    props.dotsRef?.current ? props.dotsRef.current.scrollIntoView() :
-    props.messageRef?.current ? props.messageRef.current.scrollIntoView() :
-    props.imageRef?.current ? props.imageRef.current.scrollIntoView() :
-    null;
+    scrollIntoView();
   }
 
   useEffect(() => {
     const updateWritingStatus = async () => {
       // Current users userChats ref.
-      const curUserChatsRef = doc(firestore, "userChats", currentUser?.uid!);
+      const curUserChatsRef = doc(firestore, "chats", combId);
+
       try {
-        if(message && !writing) {
+        if(message && !isWriting) {
           // If there is a message and writing state is set to false:
-          isWriting(true);
+          setIsWriting(true);
           
           // Update current user writing status and set it to true.
-          await updateDoc(curUserChatsRef, {
-            isWriting: true,
-          });
+          const updateChunk: any = {};
+          updateChunk[`${currentUser?.uid}-isWriting`] = true;
+          await updateDoc(curUserChatsRef, updateChunk);
           
-        } else if(!message && writing) {
+        } else if(!message && isWriting) {
           // If there is not a message and writing state is set to true:
-          isWriting(false);
+          setIsWriting(false);
   
           // Update current user writing status and set it to false.
-          await updateDoc(curUserChatsRef, {
-            isWriting: false
-          });
+          const updateChunk: any = {};
+          updateChunk[`${currentUser?.uid}-isWriting`] = false;
+          await updateDoc(curUserChatsRef, updateChunk);
         }
       } catch (err) {
         console.error(err);
