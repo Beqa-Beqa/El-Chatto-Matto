@@ -1,32 +1,23 @@
 import { IoIosNotifications } from "react-icons/io";
 import { useContext, useEffect, useRef, useState } from "react";
-import { UserChatsContext } from "../../contexts/UserChatsContextProvider";
+import { UserChatsContext } from "../../../contexts/UserChatsContextProvider";
 import { writeBatch, doc, DocumentData, runTransaction } from "firebase/firestore";
-import { firestore } from "../../config/firebase";
-import { AuthContext } from "../../contexts/AuthContextProvider";
-import { useOutsideClick } from "../../hooks";
+import { firestore } from "../../../config/firebase";
+import { AuthContext } from "../../../contexts/AuthContextProvider";
+import { useOutsideClick } from "../../../hooks";
+import { handleRequestAnswer } from "../../../functions/firebase";
 
 
-const Notifications = (props: {
-  handleRequestAnswer?: (answer: string, requestFrom: string, type?: string) => Promise<void>
-}) => {
+const Notifications = () => {
   // check userchats context provider.
   const {notiCount, filteredNotifications, notifications} = useContext(UserChatsContext);
   // check auth context provider.
   const {currentUser} = useContext(AuthContext);
-
-  // Batch is used for multiple updates at once without need of reading docs in firestore
-  // (check firestore docs for better understanding).
-  const batch = writeBatch(firestore);
-
   // State whether show notifications or not.
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
 
   // Notification data.
   const [notificationUserData, setNotificationUserData] = useState<DocumentData[]>([]);
-
-  // state for checking if user has notifications or not.
-  
 
   // Styles for notification and notification icon.
   let notiStyle: string;
@@ -41,7 +32,9 @@ const Notifications = (props: {
 
   // handle notification reading.
   const handleNotificationRead = async () => {
-
+    // Batch is used for multiple updates at once without need of reading docs in firestore
+    // (check firestore docs for better understanding).
+    const batch = writeBatch(firestore);
     // Current user document reference.
     const currentUserDocRef = doc(firestore, "userChats", currentUser?.uid!);
 
@@ -127,8 +120,8 @@ const Notifications = (props: {
       return <div>
         {!isRead ? <strong>Sent you a friend request</strong> : <p className="m-0">Sent you a friend request</p>}
         <div className="actions d-flex align-items-center justify-content-between mt-2">
-          <button onClick={() => props.handleRequestAnswer && props.handleRequestAnswer("accept", from)} className="friend-request rounded" type="submit">Accept</button>
-          <button onClick={() => props.handleRequestAnswer && props.handleRequestAnswer("decline", from)} className="friend-request rounded" type="submit">Decline</button>
+          <button onClick={() => handleRequestAnswer(firestore, currentUser!, "accept", from)} className="action-button rounded" type="submit">Accept</button>
+          <button onClick={() => handleRequestAnswer(firestore, currentUser!, "decline", from)} className="action-button rounded" type="submit">Decline</button>
         </div>
       </div>
     }

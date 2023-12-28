@@ -73,3 +73,24 @@ export const filterUsername = (str: string) => {
 
   return joined;
 }
+
+
+// <---------------------------------------------------------------------------------------------------------->
+
+
+// Download image.
+export const imageDownload = async (dwUrl: string, name: string) => {
+  // Fetch image url and convert the response into a blob (binary large object).
+  fetch(dwUrl).then(response => response.blob()).then(blob => {
+    // window.URL.createObjectURL() is a method that creates a URL representing the Blob object passed to it.
+    const url = window.URL.createObjectURL(new Blob([blob], {type: "image/jpeg"}));
+    // Create anchor element (that is used for downloading data).
+    const link = document.createElement("a");
+    // Set it's url accordingly.
+    link.href = url;
+    // Set download attribute (which indicates that browser should proceed download, name is the name of downloaded file (name it whatever you want)).
+    link.setAttribute("download", name);
+    // Simulate click on the anchor tag.
+    link.click();
+  }).catch((err) => console.error(err));
+}

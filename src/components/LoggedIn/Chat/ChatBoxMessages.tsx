@@ -1,10 +1,10 @@
-import { AuthContext } from "../../contexts/AuthContextProvider";
+import { AuthContext } from "../../../contexts/AuthContextProvider";
 import { useContext, useEffect, useRef, useState} from "react";
 import React from "react";
-import { combineIds } from "../../functions";
+import { combineIds } from "../../../functions/general";
 import { DocumentData, doc, onSnapshot } from "firebase/firestore";
-import { firestore } from "../../config/firebase";
-import { GeneralContext } from "../../contexts/GeneralContextProvider";
+import { firestore } from "../../../config/firebase";
+import { GeneralContext } from "../../../contexts/GeneralContextProvider";
 
 const ChatBoxMessages = (props: {
   user: DocumentData | null,

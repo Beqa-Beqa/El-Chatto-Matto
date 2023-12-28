@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, firestore, googleProvider } from "../config/firebase";
 import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
-import { genSubStrings } from "../functions";
+import { genSubStrings } from "../functions/general";
 import { Button } from "react-bootstrap";
 
 const Login = () => {

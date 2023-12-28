@@ -1,14 +1,31 @@
 import "./styles/sass/main.scss";
-import { Register, Login, HomepageLoggedIn, HomepageNotLoggedIn, Friends } from "./pages";
+import { Register, Login, HomepageLoggedIn, HomepageNotLoggedIn, Friends, CurrentUserProfile, RemoteUserProfile } from "./pages";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./contexts/AuthContextProvider";
 import { signOut } from "firebase/auth";
 import { auth } from "./config/firebase";
 import { Button } from "react-bootstrap";
+import { RemoteUserContext } from "./contexts/RemoteUserContextProvider";
+import { DocumentData } from "firebase/firestore";
+
+export const deletePrompt = (userName: string, yes: () => void, no: () => void) => <div className="bg-secondary rounded py-2 px-4">
+    <span className="fs-5">Delete <strong>{userName}</strong> from your friends?</span>
+    <div className="mt-5 d-flex justify-content-center gap-3">
+      <button onClick={() => yes()} className="action-button rounded">
+        Confirm
+      </button>
+      <button onClick={() => no()} className="action-button rounded">
+        Decline
+      </button>
+    </div>
+  </div>
 
 function App() {
   const {currentUser, isLoading} = useContext(AuthContext);
+  const {remUserGenInfo}: DocumentData = useContext(RemoteUserContext);
+  // If user is on their profile page isOwner will be true.
+  const isOwner = currentUser?.uid === remUserGenInfo.uid;
 
   // Protected route wrapper, if user is not logged in and there is no loading state, user is
   // redirected to homepage for not logged in users when trying to access root route.
@@ -56,6 +73,11 @@ function App() {
           <Route path="/friends" element={
             <ProtectedRoute>
               <Friends />
+            </ProtectedRoute>
+          } />
+          <Route path={`/${remUserGenInfo.uid}`} element={
+            <ProtectedRoute>
+              {isOwner ? <CurrentUserProfile /> : <RemoteUserProfile />}
             </ProtectedRoute>
           } />
           <Route index element={<HomepageNotLoggedIn />} />

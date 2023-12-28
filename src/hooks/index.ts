@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-export const useOutsideClick = (ref: React.MutableRefObject<any>, stateSetter: any, value: any) => {
+export const useOutsideClick = (ref: React.MutableRefObject<any>, stateSetter: React.Dispatch<React.SetStateAction<any>>, value: any) => {
   // Detect click outside of passed ref.
   useEffect(() => {
     // If clicked outside, run the following:

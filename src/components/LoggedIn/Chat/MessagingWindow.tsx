@@ -1,5 +1,5 @@
 import { DocumentData } from "firebase/firestore";
-import { ChatBoxInput, ChatBoxMessages, ChatBoxNavbar } from "..";
+import { ChatBoxInput, ChatBoxMessages, ChatBoxNavbar } from "../..";
 import { useState } from "react";
 
 const MessagingWindow = (props: {

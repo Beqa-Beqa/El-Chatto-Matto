@@ -2,19 +2,23 @@ import { FcVideoCall } from "react-icons/fc";
 import { MdCall, MdClose } from "react-icons/md";
 import { DocumentData } from "firebase/firestore";
 import { useContext } from "react";
-import { UserChatsContext } from "../../contexts/UserChatsContextProvider";
+import { UserChatsContext } from "../../../contexts/UserChatsContextProvider";
+import { useNavigate } from "react-router-dom";
+import { RemoteUserContext } from "../../../contexts/RemoteUserContextProvider";
 
 const ChatBoxNavbar = (props: {
   user: DocumentData | null,
   setShowMessagingWindow: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
   const {online} = useContext(UserChatsContext);
+  const {setTrigger} = useContext(RemoteUserContext);
+  const navigate = useNavigate();
 
   if(props.user) {
     return (
       <div className="chatbox-navbar d-flex align-items-center justify-content-between p-2">
         <div className="d-flex align-items-center">
-          <img className="image me-2" src={props.user?.photoURL} alt="user image" />
+          <img style={{cursor: "pointer"}} onClick={() => {setTrigger(prev => !prev); navigate(`/${props.user!.uid}`);}} className="image me-2" src={props.user?.photoURL} alt="user image" />
           {online.includes(props.user.uid) ? <div className="onlineCircle" /> : null}
           <p className={props.user && online.includes(props.user.uid) ? "mb-0" : "mb-0 ms-2"}>{props.user && props.user.displayName}</p>
         </div>

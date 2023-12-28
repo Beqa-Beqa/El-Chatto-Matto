@@ -4,10 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
 import { auth, firestore, storage } from "../config/firebase";
 import { doc, setDoc } from "firebase/firestore";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { genSubStrings } from "../functions";
+import { ref, getDownloadURL } from "firebase/storage";
+import { genSubStrings } from "../functions/general";
 import { Button } from "react-bootstrap";
-import Compressor from "compressorjs";
+import { handleImageUpload } from "../functions/firebase";
 
 const Register = () => {
   // Navigate state for navigating through different routes.
@@ -46,32 +46,14 @@ const Register = () => {
       const userData = await createUserWithEmailAndPassword(auth, email, password);
 
       // Upload user image on firebase storage if image exists, if not use default one.
-      let downloadUrl: Promise<string> | string;
+      let downloadUrl: string | null | undefined;
+      let imageRefString: string | null | undefined;
       
       if(image) {
-        // Upload image.
-        const imageRef = ref(storage, `userImages/${userData.user.uid}.img`);
-        
-        await new Promise((resolve, reject) => {new Compressor(image, {
-          quality: 0.6,
-          // The compression process is asynchronous,
-          // which means you have to access the `result` in the `success` function.
-          success: async (result) => {
-            const imageFile = new File([result], "user-image", {type: "image/jpeg"});
-            await uploadBytesResumable(imageRef, imageFile);
-            
-            resolve(imageFile);
-            },
-            
-            error(error) {
-              console.log(error.message);
-              reject(error);
-            }
-          })
-        });
-
         // Get download url
-        downloadUrl = await getDownloadURL(imageRef);
+        const urlAndRef = await handleImageUpload(firestore, storage, userData.user)("profile", image, {returnURL: true, returnRef: true});
+        downloadUrl = urlAndRef?.url;
+        imageRefString = urlAndRef?.ref;
       } else {
         // Set default image if no image is provided.
         const defaultImage = ref(storage, "userImages/user-icon.jpg");
@@ -80,12 +62,15 @@ const Register = () => {
 
       // Save user data on firestore.
       const docRef = doc(firestore, "users", userData.user.uid);
+      const profileImageRefsObj: any = {};
+      profileImageRefsObj[`${downloadUrl}`] = imageRefString;
       await setDoc(docRef, {
         uid: userData.user.uid,
         displayName: username,
         email: email,
         photoURL: downloadUrl,
-        searchArray: genSubStrings(username)
+        searchArray: genSubStrings(username),
+        profileImageRefs: profileImageRefsObj
       });
 
       // Update user's profile.

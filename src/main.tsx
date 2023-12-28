@@ -4,16 +4,18 @@ import App from './App.tsx'
 import { BrowserRouter } from 'react-router-dom'
 import AuthContextProvider from './contexts/AuthContextProvider.tsx'
 import GeneralContextProvider from './contexts/GeneralContextProvider.tsx'
-import { UserChatsContextProvider } from './contexts'
+import { RemoteUserContextProvider, UserChatsContextProvider } from './contexts'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
     <React.StrictMode>
       <AuthContextProvider>
         <UserChatsContextProvider>
-          <GeneralContextProvider>
-            <App />
-          </GeneralContextProvider>
+          <RemoteUserContextProvider >
+            <GeneralContextProvider>
+              <App />
+            </GeneralContextProvider>
+          </RemoteUserContextProvider>
         </UserChatsContextProvider>
       </AuthContextProvider>
     </React.StrictMode>

@@ -1,9 +1,9 @@
 import { useState, useContext } from "react";
 import { DocumentData } from "firebase/firestore";
-import { MessagingWindow } from "..";
+import { MessagingWindow } from "../..";
 import { FaUsersRectangle, FaRegRectangleXmark } from "react-icons/fa6"
-import { GeneralContext } from "../../contexts/GeneralContextProvider";
-import { UserChatsContext } from "../../contexts/UserChatsContextProvider";
+import { GeneralContext } from "../../../contexts/GeneralContextProvider";
+import { UserChatsContext } from "../../../contexts/UserChatsContextProvider";
 
 const Contacts = (props: {
   className?: string

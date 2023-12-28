@@ -3,3 +3,5 @@ export {default as Login} from "./Login";
 export {default as HomepageLoggedIn} from "./HomepageLoggedIn";
 export {default as HomepageNotLoggedIn} from "./HomepageNotLoggedIn";
 export {default as Friends} from "./Friends";
+export {default as CurrentUserProfile} from "./CurrentUserProfile";
+export {default as RemoteUserProfile} from "./RemoteUserProfile";

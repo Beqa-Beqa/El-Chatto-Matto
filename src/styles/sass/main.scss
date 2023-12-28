@@ -55,7 +55,8 @@ $secondary: #fff;
 $secondary-second: #E0E0E0;
 $tertiary: #6B1E7B;
 $tertiary-second: #FF4081;
-$background: #1E2F97;
+$background: #6082B6;
+$background-second: #0F52BA;
 $base-transition-duration: 0.1s;
 
 @import '../../../node_modules/bootstrap/scss/bootstrap'; // Import Bootstrap styles
@@ -95,15 +96,28 @@ video {
 }
 
 .navbar-wrapper {
-  background-color: rgba($background, 0.8);
+  background-color: $background;
 }
 
 .navbar {
   height: 85px;
-  box-shadow: 0 2px 10px 0 rgba(0,0,0,.5);
+  box-shadow: 0 2px 10px 0 rgba(0,0,0,0.5);
   position: relative;
   top: -20px;
   z-index: 999;
+
+  .logo-wrapper {
+    overflow: hidden;
+
+    .logo {
+      cursor: pointer;
+      overflow: hidden;
+      object-fit: contain;
+      max-height: 100px;
+      position: relative;
+      top: -2px;
+    }
+  }
 
   .notifications {
     cursor: pointer;
@@ -304,10 +318,10 @@ video {
   }
 }
 
-.homepage-logged-in {
+.homepage-logged-in, .profile-page {
   width: 100%;
   height: 100%;
-  background-color: rgba($background, 0.6);
+  background-color: $background;
 
   .user-photo {
     width: 40px;
@@ -326,11 +340,31 @@ video {
     height: 20px;
   }
 
+  .image-navbar-icon {
+    cursor: pointer;
+    width: 25px;
+    height: 25px;
+    
+    img {
+      user-select: none;
+    }
+
+    svg {
+      fill: $secondary-second;
+      width: 100%;
+      height: 100%;
+
+      &:hover {
+        fill: $secondary;
+      }
+    }
+  }
+
   .navbar-icon, .navbar-icon-noti {
     margin-right: 8px;
   }
   
-  .navbar-icon, .chat-navbar-icon {
+  .navbar-icon, .chat-navbar-icon, .image-navbar-icon {
     color: $secondary-second;
     transition: $base-transition-duration;
   
@@ -367,12 +401,12 @@ video {
       }
     }
   }
-  .friend-request {
+  .action-button {
     background-color: transparent;
     border: 1px solid $tertiary !important;
     transition: $base-transition-duration;
     
-    .friend-request-icon {
+    .action-button-icon {
       width: 20px;
       height: 20px;
       color: rgba($tertiary, 0.6);
@@ -384,7 +418,7 @@ video {
       color: $secondary;
       cursor: pointer;
 
-      .friend-request-icon {
+      .action-button-icon {
         color: $secondary;
       }
     }
@@ -516,7 +550,7 @@ video {
         cursor: pointer;
         
         &:hover {
-          background-color: $background;
+          background-color: $background-second;
         }
       }
     }
@@ -524,6 +558,94 @@ video {
 }
 
 
+.user-profile {
+  width: 100vw;
+  min-height: 100vh;
+
+  .user-card {
+    
+    .user-card-border {
+      border: 1px solid #333;
+    }
+
+    img {
+      width: 90px;
+      height: 90px;
+    }
+  }
+
+  .cover-placeholder-image, .cover-user-image {
+    width: 100%;
+    max-height: 350px;
+    cursor: pointer;
+    position: relative;
+    z-index: 10;
+    overflow: hidden;
+
+    .image-container {
+      max-width: 700px;
+      height: auto;
+    }
+
+    img {
+      width: 100%;
+      object-fit: contain;
+      user-select: none;
+    }
+  }
+
+  .cover-placeholder-image {
+    background-color: $secondary-second;
+  }
+
+  .cover-user-image {
+    background-color: #333;
+  }
+
+  .profile-image-container {
+    z-index: 5;
+    
+    img {
+      border: 3px solid $background;
+      cursor: pointer;
+      z-index: 15;
+      user-select: none;
+    }
+  }
+}
+
+.user-prompt {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.prompt-action-container {
+  min-width: 200px;
+  overflow: hidden;
+
+  .prompt-action {
+    padding: 10px 0;
+    font-size: 20px;
+    cursor: pointer;
+    transition: $base-transition-duration;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+
+    &:hover {
+      background-color: $secondary-second;
+    }
+  }
+}
 
 
 

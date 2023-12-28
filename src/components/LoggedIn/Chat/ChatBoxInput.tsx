@@ -1,15 +1,15 @@
 import { useState, useContext, useEffect } from "react";
 import { AiOutlineSend } from "react-icons/ai";
-import { combineIds } from "../../functions";
-import { AuthContext } from "../../contexts/AuthContextProvider";
+import { combineIds } from "../../../functions/general";
+import { AuthContext } from "../../../contexts/AuthContextProvider";
 import { DocumentData, doc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { firestore, storage } from "../../config/firebase";
+import { firestore, storage } from "../../../config/firebase";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { FaImage } from "react-icons/fa";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
-import { GeneralContext } from "../../contexts/GeneralContextProvider";
+import { GeneralContext } from "../../../contexts/GeneralContextProvider";
 import Compressor from "compressorjs";
 import uuid from "react-uuid";
 

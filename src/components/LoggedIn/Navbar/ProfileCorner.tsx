@@ -1,13 +1,15 @@
 import { useContext } from "react";
 import { NavDropdown } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../contexts/AuthContextProvider";
-import { firestore, auth } from "../../config/firebase";
+import { AuthContext } from "../../../contexts/AuthContextProvider";
+import { firestore, auth } from "../../../config/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
+import { RemoteUserContext } from "../../../contexts/RemoteUserContextProvider";
 
 const ProfileCorner = () => {
   const {currentUser, setIsLoading} = useContext(AuthContext);
+  const {setTrigger} = useContext(RemoteUserContext);
   // function to navigate through different routes.
   const navigate = useNavigate();
 
@@ -38,7 +40,7 @@ const ProfileCorner = () => {
   <>
     <img style={{userSelect: "none", WebkitUserSelect: "none", MozUserSelect: "none"}} className="user-photo rounded-circle me-1" src={currentUser?.photoURL!} alt="user photo" />
     <NavDropdown style={{userSelect: "none", WebkitUserSelect: "none", MozUserSelect: "none"}} className="navbar-button" title={currentUser?.displayName} id="nav-dropdown">
-      <NavDropdown.Item onClick={() => navigate("/profile")}>Your Profile</NavDropdown.Item>
+      <NavDropdown.Item onClick={() => {setTrigger(prev => !prev); navigate(`/${currentUser?.uid}`);}}>Your Profile</NavDropdown.Item>
       <NavDropdown.Item onClick={() => navigate("/friends")}>Friends</NavDropdown.Item>
       <NavDropdown.Divider />
       <NavDropdown.Item onClick={handleSignOut}>Sign Out</NavDropdown.Item>
