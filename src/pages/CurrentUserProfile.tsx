@@ -82,6 +82,7 @@ const CurrentUserProfile = () => {
         <div onClick={() => {
           const dwUrl = remUserGenInfo[`${imageType === "profile" ? "photo" : "cover"}URL`];
           userImageDelete(imageType, dwUrl);
+          setIsImageOpen(false);
         }} className="image-navbar-icon p-0 m-0 text-primary">
           <MdDelete />
         </div>
@@ -101,6 +102,7 @@ const CurrentUserProfile = () => {
         <div onClick={async () => {
           const dwUrl = remUserGenInfo[`${imageType === "profile" ? "photo" : "cover"}URL`];
           await imageDownload(dwUrl, `${imageType}-image`);
+          setIsImageOpen(false);
         }} className="image-navbar-icon p-0 m-0 text-primary"><MdDownload /></div>
 
         <div onClick={() => setIsImageOpen(false)} className="image-navbar-icon p-0 m-0 text-primary"><MdClose /></div>
