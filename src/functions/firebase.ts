@@ -256,24 +256,40 @@ export const handleImageUpload = (
 
 
 // Process image deletion.
-export const handleImageDelete = async (firestore: Firestore, storage: FirebaseStorage, currentUser: User, storageRef: string, type: string) => {
+export const handleImageDelete = async (firestore: Firestore, storage: FirebaseStorage, remUserGenInfo: DocumentData, currentUser: User, dwUrl: string, type: string) => {
   // Current user document reference.
   const currentUserDocRef = doc(firestore, "users", currentUser.uid);
-  // reference of file which is about to be deleted.
-  const deleteRef = ref(storage, storageRef);
-  // delete the file.
-  await deleteObject(deleteRef);
 
   try {
     // Remove cover image.
     if(type === "cover") {
-      await updateDoc(currentUserDocRef, {
-        coverURL: deleteField()
-      });
+      // reference of file which is about to be deleted.
+      const deleteRef = ref(storage, remUserGenInfo.coverImageRefs[dwUrl].ref);
+
+      if(dwUrl === remUserGenInfo.coverURL) {
+        await updateDoc(currentUserDocRef, {
+          coverURL: deleteField()
+        });
+      }
+      
+      // delete the file.
+      await deleteObject(deleteRef);
+
     } else if (type === "profile") {
-      await updateDoc(currentUserDocRef, {
-        photoURL: deleteField()
-      });
+      // reference of file which is about to be deleted.
+      const deleteRef = ref(storage, remUserGenInfo.profileImageRefs[dwUrl].ref);
+
+      if(dwUrl === remUserGenInfo.photoURL) {
+        await updateDoc(currentUserDocRef, {
+          photoURL: remUserGenInfo.defaultPhotoURL
+        });
+        await updateProfile(currentUser, {
+          photoURL: remUserGenInfo.defaultPhotoURL
+        });
+      }
+
+      // delete the file.
+      await deleteObject(deleteRef);
     }
 
   } catch (err) {

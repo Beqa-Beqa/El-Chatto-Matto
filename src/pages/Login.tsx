@@ -1,7 +1,7 @@
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, firestore, googleProvider } from "../config/firebase";
+import { auth, firestore, googleProvider} from "../config/firebase";
 import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { genSubStrings } from "../functions/general";
 import { Button } from "react-bootstrap";
@@ -58,6 +58,7 @@ const Login = () => {
           displayName: signedUser.user.displayName!,
           email: signedUser.user.email,
           photoURL: signedUser.user.photoURL,
+          defaultPhotoURL: signedUser.user.photoURL,
           uid: signedUser.user.uid,
           searchArray: genSubStrings(signedUser.user.displayName!)
         });

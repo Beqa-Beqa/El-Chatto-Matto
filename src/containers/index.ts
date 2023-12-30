@@ -4,3 +4,5 @@ export {default as HomeContentNotLoggedIn} from "./NotLoggedIn/HomeContentNotLog
 export {default as NotLoggedInSlider} from "./NotLoggedIn/NotLoggedInSlider";
 export {default as Footer} from "./Footer";
 export {default as HomeContentLoggedIn} from "./LoggedIn/HomeContentLoggedIn";
+export {default as FriendsContainer} from "./LoggedIn/Profile/FriendsContainer";
+export {default as PhotosContainer} from "./LoggedIn/Profile/PhotosContainer";

@@ -9,3 +9,5 @@ export {default as Contacts} from "./LoggedIn/Home/Contacts";
 export {default as Content} from "./LoggedIn/Home/Content";
 export {default as MessagingWindow} from "./LoggedIn/Chat/MessagingWindow";
 export {default as UserCard} from "./LoggedIn/Profile/UserCard";
+export {default as ProfilePhotoCollectionCard} from "./LoggedIn/Profile/ProfilePhotoCollectionCard";
+export {default as BigImage} from "./LoggedIn/Profile/BigImage";

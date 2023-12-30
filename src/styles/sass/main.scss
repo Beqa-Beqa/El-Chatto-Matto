@@ -77,6 +77,10 @@ html {
   padding: 0;
 }
 
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
 video {
   filter: brightness(40%);
   width: 100%;
@@ -322,7 +326,7 @@ video {
   width: 100%;
   height: 100%;
   background-color: $background;
-
+  
   .user-photo {
     width: 40px;
     height: 40px;
@@ -344,6 +348,35 @@ video {
     cursor: pointer;
     width: 25px;
     height: 25px;
+    position: relative;
+    background-color: $primary;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+      .custom-tooltip {
+        opacity: 1;
+        z-index: 900;
+      }
+    }
+
+    .custom-tooltip {
+      position: absolute;
+      top: -28px;
+      right: 0;
+      background: $secondary-second;
+      padding: 1.5px 3px;
+      border-radius: 5px;
+      font-size: 14px;
+      z-index: -100;
+      pointer-events: none;
+      opacity: 0;
+      transition: $base-transition-duration;
+      text-wrap: nowrap;
+      user-select: none;
+    }
     
     img {
       user-select: none;
@@ -562,6 +595,11 @@ video {
   width: 100vw;
   min-height: 100vh;
 
+  .photo-collection-image {
+    max-height: 250px !important;
+    user-select: none;
+  }
+
   .user-card {
     
     .user-card-border {
@@ -577,7 +615,6 @@ video {
   .cover-placeholder-image, .cover-user-image {
     width: 100%;
     max-height: 350px;
-    cursor: pointer;
     position: relative;
     z-index: 10;
     overflow: hidden;
@@ -594,10 +631,6 @@ video {
     }
   }
 
-  .cover-placeholder-image {
-    background-color: $secondary-second;
-  }
-
   .cover-user-image {
     background-color: #333;
   }
@@ -605,11 +638,13 @@ video {
   .profile-image-container {
     z-index: 5;
     
-    img {
-      border: 3px solid $background;
-      cursor: pointer;
-      z-index: 15;
-      user-select: none;
+    div {
+      img, label img {
+        border: 3px solid $background;
+        cursor: pointer;
+        z-index: 15;
+        user-select: none;
+      }
     }
   }
 }

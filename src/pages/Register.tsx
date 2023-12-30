@@ -49,6 +49,9 @@ const Register = () => {
       let downloadUrl: string | null | undefined;
       let imageRefString: string | null | undefined;
       
+      const defaultImage = ref(storage, "userImages/user-icon.jpg");
+      const defaultImageUrl = await getDownloadURL(defaultImage);
+
       if(image) {
         // Get download url
         const urlAndRef = await handleImageUpload(firestore, storage, userData.user)("profile", image, {returnURL: true, returnRef: true});
@@ -56,8 +59,7 @@ const Register = () => {
         imageRefString = urlAndRef?.ref;
       } else {
         // Set default image if no image is provided.
-        const defaultImage = ref(storage, "userImages/user-icon.jpg");
-        downloadUrl = await getDownloadURL(defaultImage)
+        downloadUrl = defaultImageUrl;
       }
 
       // Save user data on firestore.
@@ -69,6 +71,7 @@ const Register = () => {
         displayName: username,
         email: email,
         photoURL: downloadUrl,
+        defaultPhotoURL: defaultImageUrl,
         searchArray: genSubStrings(username),
         profileImageRefs: profileImageRefsObj
       });

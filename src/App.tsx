@@ -47,7 +47,7 @@ function App() {
 
   if(isLoading) {
     // On loading state show spinning circle instead of content.
-    return <div className="roller-wrapper"><div className="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
+    return <div className="roller-wrapper"><div className="lds-roller"><div/><div/><div/><div/><div/><div/><div/><div/></div></div>
 
   } else if (currentUser && !currentUser?.emailVerified) {
     // If the registration was successful and email is not verified we demand from user to verify an email.

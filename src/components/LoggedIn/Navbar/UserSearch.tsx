@@ -80,6 +80,7 @@ const UserSearch = (props: {
     getUserData();
     // if username is not an empty string set showusers to true otherwise false.
     userName ? setShowUsers(true) : setShowUsers(false);
+    !userName && props.setShowClose ? props.setShowClose(false) : null;
   }, [userName]);
 
   // Reference for this component's found users displayer div (for outside click purposes).
@@ -89,8 +90,10 @@ const UserSearch = (props: {
   const [actionPromptVisible, setActionPromptVisible] = useState<boolean>(false);
   const promptRef = useRef<HTMLDivElement | null>(null);
 
+
   useOutsideClick(promptRef, setActionPromptVisible, false);
 
+  // Update prUser state for deletePrompt.
   const [prUser, setPrUser] = useState<DocumentData | null>(null);
 
   return (
