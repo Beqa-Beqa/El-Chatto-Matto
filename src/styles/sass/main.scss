@@ -322,7 +322,7 @@ video {
   }
 }
 
-.homepage-logged-in, .profile-page {
+.homepage-logged-in, .profile-page, .friends {
   width: 100%;
   height: 100%;
   background-color: $background;
@@ -459,6 +459,87 @@ video {
   }
 }
 
+.messaging-window {
+  z-index: 999;
+
+  .chatbox-navbar {
+    width: 100%;
+    color: $secondary;
+    font-size: 18px;
+
+    .onlineCircle {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #FF4081;
+      position: relative;
+      left: -15px;
+      top: 10px;
+    }
+  }
+
+  .messages-container {
+    background-color: $secondary-second;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+    width: 100%;
+
+    .attachment-image {
+      max-width: 250px;
+      max-height: 250px;
+      object-fit: contain;
+    }
+
+    .sent-message {
+      width: 100%;
+      p {
+        border-radius: 10px 10px 0 10px;
+        font-size: 15px;
+        max-width: 320px;
+        width: fit-content;
+        text-align: justify;
+        overflow-wrap: break-word;
+      }
+    }
+
+    .recieved-message {
+      width: 100%;
+      p {
+        border-radius: 10px 10px 10px 0;
+        font-size: 15px;
+        max-width: 292px;
+        width: fit-content;
+        text-align: justify;
+        overflow-wrap: break-word;
+      }
+    }
+  }
+}
+
+.chat-box-input {
+  resize: none;
+  height: 40px;
+  outline: none;
+  border: none;
+  font-size: 15px;
+  overflow: hidden;
+}
+
+.chat-box-input-icon {
+  color: $secondary-second;
+  cursor: pointer;
+  transition: $base-transition-duration;
+
+  * {
+    width: 25px;
+    height: 25px;
+  }
+
+  &:hover {
+    color: $secondary;
+  }
+}
+
 .home-content-logged-in {
   width: 100%;
   min-height: 100vh;
@@ -470,84 +551,6 @@ video {
     height: 20px;
   }
 
-  .messaging-window {
-    z-index: 999;
-
-    .chatbox-navbar {
-      width: 100%;
-
-      .onlineCircle {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background-color: #FF4081;
-        position: relative;
-        left: -15px;
-        top: 10px;
-      }
-    }
-  
-    .messages-container {
-      background-color: $secondary-second;
-      overflow-y: auto;
-      overflow-wrap: break-word;
-      width: 100%;
-
-      .attachment-image {
-        max-width: 250px;
-        max-height: 250px;
-        object-fit: contain;
-      }
-
-      .sent-message {
-        width: 100%;
-        p {
-          border-radius: 10px 10px 0 10px;
-          font-size: 15px;
-          max-width: 320px;
-          width: fit-content;
-          text-align: justify;
-          overflow-wrap: break-word;
-        }
-      }
-
-      .recieved-message {
-        width: 100%;
-        p {
-          border-radius: 10px 10px 10px 0;
-          font-size: 15px;
-          max-width: 292px;
-          width: fit-content;
-          text-align: justify;
-          overflow-wrap: break-word;
-        }
-      }
-    }
-  }
-  
-  .chat-box-input {
-    resize: none;
-    height: 40px;
-    outline: none;
-    border: none;
-    font-size: 15px;
-    overflow: hidden;
-  }
-
-  .chat-box-input-icon {
-    color: $secondary-second;
-    cursor: pointer;
-    transition: $base-transition-duration;
-
-    * {
-      width: 25px;
-      height: 25px;
-    }
-
-    &:hover {
-      color: $secondary;
-    }
-  }
 
   .picker-container {
     display: flex;
@@ -590,27 +593,26 @@ video {
   }
 }
 
+.photo-collection-image {
+  max-height: 250px !important;
+  user-select: none;
+}
+
+.user-card {
+  
+  .user-card-border {
+    border: 1px solid #333;
+  }
+
+  img {
+    width: 90px;
+    height: 90px;
+  }
+}
 
 .user-profile {
   width: 100vw;
   min-height: 100vh;
-
-  .photo-collection-image {
-    max-height: 250px !important;
-    user-select: none;
-  }
-
-  .user-card {
-    
-    .user-card-border {
-      border: 1px solid #333;
-    }
-
-    img {
-      width: 90px;
-      height: 90px;
-    }
-  }
 
   .cover-placeholder-image, .cover-user-image {
     width: 100%;
@@ -641,7 +643,6 @@ video {
     div {
       img, label img {
         border: 3px solid $background;
-        cursor: pointer;
         z-index: 15;
         user-select: none;
       }

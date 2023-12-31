@@ -79,7 +79,7 @@ const CurrentUserProfile = () => {
               <h3 className="text-primary mt-2">{remUserGenInfo.displayName}</h3>
             </div>
             {!showBioEdit ? 
-              <span style={{...profileImageContainerStyles, maxWidth: 500}} className="position-relative text-center w-100"><span onClick={() => setShowBioEdit(true)} className="cursor-pointer">{remUserGenInfo.bio || "Write your bio..."} <MdEdit /></span></span> 
+              <span style={{...profileImageContainerStyles, maxWidth: 500, overflowWrap: "break-word"}} className="position-relative text-center w-100"><span onClick={() => setShowBioEdit(true)} className="cursor-pointer">{remUserGenInfo.bio || "Write your bio..."} <MdEdit /></span></span> 
             : 
               <div className="position-relative d-flex flex-column gap-2 align-items-center w-100" style={{...profileImageContainerStyles, maxWidth: 500}}>
                 <textarea autoFocus style={{resize: "none", outline: "none"}} className="text-center w-100 bg-transparent rounded" id="bio-input"/>

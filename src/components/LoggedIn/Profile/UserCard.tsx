@@ -42,7 +42,7 @@ const UserCard = (props: {
     <div className="user-card col-xxl-3 col-lg-4 col-md-6 col-12">
       <div className="user-card-border py-3 d-flex flex-column align-items-center rounded">
         <img className="rounded object-fit-cover" src={props.userData.photoURL} alt="user" />
-        <h5 className="mt-3">{props.userData.displayName}</h5>
+        <h5 className="mt-3 text-primary">{props.userData.displayName}</h5>
         <div className="d-flex gap-2 mt-2">
           <button onClick={() => {setTrigger(prev => !prev); navigate(`/${props.userData.uid}`);}} className="action-button rounded d-flex align-items-center">
             View Profile

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import BigImage from "./BigImage";
 
-const ProfilePhotoCollectionCard = (props: {src: string, alt: string}) => {
+const ProfilePhotoCollectionCard = (props: {isOwner: boolean, src: string, alt: string}) => {
   const [isImageOpen, setIsImageOpen] = useState<{isOpen: boolean, imageSrc: string, type: string}>({isOpen: false, imageSrc: "", type: ""});
 
   return (
@@ -12,7 +12,14 @@ const ProfilePhotoCollectionCard = (props: {src: string, alt: string}) => {
           setIsImageOpen({isOpen: true, imageSrc: imageSrc, type: "profile"});
         }} className="photo-collection-image cursor-pointer object-fit-contain w-100" src={props.src} alt={props.alt} />
       </div>
-      {isImageOpen.isOpen && <BigImage options={{hasDelete: true, hasUpload: false, hasDownload: true}} isImageOpen={isImageOpen} setIsImageOpen={setIsImageOpen} />}
+      {isImageOpen.isOpen && 
+        <BigImage 
+          options={ props.isOwner ? 
+            {hasDelete: true, hasUpload: false, hasDownload: true}
+          : {hasDelete: false, hasUpload: false, hasDownload: true}
+          } isImageOpen={isImageOpen} setIsImageOpen={setIsImageOpen} 
+        />
+      }
     </div>
   );
 }

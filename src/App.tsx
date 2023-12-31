@@ -10,7 +10,7 @@ import { RemoteUserContext } from "./contexts/RemoteUserContextProvider";
 import { DocumentData } from "firebase/firestore";
 
 export const deletePrompt = (userName: string, yes: () => void, no: () => void) => <div className="bg-secondary rounded py-2 px-4">
-    <span className="fs-5">Delete <strong>{userName}</strong> from your friends?</span>
+    <span className="fs-5 text-primary">Delete <strong>{userName}</strong> from your friends?</span>
     <div className="mt-5 d-flex justify-content-center gap-3">
       <button onClick={() => yes()} className="action-button rounded">
         Confirm

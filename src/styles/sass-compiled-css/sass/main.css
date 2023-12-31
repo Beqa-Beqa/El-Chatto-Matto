@@ -6,7 +6,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
  div, span, object,
 h1,
-.h1, h2, .h2, h3, .h3, h5, .h5, p,
+.h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, p,
 a, code, img, s, strong,
 b, form, label, details, footer, header,
 time, video {
@@ -169,7 +169,7 @@ hr {
   opacity: 0.25;
 }
 
- h5, .h5, h3, .h3, h2, .h2, h1, .h1 {
+ h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
   margin-top: 0;
   margin-bottom: 0.5rem;
   font-weight: 500;
@@ -201,6 +201,15 @@ h3, .h3 {
 @media (min-width: 1200px) {
   h3, .h3 {
     font-size: 1.75rem;
+  }
+}
+
+h4, .h4 {
+  font-size: calc(1.275rem + 0.3vw);
+}
+@media (min-width: 1200px) {
+  h4, .h4 {
+    font-size: 1.5rem;
   }
 }
 
@@ -749,6 +758,10 @@ textarea {
   margin-left: 0.5rem !important;
 }
 
+.ms-4 {
+  margin-left: 1.5rem !important;
+}
+
 .p-0 {
   padding: 0 !important;
 }
@@ -914,6 +927,9 @@ textarea {
   }
   .me-md-5 {
     margin-right: 3rem !important;
+  }
+  .mb-md-0 {
+    margin-bottom: 0 !important;
   }
   .ms-md-2 {
     margin-left: 0.5rem !important;
@@ -1146,22 +1162,22 @@ video {
   padding: 0;
 }
 
-.homepage-logged-in, .profile-page {
+.homepage-logged-in, .profile-page, .friends {
   width: 100%;
   height: 100%;
   background-color: #6082B6;
 }
-.homepage-logged-in .user-photo, .profile-page .user-photo {
+.homepage-logged-in .user-photo, .profile-page .user-photo, .friends .user-photo {
   width: 40px;
   height: 40px;
   object-fit: cover;
 }
-.homepage-logged-in .navbar-icon, .homepage-logged-in .navbar-icon-noti, .homepage-logged-in .chat-navbar-icon, .profile-page .navbar-icon, .profile-page .navbar-icon-noti, .profile-page .chat-navbar-icon {
+.homepage-logged-in .navbar-icon, .homepage-logged-in .navbar-icon-noti, .homepage-logged-in .chat-navbar-icon, .profile-page .navbar-icon, .profile-page .navbar-icon-noti, .profile-page .chat-navbar-icon, .friends .navbar-icon, .friends .navbar-icon-noti, .friends .chat-navbar-icon {
   cursor: pointer;
   width: 20px;
   height: 20px;
 }
-.homepage-logged-in .image-navbar-icon, .profile-page .image-navbar-icon {
+.homepage-logged-in .image-navbar-icon, .profile-page .image-navbar-icon, .friends .image-navbar-icon {
   cursor: pointer;
   width: 25px;
   height: 25px;
@@ -1172,11 +1188,11 @@ video {
   justify-content: center;
   align-items: center;
 }
-.homepage-logged-in .image-navbar-icon:hover .custom-tooltip, .profile-page .image-navbar-icon:hover .custom-tooltip {
+.homepage-logged-in .image-navbar-icon:hover .custom-tooltip, .profile-page .image-navbar-icon:hover .custom-tooltip, .friends .image-navbar-icon:hover .custom-tooltip {
   opacity: 1;
   z-index: 900;
 }
-.homepage-logged-in .image-navbar-icon .custom-tooltip, .profile-page .image-navbar-icon .custom-tooltip {
+.homepage-logged-in .image-navbar-icon .custom-tooltip, .profile-page .image-navbar-icon .custom-tooltip, .friends .image-navbar-icon .custom-tooltip {
   position: absolute;
   top: -28px;
   right: 0;
@@ -1191,58 +1207,131 @@ video {
   text-wrap: nowrap;
   user-select: none;
 }
-.homepage-logged-in .image-navbar-icon img, .profile-page .image-navbar-icon img {
+.homepage-logged-in .image-navbar-icon img, .profile-page .image-navbar-icon img, .friends .image-navbar-icon img {
   user-select: none;
 }
-.homepage-logged-in .navbar-icon, .homepage-logged-in .navbar-icon-noti, .profile-page .navbar-icon, .profile-page .navbar-icon-noti {
+.homepage-logged-in .navbar-icon, .homepage-logged-in .navbar-icon-noti, .profile-page .navbar-icon, .profile-page .navbar-icon-noti, .friends .navbar-icon, .friends .navbar-icon-noti {
   margin-right: 8px;
 }
-.homepage-logged-in .navbar-icon, .homepage-logged-in .chat-navbar-icon, .homepage-logged-in .image-navbar-icon, .profile-page .navbar-icon, .profile-page .chat-navbar-icon, .profile-page .image-navbar-icon {
+.homepage-logged-in .navbar-icon, .homepage-logged-in .chat-navbar-icon, .homepage-logged-in .image-navbar-icon, .profile-page .navbar-icon, .profile-page .chat-navbar-icon, .profile-page .image-navbar-icon, .friends .navbar-icon, .friends .chat-navbar-icon, .friends .image-navbar-icon {
   color: #E0E0E0;
   transition: 0.1s;
 }
-.homepage-logged-in .navbar-icon:hover, .homepage-logged-in .chat-navbar-icon:hover, .homepage-logged-in .image-navbar-icon:hover, .profile-page .navbar-icon:hover, .profile-page .chat-navbar-icon:hover, .profile-page .image-navbar-icon:hover {
+.homepage-logged-in .navbar-icon:hover, .homepage-logged-in .chat-navbar-icon:hover, .homepage-logged-in .image-navbar-icon:hover, .profile-page .navbar-icon:hover, .profile-page .chat-navbar-icon:hover, .profile-page .image-navbar-icon:hover, .friends .navbar-icon:hover, .friends .chat-navbar-icon:hover, .friends .image-navbar-icon:hover {
   color: #fff;
 }
-.homepage-logged-in .image, .profile-page .image {
+.homepage-logged-in .image, .profile-page .image, .friends .image {
   width: 35px;
   height: 35px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
 }
-.homepage-logged-in .found-users-container, .homepage-logged-in .notifications-container, .profile-page .found-users-container, .profile-page .notifications-container {
+.homepage-logged-in .found-users-container, .homepage-logged-in .notifications-container, .profile-page .found-users-container, .profile-page .notifications-container, .friends .found-users-container, .friends .notifications-container {
   top: 75px;
   background-color: #E0E0E0;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
 }
-.homepage-logged-in .notifications-container, .profile-page .notifications-container {
+.homepage-logged-in .notifications-container, .profile-page .notifications-container, .friends .notifications-container {
   right: 0;
 }
-.homepage-logged-in .found-users-container .found-users, .profile-page .found-users-container .found-users {
+.homepage-logged-in .found-users-container .found-users, .profile-page .found-users-container .found-users, .friends .found-users-container .found-users {
   transition: 0.1s;
   cursor: pointer;
 }
-.homepage-logged-in .found-users-container .found-users:hover, .profile-page .found-users-container .found-users:hover {
+.homepage-logged-in .found-users-container .found-users:hover, .profile-page .found-users-container .found-users:hover, .friends .found-users-container .found-users:hover {
   background-color: rgba(33, 37, 41, 0.1);
 }
-.homepage-logged-in .action-button, .profile-page .action-button {
+.homepage-logged-in .action-button, .profile-page .action-button, .friends .action-button {
   background-color: transparent;
   border: 1px solid #6B1E7B !important;
   transition: 0.1s;
 }
-.homepage-logged-in .action-button .action-button-icon, .profile-page .action-button .action-button-icon {
+.homepage-logged-in .action-button .action-button-icon, .profile-page .action-button .action-button-icon, .friends .action-button .action-button-icon {
   width: 20px;
   height: 20px;
   color: rgba(107, 30, 123, 0.6);
   transition: 0.1s;
 }
-.homepage-logged-in .action-button:hover, .profile-page .action-button:hover {
+.homepage-logged-in .action-button:hover, .profile-page .action-button:hover, .friends .action-button:hover {
   background-color: #6B1E7B;
   color: #fff;
   cursor: pointer;
 }
-.homepage-logged-in .action-button:hover .action-button-icon, .profile-page .action-button:hover .action-button-icon {
+.homepage-logged-in .action-button:hover .action-button-icon, .profile-page .action-button:hover .action-button-icon, .friends .action-button:hover .action-button-icon {
+  color: #fff;
+}
+
+.messaging-window {
+  z-index: 999;
+}
+.messaging-window .chatbox-navbar {
+  width: 100%;
+  color: #fff;
+  font-size: 18px;
+}
+.messaging-window .chatbox-navbar .onlineCircle {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #FF4081;
+  position: relative;
+  left: -15px;
+  top: 10px;
+}
+.messaging-window .messages-container {
+  background-color: #E0E0E0;
+  overflow-y: auto;
+  overflow-wrap: break-word;
+  width: 100%;
+}
+.messaging-window .messages-container .attachment-image {
+  max-width: 250px;
+  max-height: 250px;
+  object-fit: contain;
+}
+.messaging-window .messages-container .sent-message {
+  width: 100%;
+}
+.messaging-window .messages-container .sent-message p {
+  border-radius: 10px 10px 0 10px;
+  font-size: 15px;
+  max-width: 320px;
+  width: fit-content;
+  text-align: justify;
+  overflow-wrap: break-word;
+}
+.messaging-window .messages-container .recieved-message {
+  width: 100%;
+}
+.messaging-window .messages-container .recieved-message p {
+  border-radius: 10px 10px 10px 0;
+  font-size: 15px;
+  max-width: 292px;
+  width: fit-content;
+  text-align: justify;
+  overflow-wrap: break-word;
+}
+
+.chat-box-input {
+  resize: none;
+  height: 40px;
+  outline: none;
+  border: none;
+  font-size: 15px;
+  overflow: hidden;
+}
+
+.chat-box-input-icon {
+  color: #E0E0E0;
+  cursor: pointer;
+  transition: 0.1s;
+}
+.chat-box-input-icon * {
+  width: 25px;
+  height: 25px;
+}
+.chat-box-input-icon:hover {
   color: #fff;
 }
 
@@ -1254,74 +1343,6 @@ video {
 .home-content-logged-in .chat-icon {
   width: 20px;
   height: 20px;
-}
-.home-content-logged-in .messaging-window {
-  z-index: 999;
-}
-.home-content-logged-in .messaging-window .chatbox-navbar {
-  width: 100%;
-}
-.home-content-logged-in .messaging-window .chatbox-navbar .onlineCircle {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #FF4081;
-  position: relative;
-  left: -15px;
-  top: 10px;
-}
-.home-content-logged-in .messaging-window .messages-container {
-  background-color: #E0E0E0;
-  overflow-y: auto;
-  overflow-wrap: break-word;
-  width: 100%;
-}
-.home-content-logged-in .messaging-window .messages-container .attachment-image {
-  max-width: 250px;
-  max-height: 250px;
-  object-fit: contain;
-}
-.home-content-logged-in .messaging-window .messages-container .sent-message {
-  width: 100%;
-}
-.home-content-logged-in .messaging-window .messages-container .sent-message p {
-  border-radius: 10px 10px 0 10px;
-  font-size: 15px;
-  max-width: 320px;
-  width: fit-content;
-  text-align: justify;
-  overflow-wrap: break-word;
-}
-.home-content-logged-in .messaging-window .messages-container .recieved-message {
-  width: 100%;
-}
-.home-content-logged-in .messaging-window .messages-container .recieved-message p {
-  border-radius: 10px 10px 10px 0;
-  font-size: 15px;
-  max-width: 292px;
-  width: fit-content;
-  text-align: justify;
-  overflow-wrap: break-word;
-}
-.home-content-logged-in .chat-box-input {
-  resize: none;
-  height: 40px;
-  outline: none;
-  border: none;
-  font-size: 15px;
-  overflow: hidden;
-}
-.home-content-logged-in .chat-box-input-icon {
-  color: #E0E0E0;
-  cursor: pointer;
-  transition: 0.1s;
-}
-.home-content-logged-in .chat-box-input-icon * {
-  width: 25px;
-  height: 25px;
-}
-.home-content-logged-in .chat-box-input-icon:hover {
-  color: #fff;
 }
 .home-content-logged-in .picker-container {
   display: flex;
@@ -1357,20 +1378,22 @@ video {
   background-color: #0F52BA;
 }
 
-.user-profile {
-  width: 100vw;
-  min-height: 100vh;
-}
-.user-profile .photo-collection-image {
+.photo-collection-image {
   max-height: 250px !important;
   user-select: none;
 }
-.user-profile .user-card .user-card-border {
+
+.user-card .user-card-border {
   border: 1px solid #333;
 }
-.user-profile .user-card img {
+.user-card img {
   width: 90px;
   height: 90px;
+}
+
+.user-profile {
+  width: 100vw;
+  min-height: 100vh;
 }
  .user-profile .cover-user-image {
   width: 100%;
@@ -1396,7 +1419,6 @@ video {
 }
 .user-profile .profile-image-container div img, .user-profile .profile-image-container div label img {
   border: 3px solid #6082B6;
-  cursor: pointer;
   z-index: 15;
   user-select: none;
 }

@@ -49,7 +49,7 @@ const Contacts = (props: {
         : <FaUsersRectangle className="icon" onClick={() => setShowContacts(true)} />
       }
       </div>
-      {showMessagingWindow ? <MessagingWindow styles={messagingWindowStyles} setShowMessagingWindow={setShowMessagingWindow} user={user} classname="position-fixed bottom-0 end-0 me-md-5 bg-primary" /> : null}
+      {showMessagingWindow && <MessagingWindow styles={messagingWindowStyles} setShowMessagingWindow={setShowMessagingWindow} user={user} classname="position-fixed bottom-0 end-0 me-md-5 bg-primary" />}
     </>
   );
 }

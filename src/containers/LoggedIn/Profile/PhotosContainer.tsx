@@ -8,14 +8,15 @@ const PhotosContainer = (props: {isOwner: boolean}) => {
   return (
     <div className="container-fluid">
       <div className="row g-3">
-        {props.isOwner ?
+        {
           Object.keys(filteredUserProfileImages).length ?
             Object.keys(filteredUserProfileImages).map((date: string, key: number) => {
-              return <ProfilePhotoCollectionCard key={key} src={filteredUserProfileImages[parseInt(date)].url} alt="user image" />
+              return <ProfilePhotoCollectionCard key={key} isOwner={props.isOwner} src={filteredUserProfileImages[parseInt(date)].url} alt="user image" />
             })
-          : <span className="fs-5 text-center text-primary my-4">No photos to show for you.</span>
-        :
-          <span>ASDASDAUIOFHQOASUHEQUIAOWHSEDOi</span>
+          : 
+            <span className="fs-5 text-left text-primary my-4">
+              {props.isOwner ? "No photos to show for you" : "No photos to show of this user"}
+            </span>
         }
       </div>
     </div>
