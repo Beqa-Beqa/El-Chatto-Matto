@@ -10,7 +10,7 @@ const ChatBoxNavbar = (props: {
   user: DocumentData | null,
   setShowMessagingWindow: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-  const {online} = useContext(UserChatsContext);
+  const {online, away} = useContext(UserChatsContext);
   const {setTrigger} = useContext(RemoteUserContext);
   const navigate = useNavigate();
 
@@ -19,8 +19,9 @@ const ChatBoxNavbar = (props: {
       <div className="chatbox-navbar d-flex align-items-center justify-content-between p-2">
         <div className="d-flex align-items-center">
           <img style={{cursor: "pointer"}} onClick={() => {setTrigger(prev => !prev); navigate(`/${props.user!.uid}`);}} className="image me-2" src={props.user?.photoURL} alt="user image" />
-          {online.includes(props.user.uid) ? <div className="onlineCircle" /> : null}
-          <p className={props.user && online.includes(props.user.uid) ? "mb-0" : "mb-0 ms-2"}>{props.user && props.user.displayName}</p>
+          {online.includes(props.user.uid) && <div className="onlineCircle" />}
+          {away.includes(props.user.uid) && <div className="awayCircle" />}
+          <p className={props.user && (online.includes(props.user.uid) || away.includes(props.user.uid)) ? "mb-0" : "mb-0 ms-2"}>{props.user && props.user.displayName}</p>
         </div>
         <div className="w-50 d-flex align-items-center justify-content-end gap-2">
           <div className="w-75 d-flex align-items-center justify-content-end">

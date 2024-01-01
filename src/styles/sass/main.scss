@@ -465,16 +465,27 @@ video {
   .chatbox-navbar {
     width: 100%;
     color: $secondary;
-    font-size: 18px;
+    font-size: 20px;
 
-    .onlineCircle {
+    p {
+      font-size: 16px;
+    }
+
+    .onlineCircle, .awayCircle {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background-color: #FF4081;
       position: relative;
       left: -15px;
       top: 10px;
+    }
+
+    .onlineCircle {
+      background-color: #FF4081;
+    }
+
+    .awayCircle {
+      background-color: #FFAA33;
     }
   }
 
@@ -567,14 +578,21 @@ video {
   .loggedin-friends {
     z-index: 900;
 
-    .onlineCircle {
+    .onlineCircle, .awayCircle {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background-color: #FF4081;
       position: relative;
       left: -8px;
       top: 10px;
+    }
+
+    .onlineCircle {
+      background-color: #FF4081;
+    }
+
+    .awayCircle {
+      background-color: #FFAA33;
     }
 
     .friends-container {

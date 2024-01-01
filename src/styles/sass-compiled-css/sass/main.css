@@ -581,6 +581,10 @@ textarea {
   display: none !important;
 }
 
+.position-static {
+  position: static !important;
+}
+
 .position-relative {
   position: relative !important;
 }
@@ -1268,16 +1272,24 @@ video {
 .messaging-window .chatbox-navbar {
   width: 100%;
   color: #fff;
-  font-size: 18px;
+  font-size: 20px;
 }
-.messaging-window .chatbox-navbar .onlineCircle {
+.messaging-window .chatbox-navbar p {
+  font-size: 16px;
+}
+.messaging-window .chatbox-navbar .onlineCircle, .messaging-window .chatbox-navbar .awayCircle {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #FF4081;
   position: relative;
   left: -15px;
   top: 10px;
+}
+.messaging-window .chatbox-navbar .onlineCircle {
+  background-color: #FF4081;
+}
+.messaging-window .chatbox-navbar .awayCircle {
+  background-color: #FFAA33;
 }
 .messaging-window .messages-container {
   background-color: #E0E0E0;
@@ -1357,14 +1369,19 @@ video {
 .home-content-logged-in .loggedin-friends {
   z-index: 900;
 }
-.home-content-logged-in .loggedin-friends .onlineCircle {
+.home-content-logged-in .loggedin-friends .onlineCircle, .home-content-logged-in .loggedin-friends .awayCircle {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #FF4081;
   position: relative;
   left: -8px;
   top: 10px;
+}
+.home-content-logged-in .loggedin-friends .onlineCircle {
+  background-color: #FF4081;
+}
+.home-content-logged-in .loggedin-friends .awayCircle {
+  background-color: #FFAA33;
 }
 .home-content-logged-in .loggedin-friends .friends-container {
   border-top: 1px solid #E0E0E0;

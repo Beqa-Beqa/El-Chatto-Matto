@@ -10,6 +10,7 @@ export const UserChatsContext = createContext<{
   filteredNotifications: any,
   notiCount: number,
   online: string[],
+  away: string[],
   friendsData: (DocumentData | undefined)[]
 }>({
   requestsSent: [],
@@ -18,6 +19,7 @@ export const UserChatsContext = createContext<{
   filteredNotifications: {},
   notiCount: 0,
   online: [],
+  away: [],
   friendsData: []
 });
 
@@ -36,6 +38,8 @@ const UserChatsContextProvider = ({children}: any) => {
   const [notiCount, setNotiCount] = useState<number>(0);
   // State for storing ids of online users
   const [online, setOnline] = useState<string[]>([]);
+  // State for storing ids of away users
+  const [away, setAway] = useState<string[]>([]);
   // State for user information storing (whole user object)
   const [friendsData, setFriendsData] = useState<(DocumentData | undefined)[]>([]);
 
@@ -65,9 +69,13 @@ const UserChatsContextProvider = ({children}: any) => {
           dataArr.push(data);
         });
         // Filter data based on online status.
-        const filteredDataArr: string[] = dataArr.filter((userObj: DocumentData) => userObj.data().isOnline).map((userObj: DocumentData) => userObj.id);
-        // set online state as filteredData. online state will be an array of users who are online.
-        setOnline(filteredDataArr);
+        const onlineArr: string[] = dataArr.filter((userObj: DocumentData) => userObj.data().isOnline).map((userObj: DocumentData) => userObj.id);
+        // Filter data based on away status.
+        const awayArr: string[] = dataArr.filter((userObj: DocumentData) => userObj.data().isAway).map((userObj: DocumentData) => userObj.id);
+        // set online state as onlineArr. online state will be an array of users who are online.
+        setOnline(onlineArr);
+        // set away state as awayArr. away state will be an array of users who are away.
+        setAway(awayArr);
       });
 
       // Snapshots cleaner
@@ -167,7 +175,7 @@ const UserChatsContextProvider = ({children}: any) => {
     fetchData();
   }, [friends]);
 
-  return <UserChatsContext.Provider value={{requestsSent, friends, notifications, filteredNotifications, notiCount, online, friendsData}}>
+  return <UserChatsContext.Provider value={{requestsSent, friends, notifications, filteredNotifications, notiCount, online, away, friendsData}}>
     {children}
   </UserChatsContext.Provider>
 }

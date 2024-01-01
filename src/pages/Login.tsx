@@ -28,7 +28,8 @@ const Login = () => {
       // Update user's online status.
       const curUserStatusRef = doc(firestore, "userChats", signedUser.user.uid);
       await updateDoc(curUserStatusRef, {
-        isOnline: true
+        isOnline: true,
+        isAway: false
       });
       // If successfull navigate to homepage.
       navigate("/");
@@ -68,11 +69,13 @@ const Login = () => {
       !existingDoc.exists() ?
         await setDoc(doc(firestore, "userChats", signedUser.user.uid), {
           chats: [],
-          isOnline: true
+          isOnline: true,
+          isAway: false
         })
       : 
         await updateDoc(doc(firestore, "userChats", signedUser.user.uid), {
-          isOnline: true
+          isOnline: true,
+          isAway: false,
         });
 
       navigate("/");

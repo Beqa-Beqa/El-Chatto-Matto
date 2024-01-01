@@ -1,13 +1,13 @@
 import "./styles/sass/main.scss";
 import { Register, Login, HomepageLoggedIn, HomepageNotLoggedIn, Friends, CurrentUserProfile, RemoteUserProfile } from "./pages";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "./contexts/AuthContextProvider";
 import { signOut } from "firebase/auth";
-import { auth } from "./config/firebase";
+import { auth, firestore } from "./config/firebase";
 import { Button } from "react-bootstrap";
 import { RemoteUserContext } from "./contexts/RemoteUserContextProvider";
-import { DocumentData } from "firebase/firestore";
+import { DocumentData, doc, updateDoc } from "firebase/firestore";
 
 export const deletePrompt = (userName: string, yes: () => void, no: () => void) => <div className="bg-secondary rounded py-2 px-4">
     <span className="fs-5 text-primary">Delete <strong>{userName}</strong> from your friends?</span>
@@ -26,6 +26,54 @@ function App() {
   const {remUserGenInfo}: DocumentData = useContext(RemoteUserContext);
   // If user is on their profile page isOwner will be true.
   const isOwner = currentUser?.uid === remUserGenInfo.uid;
+
+  useEffect(() => {
+    if(currentUser) {
+
+      const currentUserDocRef = doc(firestore, "userChats", currentUser.uid);
+
+      const handleVisibilityChange = async () => {
+        if(document.visibilityState === "hidden") {
+          try {
+            await updateDoc(currentUserDocRef, {
+              isOnline: false,
+              isAway: true
+            })
+          } catch (err) {
+            console.error(err);
+          }
+        } else {
+          try {
+            await updateDoc(currentUserDocRef, {
+              isOnline: true,
+              isAway: false
+            })
+          } catch (err) {
+            console.error(err);
+          }
+        }
+      }
+
+      const handleBeforeUnload = async () => {
+        try {
+          await updateDoc(currentUserDocRef, {
+            isOnline: false,
+            isAway: true
+          })
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      window.addEventListener("beforeunload", handleBeforeUnload);
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+      }
+    }
+  }, [currentUser?.uid]);
 
   // Protected route wrapper, if user is not logged in and there is no loading state, user is
   // redirected to homepage for not logged in users when trying to access root route.

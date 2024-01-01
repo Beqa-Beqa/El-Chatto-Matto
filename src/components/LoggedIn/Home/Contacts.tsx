@@ -11,8 +11,7 @@ const Contacts = (props: {
   // width for retrieving window innerwidth.
   const {width} = useContext(GeneralContext);
   // friends list of current user.
-  const {online, friendsData} = useContext(UserChatsContext);
-
+  const {online, away, friendsData} = useContext(UserChatsContext);
   // showUsers state for showing contacts or not.
   const [showContacts, setShowContacts] = useState<boolean>(false);
   // State for showing messaging window or not.
@@ -29,7 +28,11 @@ const Contacts = (props: {
         width >= 1024 || showContacts ?
           <>
             <div className="d-flex align-items-center justify-content-between">
-              <h3 className="fs-4 m-0">Contacts</h3>
+              <div className="d-flex flex-column">
+                <h3 className="fs-4 m-0">Contacts</h3>
+                <span className="d-flex align-items-center"><div className="onlineCircle position-static me-1" />- Online &#40; {online.length} &#41;</span>
+                <span className="d-flex align-items-center"><div className="awayCircle position-static me-1" />- Away &#40; {away.length} &#41;</span>
+              </div>
               {width < 1024 && <FaRegRectangleXmark className="icon" onClick={() => setShowContacts(false)} />}
             </div>
             <div style={{width: 300}} className="friends-container mt-2">
@@ -41,7 +44,8 @@ const Contacts = (props: {
                 }} key={key} className="d-flex align-items-center py-1 px-2 friend-info-container">
                   <img className="image" src={userInfo!.photoURL} alt="user image" />
                   {online.includes(userInfo?.uid) && <div className="onlineCircle" />}
-                  <p className={online.includes(userInfo?.uid) ? "fw-600 mb-0" : "fw-600 mb-0 ms-2"}>{userInfo!.displayName}</p>
+                  {away.includes(userInfo?.uid) && <div className="awayCircle" />}
+                  <p className={online.includes(userInfo?.uid) || away.includes(userInfo?.uid) ? "fw-600 mb-0" : "fw-600 mb-0 ms-2"}>{userInfo!.displayName}</p>
                 </div>
               })}
             </div>

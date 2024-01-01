@@ -22,7 +22,8 @@ const ProfileCorner = () => {
       setIsLoading(true);
       // Set online status to false.
       await updateDoc(currentUserDocRef, {
-        isOnline: false
+        isOnline: false,
+        isAway: false
       });
       // Sign out the user.
       await signOut(auth);

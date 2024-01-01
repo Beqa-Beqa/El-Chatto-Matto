@@ -87,6 +87,7 @@ const Register = () => {
       await setDoc(userChatRef, {
         friends: [],
         isOnline: true,
+        isAway: false,
         notifications: {},
         requestsSent: []
       });
