@@ -581,8 +581,10 @@ video {
       font-size: 15px;
       display: inline-block;
       max-width: 250px;
+      height: 22.5px;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .onlineCircle, .awayCircle {
