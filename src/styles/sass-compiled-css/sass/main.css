@@ -601,6 +601,10 @@ textarea {
   right: 0 !important;
 }
 
+.border {
+  border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+}
+
 .border-0 {
   border: 0 !important;
 }
@@ -838,6 +842,14 @@ textarea {
 
 .pb-0 {
   padding-bottom: 0 !important;
+}
+
+.ps-0 {
+  padding-left: 0 !important;
+}
+
+.ps-4 {
+  padding-left: 1.5rem !important;
 }
 
 .ps-5 {
@@ -1369,6 +1381,13 @@ video {
 .home-content-logged-in .loggedin-friends {
   z-index: 900;
 }
+.home-content-logged-in .loggedin-friends .last-message {
+  font-size: 15px;
+  display: inline-block;
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .home-content-logged-in .loggedin-friends .onlineCircle, .home-content-logged-in .loggedin-friends .awayCircle {
   width: 8px;
   height: 8px;
@@ -1384,9 +1403,9 @@ video {
   background-color: #FFAA33;
 }
 .home-content-logged-in .loggedin-friends .friends-container {
+  background-color: #6082B6;
   border-top: 1px solid #E0E0E0;
   overflow-y: auto;
-  max-height: 100vh;
 }
 .home-content-logged-in .loggedin-friends .friends-container .friend-info-container {
   cursor: pointer;
@@ -1455,6 +1474,12 @@ video {
 }
 
 .roller-wrapper {
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
   width: 100vw;
   height: 100vh;
   display: flex;

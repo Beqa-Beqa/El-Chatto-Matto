@@ -65,7 +65,7 @@ const Register = () => {
       // Save user data on firestore.
       const docRef = doc(firestore, "users", userData.user.uid);
       const profileImageRefsObj: any = {};
-      profileImageRefsObj[`${downloadUrl}`] = imageRefString;
+      profileImageRefsObj[`${downloadUrl}`] = imageRefString || {};
       await setDoc(docRef, {
         uid: userData.user.uid,
         displayName: username,
@@ -91,7 +91,7 @@ const Register = () => {
         notifications: {},
         requestsSent: []
       });
-
+      
       // Send user a verification email.
       await sendEmailVerification(userData.user);
 

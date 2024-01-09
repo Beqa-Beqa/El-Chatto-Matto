@@ -554,7 +554,6 @@ video {
 .home-content-logged-in {
   width: 100%;
   min-height: 100vh;
-
   color: $secondary-second;
 
   .chat-icon {
@@ -578,6 +577,14 @@ video {
   .loggedin-friends {
     z-index: 900;
 
+    .last-message {
+      font-size: 15px;
+      display: inline-block;
+      max-width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .onlineCircle, .awayCircle {
       width: 8px;
       height: 8px;
@@ -596,9 +603,9 @@ video {
     }
 
     .friends-container {
+      background-color: $background;
       border-top: 1px solid $secondary-second;
       overflow-y: auto;
-      max-height: 100vh;
       
       .friend-info-container {
         cursor: pointer;
@@ -740,6 +747,12 @@ video {
 
 // LOADING SCREEN SPINNER ---------------------------------------------------------------------->
 .roller-wrapper {
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
   width: 100vw;
   height: 100vh;
   display: flex;

@@ -8,10 +8,14 @@ import { RemoteUserContext } from "../../../contexts/RemoteUserContextProvider";
 
 const ChatBoxNavbar = (props: {
   user: DocumentData | null,
-  setShowMessagingWindow: React.Dispatch<React.SetStateAction<boolean>>
+  setShowMessagingWindow: React.Dispatch<React.SetStateAction<boolean>>,
+  isInChat: boolean
 }) => {
+  // Online and away status users id arrays.
   const {online, away} = useContext(UserChatsContext);
+  // setTrigger forces refetch of userdata.
   const {setTrigger} = useContext(RemoteUserContext);
+  // to navigate through different urls.
   const navigate = useNavigate();
 
   if(props.user) {

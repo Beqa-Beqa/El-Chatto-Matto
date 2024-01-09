@@ -12,17 +12,21 @@ import data from "@emoji-mart/data";
 import { GeneralContext } from "../../../contexts/GeneralContextProvider";
 import Compressor from "compressorjs";
 import uuid from "react-uuid";
+import { MessagesContext } from "../../../contexts/MessagesContextProvider";
 
 const ChatBoxInput = (props: {
   user: DocumentData | null,
   messageRef: React.RefObject<HTMLDivElement> | null,
   dotsRef: React.RefObject<HTMLDivElement> | null,
-  imageRef: React.RefObject<HTMLImageElement> | null
+  imageRef: React.RefObject<HTMLImageElement> | null,
+  isInChat: boolean
 }) => {
   // Current user context to get info of currentuser.
   const {currentUser} = useContext(AuthContext);
-  // window innerwidth
+  // window innerwidth.
   const {width} = useContext(GeneralContext);
+  // isReadBy data.
+  const {readByData} = useContext(MessagesContext);
   // message state for written message in input field of message window (it's textarea actually).
   const [message, setMessage] = useState<string>("");
   // State for user if they are writing a message or not.
@@ -78,6 +82,48 @@ const ChatBoxInput = (props: {
     }
   }
 
+  // Sending message logic.
+  const sendMessage = async (trimmedMessage: string) => {
+    const thisReadByData = readByData[`chatWith-${props.user!.uid}`];
+    // if message exists and it's not whitespace.
+    if(trimmedMessage || image) {
+      // clean message input field.
+      setMessage("");
+      // doc ref to which doc should be updated.
+      const docRef = doc(firestore, "chats", combId);
+      // date with which data is stored.
+      const curDate = new Date().getTime();
+      // create document reference as object.
+      const temporaryReadBy: any = {};
+      temporaryReadBy[currentUser!.uid] = true;
+      temporaryReadBy[props.user!.uid] = props.isInChat;
+      const docData: any = {isReadBy: {
+        readBy: temporaryReadBy,
+        unreadMessagesCount: props.isInChat ? 0
+        : thisReadByData.unreadMessagesCount + 1 || 1
+      }};
+      try {
+        // create new field in docData with curDate's value and set it to an object with fields senderId, message.
+        const imageDownloadUrl = image ? await handleImageUpload(image) : null;
+
+        docData[curDate] = {
+          senderId: currentUser?.uid,
+          message: trimmedMessage ? trimmedMessage : null,
+          img: imageDownloadUrl,
+          date: new Date().getTime(),
+        }
+        // update document
+        await updateDoc(docRef, docData);
+      } catch (err) {
+        console.error(err);
+      }
+
+      scrollIntoView();
+    }
+
+    setShowPicker(false);
+  }
+
   // We handle keydown to be able to send message with Enter.
   const handleKeyDown = async (event: any) => {
     if(event.code === "Enter" && !event.shiftKey) {
@@ -88,64 +134,17 @@ const ChatBoxInput = (props: {
       if(trimmedMessage || image) {
         // Prevent event from default action, in this case writing a new line.
         event.preventDefault();
-        // Clean message field.
-        setMessage("");
-        // doc ref to where to store message.
-        const docRef = doc(firestore, "chats", combId);
-        // Current date in unix format with which message and senderId will be stored.
-        const curDate = new Date().getTime();
-        // Prelimenarly make reference of docdata as an empty object, othervise we are not able
-        // to use variables as keys in created objcet.
-        const docData: any = {};
-        // Create a new ket with curDate's value and set it as an object with message and senderid fields. 
-        const imageDownloadUrl = image ? await handleImageUpload(image) : null;
-
-        docData[curDate] = {
-          senderId: currentUser?.uid,
-          message: trimmedMessage ? trimmedMessage : null,
-          img: imageDownloadUrl
+        try {
+          await sendMessage(trimmedMessage);
+        } catch (err) {
+          console.error(err);
         }
-        // Update document.
-        await updateDoc(docRef, docData);
-
-        scrollIntoView();
       } else {
         // If message is just an empty string or a whitespace it does nothing, not even new line is written.
         event.preventDefault();
         setMessage(message + `\n`);
       }
     }
-  }
-
-  // Same thing goes here as in handleKeyDown, except here we just click on react-icon's icon.
-  const handleClick = async () => {
-    // trim message.
-    const trimmedMessage = message.trim();
-    // if message exists and it's not whitespace.
-    if(trimmedMessage || image) {
-      // clean message input field.
-      setMessage("");
-      // doc ref to which doc should be updated.
-      const docRef = doc(firestore, "chats", combId);
-      // date with which data is stored.
-      const curDate = new Date().getTime();
-      // create document reference as object.
-      const docData: any = {};
-      // create new field in docData with curDate's value and set it to an object with fields senderId, message.
-      const imageDownloadUrl = image ? await handleImageUpload(image) : null;
-
-      docData[curDate] = {
-        senderId: currentUser?.uid,
-        message: trimmedMessage ? trimmedMessage : null,
-        img: imageDownloadUrl
-      }
-      // update document
-      await updateDoc(docRef, docData);
-
-      scrollIntoView();
-    }
-
-    setShowPicker(false);
   }
 
   const handleEmojiClick = () => {
@@ -206,7 +205,7 @@ const ChatBoxInput = (props: {
           <div onClick={handleEmojiClick} className="chat-box-input-icon">
             <MdOutlineEmojiEmotions />
           </div>
-          <div onClick={handleClick} className="chat-box-input-icon">
+          <div onClick={async () => await sendMessage(message.trim())} className="chat-box-input-icon">
             <AiOutlineSend />
           </div>
         </div>
