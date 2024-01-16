@@ -80,3 +80,20 @@ export const imageDownload = async (dwUrl: string, name: string) => {
     link.click();
   }).catch((err) => console.error(err));
 }
+
+
+// <---------------------------------------------------------------------------------------------------------->
+
+
+// Find all instance substrings in a main string.
+export const findAllInstances = (str: string, target: string) => {
+  const indexes = [];
+  let currentlyFound = str.indexOf(target);
+
+  while(currentlyFound !== -1) {
+    indexes.push(currentlyFound);
+    currentlyFound = str.indexOf(target, currentlyFound + 1);
+  }
+
+  return indexes;
+}

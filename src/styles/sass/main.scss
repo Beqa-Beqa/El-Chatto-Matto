@@ -436,8 +436,12 @@ video {
   }
   .action-button {
     background-color: transparent;
-    border: 1px solid $tertiary !important;
+    border: 1px solid $tertiary;
     transition: $base-transition-duration;
+
+    &:disabled {
+      pointer-events: none;
+    }
     
     .action-button-icon {
       width: 20px;
@@ -456,6 +460,47 @@ video {
       }
     }
 
+  }
+}
+
+.post-button {
+  background-color: transparent;
+  border: 1px solid $tertiary-second !important;
+  transition: $base-transition-duration;
+  
+  .post-button-icon {
+    width: 20px;
+    height: 20px;
+    color: rgba($tertiary-second, 0.6);
+    transition: $base-transition-duration;
+  }
+
+  &:hover {
+    background-color: $tertiary-second;
+    color: $secondary;
+    cursor: pointer;
+
+    .action-button-icon {
+      color: $secondary;
+    }
+  }
+
+}
+
+.post-input-button {
+  border: none;
+  outline: none;
+  padding: 6px 0 6px 8px;
+  border-radius: 5px;
+  width: 100%;
+  text-align: left;
+  transition: $base-transition-duration;
+  background-color: $secondary-second;
+  color: $primary;
+
+  &:hover {
+    background-color: $secondary;
+    color: black;
   }
 }
 
@@ -506,8 +551,7 @@ video {
       p {
         border-radius: 10px 10px 0 10px;
         font-size: 15px;
-        max-width: 320px;
-        width: fit-content;
+        max-width: 300px;
         text-align: justify;
         overflow-wrap: break-word;
       }
@@ -518,8 +562,7 @@ video {
       p {
         border-radius: 10px 10px 10px 0;
         font-size: 15px;
-        max-width: 292px;
-        width: fit-content;
+        max-width: 267px;
         text-align: justify;
         overflow-wrap: break-word;
       }
@@ -566,7 +609,6 @@ video {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
     height: 250px;
 
     * {
@@ -576,11 +618,12 @@ video {
 
   .loggedin-friends {
     z-index: 900;
+    background-color: $background;
 
     .last-message {
       font-size: 15px;
       display: inline-block;
-      max-width: 250px;
+      max-width: 200px;
       height: 22.5px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -710,12 +753,22 @@ video {
   }
 }
 
+.textarea-for-post {
+  width: 600px;
+  height: 300px;
+  resize: none;
+  border-radius: 5px;
+  padding: 4px 4px 0 8px;
+}
 
+.extension {
+  transition: $base-transition-duration;
+  color: $secondary-second;
 
-
-
-
-
+  &:hover {
+    color: $secondary;
+  }
+}
 
 
 

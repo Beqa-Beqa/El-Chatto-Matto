@@ -11,7 +11,8 @@ export const UserChatsContext = createContext<{
   notiCount: number,
   online: string[],
   away: string[],
-  friendsData: (DocumentData | undefined)[]
+  friendsData: (DocumentData | undefined)[],
+  postsCount: number
 }>({
   requestsSent: [],
   friends: [],
@@ -20,7 +21,8 @@ export const UserChatsContext = createContext<{
   notiCount: 0,
   online: [],
   away: [],
-  friendsData: []
+  friendsData: [],
+  postsCount: 0
 });
 
 const UserChatsContextProvider = ({children}: any) => {
@@ -42,12 +44,14 @@ const UserChatsContextProvider = ({children}: any) => {
   const [away, setAway] = useState<string[]>([]);
   // State for user information storing (whole user object)
   const [friendsData, setFriendsData] = useState<(DocumentData | undefined)[]>([]);
+  // state for posts count.
+  const [postsCount, setPostsCount] = useState<number>(0);
 
   // Set snapshot listeners and update information on currentUser change.
   useEffect(() => {
     if(currentUser) {
       // Current user's userChats doc reference.
-      const docRef = doc(firestore, "userChats",currentUser.uid);
+      const docRef = doc(firestore, "userChats", currentUser.uid);
       // Document snapshot listener for updating: requestsSent, notifications and friends id's.
       const unsub = onSnapshot(docRef, (snapshot: DocumentSnapshot) => {
         const convertedData: DocumentData = snapshot.data()!;
@@ -55,6 +59,7 @@ const UserChatsContextProvider = ({children}: any) => {
           convertedData.requestsSent && setRequestsSent(convertedData.requestsSent);
           setNotifications(convertedData.notifications ? convertedData.notifications : {});
           convertedData.friends && setFriends(convertedData.friends);
+          convertedData.postsCount && setPostsCount(convertedData.postsCount);
         }
       });
 
@@ -175,7 +180,7 @@ const UserChatsContextProvider = ({children}: any) => {
     fetchData();
   }, [friends]);
 
-  return <UserChatsContext.Provider value={{requestsSent, friends, notifications, filteredNotifications, notiCount, online, away, friendsData}}>
+  return <UserChatsContext.Provider value={{requestsSent, friends, notifications, filteredNotifications, notiCount, online, away, friendsData, postsCount}}>
     {children}
   </UserChatsContext.Provider>
 }

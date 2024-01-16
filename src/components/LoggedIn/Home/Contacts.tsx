@@ -8,9 +8,7 @@ import { MessagesContext } from "../../../contexts/MessagesContextProvider";
 import { AuthContext } from "../../../contexts/AuthContextProvider";
 import { BsChatTextFill } from "react-icons/bs";
 
-const Contacts = (props: {
-  className?: string
-}) => {
+const Contacts = () => {
   // info of currentuser.
   const {currentUser} = useContext(AuthContext);
   // width for retrieving window innerwidth.
@@ -38,7 +36,7 @@ const Contacts = (props: {
 
   return (
     <>
-      <div className={`loggedin-friends h-100 ${props.className}`}>
+      <div className="loggedin-friends pt-2 h-100 position-fixed end-0">
       {
         width >= 1024 || showContacts ?
           <div style={{maxHeight: "calc(100vh - 72px)"}} className="h-100 d-flex flex-column">

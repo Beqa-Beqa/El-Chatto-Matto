@@ -97,7 +97,7 @@ const CurrentUserProfile = () => {
             <div style={profileImageContainerStyles} className={`${width > 574 && "fs-5"} d-flex justify-content-center position-relative mt-3`}>
               <span>{(remUserUserChatsInfo.friends || []).length} Friends</span>
               <hr style={{width: 20, transform: "rotate(90deg)"}} className="mx-2"/>
-              <span>0 Posts</span>
+              <span>{remUserUserChatsInfo.postsCount || 0} Posts</span>
               <hr style={{width: 20, transform: "rotate(90deg)"}} className="mx-2"/>
               <span>{Object.keys(remUserGenInfo.profileImageRefs || {}).length} Photos</span>
             </div>

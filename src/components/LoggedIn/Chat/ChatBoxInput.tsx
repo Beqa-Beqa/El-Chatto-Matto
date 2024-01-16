@@ -109,8 +109,7 @@ const ChatBoxInput = (props: {
         docData[curDate] = {
           senderId: currentUser?.uid,
           message: trimmedMessage ? trimmedMessage : null,
-          img: imageDownloadUrl,
-          date: new Date().getTime(),
+          img: imageDownloadUrl
         }
         // update document
         await updateDoc(docRef, docData);
@@ -209,7 +208,14 @@ const ChatBoxInput = (props: {
             <AiOutlineSend />
           </div>
         </div>
-        {showPicker && <div className="picker-container"><Picker perLine={width > 574 ? "9" : "8"} previewPosition="none" onEmojiSelect={(event: any) => setMessage(message + event.native)} data={data} /> </div>}
+        {showPicker && 
+          <div className="picker-container w-100">
+            <Picker previewPosition="none"
+              perLine={width > 768 ? "9" : width >= 725 && width <= 768 ? "19" : width >= 675 ? "17" : width >= 625 ? "16" : width >= 575 ? "15" : width >= 525 ? "14" : width >= 475 ? "13" : width >= 425 ? "11" : width >= 375 ? "10" : width > 345 ? "9" : "8"} 
+              onEmojiSelect={(event: any) => setMessage(message + event.native)} 
+              data={data} /> 
+          </div>
+        }
       </>
     );
   }

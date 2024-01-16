@@ -3,6 +3,7 @@ import { useContext, useEffect, useRef } from "react";
 import React from "react";
 import { DocumentData } from "firebase/firestore";
 import { GeneralContext } from "../../../contexts/GeneralContextProvider";
+import { UserChatsContext } from "../../../contexts/UserChatsContextProvider";
 
 const ChatBoxMessages = (props: {
   user: DocumentData | null,
@@ -11,6 +12,12 @@ const ChatBoxMessages = (props: {
   setImageRef: React.Dispatch<React.SetStateAction<React.RefObject<HTMLImageElement> | null>>,
   messages: DocumentData,
   userWrites: boolean
+  readBy: {
+    readBy: {
+        [key: string]: boolean;
+    };
+    unreadMessagesCount: number;
+  }
 }) => {
   const messages = props.messages;
 
@@ -18,6 +25,8 @@ const ChatBoxMessages = (props: {
   const {currentUser} = useContext(AuthContext);
   // window innerwidth
   const {width} = useContext(GeneralContext);
+  // friends data of current user
+  const {online, away} = useContext(UserChatsContext);
 
   // useref for sent or recieved div reference. used to scroll to newly sent or recieved message.
   const ref = useRef<HTMLDivElement>(null);
@@ -76,60 +85,104 @@ const ChatBoxMessages = (props: {
       // Conditional rendering for sent and recieved messages. Object.keys(messages) is an array of timestamps
       // these timestamps represent when the data was sent and are in unix format, therefore we are able to sort
       // them from highest to lowest value, which means the earliest message will be rendered first and latest will
-      // render last. in documents we have objects with name of these timestamps (eg: (random timestamp) 1224915912951: {senderId: "id", message: "message"})
+      // render last. in documents we have objects with name of these timestamps (eg: (random timestamp) 1224915912951: {senderId: "id", message: "message" or "null", img: "downloadurl" or "null"})
       // we check for senderid and if it's same as current user's id then we render it as sent, otherwise as recieved.
       // check the classnames of divs in conditional render.
-      const messageElements = Object.keys(messages).sort((a: any, b: any) => a - b).map((doc: string, key:number) => {
-        const incomingMessageFrom = messages[Object.keys(messages).sort((a: any, b: any) => a - b)[key + 1]] ? messages[Object.keys(messages).sort((a: any, b: any) => a - b)[key + 1]].senderId : undefined;
+      const messageElements = Object.keys(messages).sort().map((doc: string, key:number) => {
+        const incomingMessageFrom = messages[Object.keys(messages).sort()[key + 1]] ? messages[Object.keys(messages).sort()[key + 1]].senderId : undefined;
+        // Has time distinction is time range from previous message to current message.
+        // if previous does not exist it will be set to "No Time", otherwise it will be false.
+        // if has time distinction is more than 6000 (it's in miliseconds (10min)) then we want
+        // to visually show difference in chat. 
+        const hasTimeDistinction: number | string | boolean = messages[Object.keys(messages).sort()[key - 1]] ?
+        parseInt(Object.keys(messages).sort()[key]) - parseInt(Object.keys(messages).sort()[key - 1]) :
+        !messages[Object.keys(messages).sort()[key - 1]] ? "No Time" : false;
+
+        // Current time when message was sent. (used when hasTimeDistinction is set as "No Time")
+        const sendingTime = new Date(parseInt(Object.keys(messages).sort()[key]));
+
+        const timeDistinctionElement = hasTimeDistinction === "No Time" ? 
+          <div>
+            <span style={{fontSize: 14}} className="text-primary d-block text-center mb-3">{sendingTime.toLocaleString()}</span>
+          </div>
+        : typeof hasTimeDistinction === "number" && hasTimeDistinction >= 600000 ?
+          <div>
+            <span style={{fontSize: 14}} className="text-primary d-block text-center mt-3 mb-3">{sendingTime.toLocaleString()}</span>
+          </div>
+        : typeof hasTimeDistinction === "number" && hasTimeDistinction >= 120000 ?
+          <div style={{height: 12}} />
+        : null;
 
         return (
           // If sender's id is equal to current user's id.
           messages[doc].senderId === currentUser?.uid ?
-          <div ref={ref} key={key} className="sent-message d-flex align-items-center justify-content-end">
-            {incomingMessageFrom !== currentUser?.uid ?
-              <div className="d-flex flex-column align-items-end justify-content-end">
-                {messages[doc].message && <p style={{flexShrink: 0}} className="bg-primary px-2 py-1 mb-2 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>}
-                {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-2" src={messages[doc].img} alt="sent resource image" />}
-              </div>
-            :
-              <div className="d-flex flex-column align-items-end justify-content-end">
-                {messages[doc].message && <p style={{flexShrink: 0}} className="bg-primary px-2 py-1 mb-1 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>}
-                {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-1" src={messages[doc].img} alt="sent resource image" />}
-              </div>
-            }
-          </div>
+          <React.Fragment key={key}>
+            {timeDistinctionElement}
+            <div ref={ref} className="sent-message d-flex align-items-center justify-content-end">
+              {incomingMessageFrom !== currentUser?.uid ?
+                <div className="d-flex flex-column align-items-end justify-content-end">
+                  {messages[doc].message && <p style={{flexShrink: 0}} className="bg-primary px-2 py-1 mb-2 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>}
+                  {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-2" src={messages[doc].img} alt="sent resource image" />}
+                </div>
+              :
+                <div className="d-flex flex-column align-items-end justify-content-end">
+                  {messages[doc].message && <p style={{flexShrink: 0}} className="bg-primary px-2 py-1 mb-1 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>}
+                  {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-1" src={messages[doc].img} alt="sent resource image" />}
+                </div>
+              }
+            </div>
+          </React.Fragment>
           :
           // If sender's id is equal to remote user's id.
-          <div ref={ref} key={key} className="recieved-message d-flex align-items-center justify-content-start">
-            {incomingMessageFrom !== props.user!.uid ?
-              <div className="d-flex flex-column align-items-start justify-content-start">
-                <div className="d-flex align-items-end">
-                  <img style={{flexShrink: 0}} className="image mb-2" src={props.user!.photoURL} alt="icon" /> 
-                  <div className="d-flex flex-column align-items-start">
-                    {messages[doc].message && <p style={{flexShrink: 0}} className="bg-secondary px-2 py-1 mb-2 ms-2 text-primary">{renderMessage(messages[doc].message)}</p>}
-                    {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-1 ms-2" src={messages[doc].img} alt="sent resource image" />}
+          <React.Fragment key={key}>
+            {timeDistinctionElement}
+            <div ref={ref} className="recieved-message d-flex align-items-center justify-content-start">
+              {incomingMessageFrom !== props.user!.uid ?
+                <div className="d-flex flex-column align-items-start justify-content-start">
+                  <div className="d-flex align-items-end">
+                    <img style={{flexShrink: 0}} className="image mb-2" src={props.user!.photoURL} alt="icon" /> 
+                    <div className="d-flex flex-column align-items-start">
+                      {messages[doc].message && <p style={{flexShrink: 0}} className="bg-secondary px-2 py-1 mb-2 ms-2 text-primary">{renderMessage(messages[doc].message)}</p>}
+                      {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-1 ms-2" src={messages[doc].img} alt="sent resource image" />}
+                    </div>
                   </div>
                 </div>
-              </div>
-            : 
-              <div className="d-flex flex-column align-items-start justify-content-start">
-                <div className="d-flex align-items-center">
-                  {messages[doc].message && <div className="mb-0" style={{width: 35, height: 35, flexShrink: 0}} />}
-                  {messages[doc].message && <p style={{flexShrink: 0}} className="bg-secondary px-2 py-1 mb-0 ms-2 text-primary">{renderMessage(messages[doc].message)}</p>}
+              : 
+                <div className="d-flex flex-column align-items-start justify-content-start">
+                  <div className="d-flex align-items-center">
+                    {messages[doc].message && <div className="mb-0" style={{width: 35, height: 35, flexShrink: 0}} />}
+                    {messages[doc].message && <p style={{flexShrink: 0}} className="bg-secondary px-2 py-1 mb-1 ms-2 text-primary">{renderMessage(messages[doc].message)}</p>}
+                  </div>
+                  <div className="d-flex align-items-center">
+                    {messages[doc].img && <div className="mb-0" style={{width: 35, height: 35, flexShrink: 0}} />}
+                    {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-0 ms-2" src={messages[doc].img} alt="sent resource image" />}
+                  </div>
                 </div>
-                <div className="d-flex align-items-center">
-                  {messages[doc].img && <div className="mb-0" style={{width: 35, height: 35, flexShrink: 0}} />}
-                  {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-0 ms-2" src={messages[doc].img} alt="sent resource image" />}
-                </div>
-              </div>
-            }
-          </div> 
+              }
+            </div>
+          </React.Fragment>
         );
       });
 
+      const messagesLength = Object.keys(messages).length;
+      const lastMessageKey = Math.max(...Object.keys(messages).map((key: string) => parseInt(key)), 0);
+
       return (
-        <div id="message-box" style={messageBoxStyles} className="messages-container p-2">
+        <div id="message-box" style={messageBoxStyles} className="messages-container pt-2 ps-2 pe-2">
           {messageElements}
+          <div className="d-flex justify-content-end">
+            <small style={{top: -8}} className="text-primary me-2 position-relative">
+              {
+                messagesLength && messages[lastMessageKey].senderId !== props.user.uid ?
+                  props.readBy.unreadMessagesCount > 0 ?
+                    online.includes(props.user.uid) || away.includes(props.user.uid) ?
+                      "Recieved"
+                    : "Sent"
+                  : "Seen"
+                : null
+              }
+            </small>
+          </div>
           {props.userWrites &&
             <div ref={threeDotsRef} id="waiting-dots" className="d-flex align-items-center justify-content-start">
               <img className="image" src={props.user!.photoURL} alt="icon" />

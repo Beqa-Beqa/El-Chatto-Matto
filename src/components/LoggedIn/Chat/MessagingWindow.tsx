@@ -14,6 +14,8 @@ const MessagingWindow = (props: {
 }) => {
   // all message data.
   const {allMessagesData, readByData} = useContext(MessagesContext);
+  // message data relating to the current and chosen remote user.
+  const thisReadBy = readByData[`chatWith-${props.user!.uid}`];
   // current user info.
   const {currentUser} = useContext(AuthContext);
   // Reference states set in ChatBoxMessages and used in ChatBoxInput
@@ -80,7 +82,6 @@ const MessagingWindow = (props: {
     const chatAction = async (action: "getIn" | "getOut") => {
       if(action === "getIn") {
         const updateChunk: any = {} 
-        const thisReadBy = readByData[`chatWith-${props.user!.uid}`];
         const remoteDidRead = thisReadBy.readBy && thisReadBy.readBy[props.user!.uid] || false;
         const readByObj = {...thisReadBy.readBy};
         readByObj[currentUser!.uid] = true;
@@ -119,9 +120,10 @@ const MessagingWindow = (props: {
         user={props.user} 
         isInChat={isInChat} 
       />
-      <ChatBoxMessages 
-        setImageRef={setImageRef} 
-        setDotsRef={setDotsRef} 
+      <ChatBoxMessages
+        readBy={thisReadBy}
+        setImageRef={setImageRef}
+        setDotsRef={setDotsRef}
         setRef={setRef} 
         user={props.user} 
         messages={messages} 

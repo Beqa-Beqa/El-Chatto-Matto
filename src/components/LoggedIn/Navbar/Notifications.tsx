@@ -7,7 +7,6 @@ import { AuthContext } from "../../../contexts/AuthContextProvider";
 import { useOutsideClick } from "../../../hooks";
 import { handleRequestAnswer } from "../../../functions/firebase";
 
-
 const Notifications = () => {
   // check userchats context provider.
   const {notiCount, filteredNotifications, notifications} = useContext(UserChatsContext);
