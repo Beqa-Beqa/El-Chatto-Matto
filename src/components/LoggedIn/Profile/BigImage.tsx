@@ -53,7 +53,7 @@ export const userImageDelete = async (type: string, dwUrl: string, currentUser: 
 }
 
 const BigImage = (props: {
-  isImageOpen: {isOpen: boolean, imageSrc: string, type: string},
+  isImageOpen: {imageSrc: string, type: string},
   setIsImageOpen: React.Dispatch<React.SetStateAction<{
     isOpen: boolean;
     imageSrc: string;

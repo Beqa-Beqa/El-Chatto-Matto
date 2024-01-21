@@ -48,7 +48,7 @@ const Contacts = () => {
               </div>
               {width < 1024 && <FaRegRectangleXmark className="icon" onClick={() => setShowContacts(false)} />}
             </div>
-            <div style={width >= 1024 ? {width: 350} : {width: "100vw"}} className="h-100 friends-container mt-2">
+            <div style={width >= 1024 ? {width: 330} : {width: "100vw"}} className="h-100 friends-container mt-2">
               {/* Map all user data and render them */}
               {friendsData.map((userInfo: DocumentData | undefined, key: number) => {
                 // thisReadBy is an isReadBy object with an user on which array.prototype.map is currently.

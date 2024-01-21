@@ -1,9 +1,13 @@
 import { AuthContext } from "../../../contexts/AuthContextProvider";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import React from "react";
 import { DocumentData } from "firebase/firestore";
 import { GeneralContext } from "../../../contexts/GeneralContextProvider";
 import { UserChatsContext } from "../../../contexts/UserChatsContextProvider";
+import { MdDoneAll } from "react-icons/md";
+import { IoCheckmarkDoneCircleSharp, IoCheckmarkDoneCircleOutline } from "react-icons/io5";
+import { FaRegCircle } from "react-icons/fa";
+import { BigImage } from "../..";
 
 const ChatBoxMessages = (props: {
   user: DocumentData | null,
@@ -11,13 +15,21 @@ const ChatBoxMessages = (props: {
   setDotsRef: React.Dispatch<React.SetStateAction<React.RefObject<HTMLDivElement> | null>>
   setImageRef: React.Dispatch<React.SetStateAction<React.RefObject<HTMLImageElement> | null>>,
   messages: DocumentData,
-  userWrites: boolean
+  userWrites: boolean,
   readBy: {
     readBy: {
         [key: string]: boolean;
     };
     unreadMessagesCount: number;
-  }
+  },
+  currentUserPendingMessages: {
+    text: string[];
+    images: string[];
+  },
+  setCurrentUserPendingMessages: React.Dispatch<React.SetStateAction<{
+    text: string[];
+    images: string[];
+  }>>
 }) => {
   const messages = props.messages;
 
@@ -33,6 +45,11 @@ const ChatBoxMessages = (props: {
   const threeDotsRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
+  const [showImage, setShowImage] = useState<{isOpen: boolean, imageSrc: string, type: string}>({isOpen: false, imageSrc: "", type: ""});
+  const handleImageClick = (event: any) => {
+    const imageSrc = (event.target as HTMLImageElement).src;
+    setShowImage({isOpen: true, imageSrc, type: "message"});
+  };
 
   // Messages length for scroll purposes (if messages length is 0 it will be false at the beginning,
   // if it will be more than 0 it will be true basically after rendering whole component.)
@@ -122,12 +139,12 @@ const ChatBoxMessages = (props: {
               {incomingMessageFrom !== currentUser?.uid ?
                 <div className="d-flex flex-column align-items-end justify-content-end">
                   {messages[doc].message && <p style={{flexShrink: 0}} className="bg-primary px-2 py-1 mb-2 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>}
-                  {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-2" src={messages[doc].img} alt="sent resource image" />}
+                  {messages[doc].img && <img onClick={handleImageClick} ref={imageRef} style={{flexShrink: 0}} className="cursor-pointer attachment-image rounded mb-2" src={messages[doc].img} alt="sent resource image" />}
                 </div>
               :
                 <div className="d-flex flex-column align-items-end justify-content-end">
                   {messages[doc].message && <p style={{flexShrink: 0}} className="bg-primary px-2 py-1 mb-1 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>}
-                  {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-1" src={messages[doc].img} alt="sent resource image" />}
+                  {messages[doc].img && <img onClick={handleImageClick} ref={imageRef} style={{flexShrink: 0}} className="cursor-pointer attachment-image rounded mb-1" src={messages[doc].img} alt="sent resource image" />}
                 </div>
               }
             </div>
@@ -143,7 +160,7 @@ const ChatBoxMessages = (props: {
                     <img style={{flexShrink: 0}} className="image mb-2" src={props.user!.photoURL} alt="icon" /> 
                     <div className="d-flex flex-column align-items-start">
                       {messages[doc].message && <p style={{flexShrink: 0}} className="bg-secondary px-2 py-1 mb-2 ms-2 text-primary">{renderMessage(messages[doc].message)}</p>}
-                      {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-1 ms-2" src={messages[doc].img} alt="sent resource image" />}
+                      {messages[doc].img && <img onClick={handleImageClick} ref={imageRef} style={{flexShrink: 0}} className="cursor-pointer attachment-image rounded mb-1 ms-2" src={messages[doc].img} alt="sent resource image" />}
                     </div>
                   </div>
                 </div>
@@ -155,7 +172,7 @@ const ChatBoxMessages = (props: {
                   </div>
                   <div className="d-flex align-items-center">
                     {messages[doc].img && <div className="mb-0" style={{width: 35, height: 35, flexShrink: 0}} />}
-                    {messages[doc].img && <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-0 ms-2" src={messages[doc].img} alt="sent resource image" />}
+                    {messages[doc].img && <img onClick={handleImageClick} ref={imageRef} style={{flexShrink: 0}} className="cursor-pointer attachment-image rounded mb-0 ms-2" src={messages[doc].img} alt="sent resource image" />}
                   </div>
                 </div>
               }
@@ -166,36 +183,77 @@ const ChatBoxMessages = (props: {
 
       const messagesLength = Object.keys(messages).length;
       const lastMessageKey = Math.max(...Object.keys(messages).map((key: string) => parseInt(key)), 0);
+      // Get sent messages from user which are about to be uploaded on firestore.
+      const currentUserPendingMessages = props.currentUserPendingMessages;
 
       return (
-        <div id="message-box" style={messageBoxStyles} className="messages-container pt-2 ps-2 pe-2">
-          {messageElements}
-          <div className="d-flex justify-content-end">
-            <small style={{top: -8}} className="text-primary me-2 position-relative">
-              {
-                messagesLength && messages[lastMessageKey].senderId !== props.user.uid ?
-                  props.readBy.unreadMessagesCount > 0 ?
-                    online.includes(props.user.uid) || away.includes(props.user.uid) ?
-                      "Recieved"
-                    : "Sent"
-                  : "Seen"
-                : null
-              }
-            </small>
-          </div>
-          {props.userWrites &&
-            <div ref={threeDotsRef} id="waiting-dots" className="d-flex align-items-center justify-content-start">
-              <img className="image" src={props.user!.photoURL} alt="icon" />
-              <div id="wave">
-                <span className="dot" />
-                <span className="dot" />
-                <span className="dot" />
+        <>
+          <div id="message-box" style={messageBoxStyles} className="messages-container pt-2 ps-2 pe-2">
+            {messageElements}
+            <div className="d-flex justify-content-end">
+              <small style={{top: -8}} className="text-primary me-2 position-relative">
+                { messagesLength && messages[lastMessageKey].senderId !== props.user.uid ?
+                    props.readBy.unreadMessagesCount > 0 ?
+                      online.includes(props.user.uid) || away.includes(props.user.uid) ?
+                        <>
+                          <span>Recieved</span> <IoCheckmarkDoneCircleSharp />
+                        </>
+                      : 
+                        <>
+                          <span>Sent</span> <IoCheckmarkDoneCircleOutline />
+                        </> 
+                    :
+                      <>
+                        <span>Seen</span> <MdDoneAll />
+                      </>
+                  : null
+                }
+              </small>
+            </div>
+            {Object.keys(currentUserPendingMessages).length ?
+              <div ref={ref} className="sent-message d-flex align-items-center justify-content-end">
+                <div className="d-flex flex-column align-items-end justify-content-end">
+                  {currentUserPendingMessages.text.map((text: string) => {
+                    return <> 
+                      <p style={{flexShrink: 0}} className="bg-primary px-2 py-1 mb-0 mt-1 me-1 text-secondary">
+                        {renderMessage(text)}
+                      </p>
+                      <small className="text-primary">
+                        <span>Sending</span> <FaRegCircle />
+                      </small>
+                    </>
+                  })}
+                  {currentUserPendingMessages.images.map((image: string) => {
+                    return <>
+                      <img ref={imageRef} style={{flexShrink: 0}} className="attachment-image rounded mb-2" src={image} alt="sent resource image" />
+                        <small className="text-primary">
+                          <span>Sending</span> <FaRegCircle />
+                        </small>
+                    </>
+                  })}
+                </div>
               </div>
-            </div> 
-          }
-        </div>
+              : null
+            }
+            {props.userWrites &&
+              <div ref={threeDotsRef} id="waiting-dots" className="d-flex align-items-center justify-content-start">
+                <img className="image" src={props.user!.photoURL} alt="icon" />
+                <div id="wave">
+                  <span className="dot" />
+                  <span className="dot" />
+                  <span className="dot" />
+                </div>
+              </div> 
+            }
+          </div>
+          {showImage.isOpen && 
+            <BigImage 
+              isImageOpen={{imageSrc: showImage.imageSrc, type: showImage.type}} 
+              setIsImageOpen={setShowImage} 
+              options={{hasDownload: true}}
+            />}
+        </>
       );
-
   } 
 }
 

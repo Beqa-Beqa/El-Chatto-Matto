@@ -770,9 +770,26 @@ video {
   }
 }
 
+// classname retrieved from bootstrap (inspect element)
+// removes arrow from dropdowns.
+.dropdown-toggle::after {
+  display: none;
+}
 
+.loggedin-content-post {
+  .dropdown-menu {
+    margin: 0;
+  }
 
+  .post-options-button {
+    fill: $secondary-second;
+    transition: $base-transition-duration;
 
+    &:hover {
+      fill: $secondary;
+    }
+  }
+}
 
 
 

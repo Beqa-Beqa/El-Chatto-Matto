@@ -4,7 +4,23 @@ declare interface PostData {
   photoURL: string,
   date: string,
   displayName: string,
-  postId: string
+  postId: string,
+  likes?: {
+    [by: string]: {
+      photoURL: string,
+      displayName: string,
+      date: string,
+    }
+  }
+  comments?: {
+    [by: string]: {
+      photoURL: string,
+      displayName: string,
+      date: string,
+      text: string | null,
+      imgURL: string | null
+    }
+  }
 }
 
 declare interface UserDoc {

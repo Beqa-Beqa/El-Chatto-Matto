@@ -33,6 +33,9 @@ const MessagingWindow = (props: {
   // state for checking if user is in chat or not.
   const [isInChat, setIsInChat] = useState<boolean>(false);
 
+  // Sent messages state from user which are about to be uploaded on firestore.
+  const [currentUserPendingMessages, setCurrentUserPendingMessages] = useState<{text: string[], images: string[]}>(JSON.parse(window.localStorage.getItem(`${props.user!.uid}`) || "{}"));
+
   // Combined ids for 2 users chat reference. (for 2 same user (user1, user2 and user2, user1) generated combined id will be the same
   // for we have only one object saved in docs with the combined value and not two for each of the user).
   const combIds = combineIds(currentUser?.uid!, props.user!.uid);
@@ -121,6 +124,8 @@ const MessagingWindow = (props: {
         isInChat={isInChat} 
       />
       <ChatBoxMessages
+        currentUserPendingMessages={currentUserPendingMessages}
+        setCurrentUserPendingMessages={setCurrentUserPendingMessages}
         readBy={thisReadBy}
         setImageRef={setImageRef}
         setDotsRef={setDotsRef}
@@ -130,6 +135,8 @@ const MessagingWindow = (props: {
         userWrites={userWrites}
       />
       <ChatBoxInput
+        currentUserPendingMessages={currentUserPendingMessages}
+        setCurrentUserPendingMessages={setCurrentUserPendingMessages}
         isInChat={isInChat}
         imageRef={imageRef} 
         dotsRef={dotsRef} 

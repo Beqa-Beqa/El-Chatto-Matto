@@ -19,7 +19,15 @@ const ChatBoxInput = (props: {
   messageRef: React.RefObject<HTMLDivElement> | null,
   dotsRef: React.RefObject<HTMLDivElement> | null,
   imageRef: React.RefObject<HTMLImageElement> | null,
-  isInChat: boolean
+  isInChat: boolean,
+  currentUserPendingMessages: {
+    text: string[];
+    images: string[];
+  },
+  setCurrentUserPendingMessages: React.Dispatch<React.SetStateAction<{
+    text: string[];
+    images: string[];
+  }>>
 }) => {
   // Current user context to get info of currentuser.
   const {currentUser} = useContext(AuthContext);
@@ -82,21 +90,43 @@ const ChatBoxInput = (props: {
     }
   }
 
+  // Get sent messages from user which are about to be uploaded on firestore.
+  const currentUserPendingMessages = props.currentUserPendingMessages;
+
   // Sending message logic.
-  const sendMessage = async (trimmedMessage: string) => {
+  const sendMessage = async (trimmedMessage: string, image: File | null) => {
     const thisReadByData = readByData[`chatWith-${props.user!.uid}`];
     // if message exists and it's not whitespace.
     if(trimmedMessage || image) {
+      // local download url for showing image in pending phase before it's sent to remote user.
+      const localDownloadUrl = image && URL.createObjectURL(image);
+      // Message cache object which will be set in localstorage, this will allow us to
+      // display current user's sent messages before they are uploaded to firestore
+      // hence - sending state. we have either text or images or both.
+      const messageCache = Object.keys(currentUserPendingMessages).length ? {
+        text: trimmedMessage && [...currentUserPendingMessages.text , trimmedMessage] || [...currentUserPendingMessages.text],
+        images: localDownloadUrl && [...currentUserPendingMessages.images, localDownloadUrl] || [...currentUserPendingMessages.images]    
+      } : {
+        text: trimmedMessage && [trimmedMessage] || [],
+        images: localDownloadUrl && [localDownloadUrl] || []
+      }
+      // Set messages cache with id of remote user.
+      window.localStorage.setItem(`${props.user!.uid}`, JSON.stringify(messageCache));
+      props.setCurrentUserPendingMessages(messageCache);
       // clean message input field.
       setMessage("");
       // doc ref to which doc should be updated.
       const docRef = doc(firestore, "chats", combId);
       // date with which data is stored.
       const curDate = new Date().getTime();
-      // create document reference as object.
+      // temporary readby is object which holds readBy data for firestore.
       const temporaryReadBy: any = {};
+      // if current user send's message this means it's read by current user.
       temporaryReadBy[currentUser!.uid] = true;
+      // if remote user is in chat this means he has also read the message.
       temporaryReadBy[props.user!.uid] = props.isInChat;
+      // set readBy as temporaryReadBy which stores info of users who read the message and who didn't.
+      // unread messages count will increase if one of the user is not in chat (for current user's case it's remote user check).
       const docData: any = {isReadBy: {
         readBy: temporaryReadBy,
         unreadMessagesCount: props.isInChat ? 0
@@ -113,6 +143,9 @@ const ChatBoxInput = (props: {
         }
         // update document
         await updateDoc(docRef, docData);
+
+        window.localStorage.removeItem(`${props.user!.uid}`);
+        props.setCurrentUserPendingMessages({images: [], text: []});
       } catch (err) {
         console.error(err);
       }
@@ -134,7 +167,7 @@ const ChatBoxInput = (props: {
         // Prevent event from default action, in this case writing a new line.
         event.preventDefault();
         try {
-          await sendMessage(trimmedMessage);
+          await sendMessage(trimmedMessage, image);
         } catch (err) {
           console.error(err);
         }
@@ -204,7 +237,7 @@ const ChatBoxInput = (props: {
           <div onClick={handleEmojiClick} className="chat-box-input-icon">
             <MdOutlineEmojiEmotions />
           </div>
-          <div onClick={async () => await sendMessage(message.trim())} className="chat-box-input-icon">
+          <div onClick={async () => await sendMessage(message.trim(), image)} className="chat-box-input-icon">
             <AiOutlineSend />
           </div>
         </div>

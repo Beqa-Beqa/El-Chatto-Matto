@@ -3,12 +3,15 @@ import { GeneralContext } from "../../../contexts/GeneralContextProvider";
 import { AuthContext } from "../../../contexts/AuthContextProvider";
 import { useNavigate } from "react-router-dom";
 import { RemoteUserContext } from "../../../contexts/RemoteUserContextProvider";
-import { FaImage, FaPhotoVideo } from "react-icons/fa";
-import { collection, doc, getDocs, query, setDoc, updateDoc } from "firebase/firestore";
+import { FaImage, FaPhotoVideo, FaRegThumbsUp } from "react-icons/fa";
+import { collection, doc, getDocs, query, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { firestore } from "../../../config/firebase";
 import uuid from "react-uuid";
 import { UserChatsContext } from "../../../contexts/UserChatsContextProvider";
 import { findAllInstances } from "../../../functions/general";
+import { BiDotsHorizontalRounded } from "react-icons/bi";
+import { FaRegCommentDots } from "react-icons/fa6";
+import { NavDropdown } from "react-bootstrap";
 
 const Content = () => {
   // innerWidth of window.
@@ -29,7 +32,7 @@ const Content = () => {
   const navigate = useNavigate();
 
   // Dynamic content styles based on width.
-  const contentStyles = width >= 1024 ? {maxWidth: 650} : width > 576 ? {maxWidth: 650, margin: "0 auto"} : {width: "100%"};
+  const contentStyles = width >= 1024 ? {maxWidth: 640} : width > 576 ? {maxWidth: 640, margin: "0 auto"} : {width: "100%"};
   
   // Render posts without swallowing shift + enter new lines.
   const renderPost = (post: string) => {
@@ -41,23 +44,33 @@ const Content = () => {
     });
   }
 
-  const [postsData, setPostData] = useState<PostData[]>([]);
+  const [postsData, setPostData] = useState<{[key: string]: PostData}>({});
+  const [change, triggerChange] = useState<boolean>(false);
   
   useEffect(() => {
-    const temporaryData: PostData[] = [];
-
     const getPosts = async () => {
+      let temporaryData: {[key: string]: PostData} = {};
       const postsQry = query(collection(firestore, "posts"));
       const postsSnapshot = await getDocs(postsQry);
-      postsSnapshot.forEach(doc => temporaryData.push(doc.data() as PostData));
+      postsSnapshot.forEach(doc => {
+        const data = doc.data() as PostData;
+        const dateInUnix = new Date(data.date).getTime();
+        temporaryData[dateInUnix] = data;
+      });
+
+      temporaryData = Object.keys(temporaryData).sort((a: string, b: string) => parseInt(b) - parseInt(a)).reduce((obj: {[key: string]: PostData}, date: string) => {
+        obj[date] = temporaryData[date];
+        return obj;
+      }, {})
 
       setPostData(temporaryData);
     }
+    
 
     getPosts();
 
-    return () => setPostData([]);
-  }, [])
+    return () => setPostData({});
+  }, [change]);
 
   const [extendedPost, setExtendedPost] = useState<string>("");
 
@@ -88,24 +101,39 @@ const Content = () => {
           </div>
         </div>
         <div className="loggedin-content-posts-wrapper w-100 ps-lg-0 pe-lg-0 pe-2 ms-lg-5 rounded">
-            {postsData.length ?
-                postsData.map((post: PostData, key: number) => {
+            {Object.keys(postsData).length ?
+                Object.keys(postsData).map((postKey: string, key: number) => {
+                  const post: PostData = postsData[postKey];
                   // needs extension is boolean for controlling if extending three dots is needed for post or not.
                   const newLines = findAllInstances(post.text, "\n")
                   const needsExtension = {
                     needs: post.text.length > 300 || newLines.length > 5,
-                    why: post.text.length > 300 ? "length" : newLines.length > 5 ? "newlines" : false
+                    why: post.text.length > 300 ? "length" : newLines.length > 5 ? "newlines" : ""
                   }
 
                   return (
                     <div key={key} className="loggedin-content-post p-2 bg-primary rounded mb-3">
                       <div>
-                        <div className="post-owner-info d-flex align-items-center gap-2 mb-2">
-                          <img onClick={() => {navigate(`${post.by}`); setTrigger(prev => !prev)}} className="image cursor-pointer" src={post.photoURL} alt="user image" />
-                          <div className="d-flex flex-md-row flex-column align-items-md-center gap-md-4">
-                            <span className="fs-5">{post.displayName}</span>
-                            <small className="text-secondary opacity-50">Date: {post.date}</small>
+                        <div className="d-flex w-100 justify-content-between align-items-center mb-2">
+                          <div className="post-owner-info d-flex align-items-center gap-2">
+                            <img onClick={() => {navigate(`${post.by}`); setTrigger(prev => !prev)}} className="image cursor-pointer" src={post.photoURL} alt="user image" />
+                            <div className="d-flex flex-md-row flex-column align-items-md-center gap-md-4">
+                              <span className="fs-5">{post.displayName}</span>
+                              <small className="text-secondary opacity-50">Date: {post.date}</small>
+                              {!post && <span className="text-error">Deleted</span>}
+                            </div>
                           </div>
+                          {post.by === currentUser?.uid &&
+                            <NavDropdown title={<BiDotsHorizontalRounded style={{width: 25, height: 25}} className="align-self-start cursor-pointer mb-0 py-0 post-options-button" />}>
+                              <NavDropdown.Item onClick={async () => {
+                                await deleteDoc(doc(firestore, "posts", post.postId));
+                                await updateDoc(doc(firestore, "userChats", currentUser.uid), {
+                                  postsCount: postsCount - 1
+                                })
+                                triggerChange(!change);
+                              }}>Delete Post</NavDropdown.Item>
+                            </NavDropdown>
+                          }
                         </div>
                         <p className={post.text.length <= 50 ? "mb-0 fs-4" : "mb-0"}>
                           {
@@ -122,6 +150,26 @@ const Content = () => {
                               : renderPost(post.text)
                           }
                         </p>
+                        <hr className="mb-2"/>
+                        <div className="post-buttons w-100 d-flex gap-2">
+                          <button onClick={async () => {
+                            const currentDate = new Date().toLocaleString();
+                            const updateChunk: any = {...post.likes};
+                            updateChunk.likes = {[currentUser!.uid]: {
+                              date: currentDate,
+                              displayName: currentUser?.displayName!,
+                              photoURL: currentUser?.photoURL!
+                            }}
+                            await updateDoc(doc(firestore, "posts", post.postId), updateChunk);
+                          }} className="w-100 post-button rounded text-secondary d-flex align-items-center justify-content-center gap-2">
+                            <FaRegThumbsUp />
+                            <span>Like</span>
+                          </button>
+                          <button className="w-100 post-button rounded text-secondary d-flex align-items-center justify-content-center gap-2">
+                            <FaRegCommentDots />
+                            <span>Comment</span>
+                          </button>
+                        </div>
                       </div>
                       {
                         needsExtension.needs && <small onClick={() => {
@@ -167,6 +215,7 @@ const Content = () => {
                 await updateDoc(currentUserChatsRef, {
                   postsCount: postsCount + 1
                 })
+                triggerChange(!change);
               }
             }} style={{width: 80}} disabled={!postInputValue.trim()} className="action-button rounded">
               Post

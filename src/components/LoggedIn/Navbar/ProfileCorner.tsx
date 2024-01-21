@@ -38,16 +38,18 @@ const ProfileCorner = () => {
   }
 
   return (
-  <>
-    <img style={{userSelect: "none", WebkitUserSelect: "none", MozUserSelect: "none"}} className="user-photo rounded-circle me-1" src={currentUser?.photoURL!} alt="user photo" />
-    <NavDropdown style={{userSelect: "none", WebkitUserSelect: "none", MozUserSelect: "none"}} className="navbar-button" title={currentUser?.displayName} id="nav-dropdown">
+    <NavDropdown 
+      style={{userSelect: "none", WebkitUserSelect: "none", MozUserSelect: "none"}} 
+      className="navbar-button"
+      title={<div className="d-flex align-items-center gap-2"><img style={{userSelect: "none", WebkitUserSelect: "none", MozUserSelect: "none"}} className="user-photo rounded-circle me-1" src={currentUser?.photoURL!} alt="user photo" /> {currentUser?.displayName}</div>}
+      id="nav-dropdown"
+    >
       <NavDropdown.Item onClick={() => {setTrigger(prev => !prev); navigate(`/${currentUser?.uid}`);}}>Your Profile</NavDropdown.Item>
       <NavDropdown.Item onClick={() => navigate("/friends")}>Friends</NavDropdown.Item>
       <NavDropdown.Divider />
       <NavDropdown.Item onClick={handleSignOut}>Sign Out</NavDropdown.Item>
     </NavDropdown>
-  </>)
-  ;
+  );
 }
 
 export default ProfileCorner;

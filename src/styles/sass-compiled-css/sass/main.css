@@ -695,6 +695,10 @@ textarea {
   align-items: center !important;
 }
 
+.align-self-start {
+  align-self: flex-start !important;
+}
+
 .m-0 {
   margin: 0 !important;
 }
@@ -722,6 +726,10 @@ textarea {
 .my-5 {
   margin-top: 3rem !important;
   margin-bottom: 3rem !important;
+}
+
+.mt-1 {
+  margin-top: 0.25rem !important;
 }
 
 .mt-2 {
@@ -1598,6 +1606,13 @@ video {
 }
 .extension:hover {
   color: #fff;
+}
+.loggedin-content-post .post-options-button {
+  fill: #E0E0E0;
+  transition: 0.1s;
+}
+.loggedin-content-post .post-options-button:hover {
+  fill: #fff;
 }
 
 .roller-wrapper {
