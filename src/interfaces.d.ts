@@ -1,25 +1,34 @@
 declare interface PostData {
-  text: string,
+  text: string | null,
+  media: {
+    url: string | null,
+    ref: string | null,
+    type: string | null
+  },
   by: string,
   photoURL: string,
   date: string,
   displayName: string,
   postId: string,
-  likes?: {
-    [by: string]: {
-      photoURL: string,
-      displayName: string,
-      date: string,
-    }
+  likes?: PostLike,
+  comments?: PostComment
+}
+
+declare interface PostLike {
+  [by: string]: {
+    photoURL: string,
+    displayName: string,
+    date: string,
   }
-  comments?: {
-    [by: string]: {
-      photoURL: string,
-      displayName: string,
-      date: string,
-      text: string | null,
-      imgURL: string | null
-    }
+}
+
+declare interface PostComment {
+  [by: string]: {
+    photoURL: string,
+    displayName: string,
+    date: string,
+    text: string | null,
+    imgURL: string | null
   }
 }
 

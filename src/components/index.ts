@@ -11,3 +11,5 @@ export {default as MessagingWindow} from "./LoggedIn/Chat/MessagingWindow";
 export {default as UserCard} from "./LoggedIn/Profile/UserCard";
 export {default as ProfilePhotoCollectionCard} from "./LoggedIn/Profile/ProfilePhotoCollectionCard";
 export {default as BigImage} from "./LoggedIn/Profile/BigImage";
+export {default as Post} from "./LoggedIn/Home/Posts/Post";
+export {default as WritePost} from "./LoggedIn/Home/Posts/WritePost";

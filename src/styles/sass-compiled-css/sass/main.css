@@ -591,6 +591,10 @@ textarea {
   overflow: hidden !important;
 }
 
+.d-inline {
+  display: inline !important;
+}
+
 .d-block {
   display: block !important;
 }
@@ -1612,6 +1616,12 @@ video {
   transition: 0.1s;
 }
 .loggedin-content-post .post-options-button:hover {
+  fill: #fff;
+}
+
+.post-button-activated {
+  background-color: #FF4081;
+  color: #fff;
   fill: #fff;
 }
 

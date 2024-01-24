@@ -97,3 +97,39 @@ export const findAllInstances = (str: string, target: string) => {
 
   return indexes;
 }
+
+
+// <---------------------------------------------------------------------------------------------------------->
+
+
+// Sort object in descending way if keys are strings which can be parsed as integers.
+export const sortObject = (object: any) => {
+  return Object.keys(object).sort((a: string, b: string) => parseInt(b) - parseInt(a)).reduce((obj: any, key: string) => {
+    obj[key] = object[key];
+    return obj;
+  }, {})
+}
+
+
+// <---------------------------------------------------------------------------------------------------------->
+
+
+// Check if file is valid image or video.
+export const isValidImageOrVideo = (src: File, options: {onlyImage: boolean, onlyVideo: boolean} = {onlyImage: false, onlyVideo: false}) => {
+  const isImage: boolean = src.type.match("image.*") ? true : false;
+  const isVideo: boolean = src.type.match("video.*") ? true : false;
+  // If by options only image is set to true, we only check for image validity.
+  // If by options only video is set to true, we only check for video validity.
+  // If both options are set to true only image validation will be considered anyways,
+  // therefore do not specify options if you want to check for both.
+  if(options.onlyImage) {
+    return {isValid: isImage, type: "image"};
+  } else if (options.onlyVideo) {
+    return {isValid: isVideo, type: "video"}
+  } else {
+    return {
+      isValid: isImage || isVideo,
+      type: isImage ? "image" : isVideo ? "video" : "no type"
+    }
+  }
+}
