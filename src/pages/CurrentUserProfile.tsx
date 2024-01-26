@@ -9,6 +9,8 @@ import BigImage, { userImageUpload } from "../components/LoggedIn/Profile/BigIma
 import { MdEdit } from "react-icons/md";
 import { doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../config/firebase";
+import { PostsContext } from "../contexts/PostsContextProvider";
+import { Post } from "../components";
 
 const CurrentUserProfile = () => {
   // Current user.
@@ -23,11 +25,22 @@ const CurrentUserProfile = () => {
   const [showBioEdit, setShowBioEdit] = useState<boolean>(false);
   // Trigger for refetching info.
   const {setTrigger} = useContext(RemoteUserContext);
+  // Posts data.
+  const {postsData, setPostsData} = useContext(PostsContext);
   // Dynamic styles for profile image container.
   const profileImageContainerStyles = width > 574 ? {top: -60} : {top: -30};
   // Dynamic styles for profile image.
   const profileImageStyles = width > 574 ? {width: 150, height: 150, top: -60} : {width: 100, height: 100, top: -30};
   // Dynamic styles for bigger image.
+
+  let postsByCurrentUser: {[key: string]: PostData} = {};
+  for(let key in postsData) {
+    if(postsData[key].by === currentUser?.uid) {
+      postsByCurrentUser[key] = postsData[key];
+    }
+  }
+
+  const [extendedPost, setExtendedPost] = useState<string>("");
 
   return (
     <div className="profile-page">
@@ -102,15 +115,36 @@ const CurrentUserProfile = () => {
               <span>{Object.keys(remUserGenInfo.profileImageRefs || {}).length} Photos</span>
             </div>
           </div>
-          <div className="profile-photos mb-4">
-            <h5>Photos</h5>
-            <hr />
-            <PhotosContainer isOwner/>
-          </div>
-          <div className="profile-friends mb-4">
-            <h5>Friends</h5>
-            <hr/>
-            <FriendsContainer isOwner={true} />
+          <div className="d-flex flex-column flex-lg-row gap-lg-5 gap-3">
+            <div className="col-lg-4 col-12">
+              <div className="profile-photos mb-4">
+                <h5>Photos</h5>
+                <hr />
+                <PhotosContainer isOwner/>
+              </div>
+              <div className="profile-friends mb-4">
+                <h5>Friends</h5>
+                <hr/>
+                <FriendsContainer friendsPage={false} isOwner={true} />
+              </div>
+            </div>
+            <div className="posts-container col-12 col-lg-7">
+              <h5>Posts</h5>
+              <hr/>
+              {Object.keys(postsByCurrentUser).length ?
+                Object.keys(postsByCurrentUser).map((postKey: string, key: number) => {
+                  return <Post 
+                  postsData={postsData} 
+                  setPostsData={setPostsData} 
+                  postKey={postKey} 
+                  key={key} 
+                  extendedPost={extendedPost}
+                  setExtendedPost={setExtendedPost}
+                  />
+                })
+                : <div className="w-100 text-center mb-3"><span className="fs-3 text-muted">No posts to show</span></div>
+              }
+            </div>
           </div>
         </div>
       </main>

@@ -6,6 +6,7 @@ import AuthContextProvider from './contexts/AuthContextProvider.tsx'
 import GeneralContextProvider from './contexts/GeneralContextProvider.tsx'
 import { RemoteUserContextProvider, UserChatsContextProvider } from './contexts'
 import MessagesContextProvider from './contexts/MessagesContextProvider.tsx'
+import PostsContextProvider from './contexts/PostsContextProvider.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
@@ -14,9 +15,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <UserChatsContextProvider>
           <MessagesContextProvider>
             <RemoteUserContextProvider >
-              <GeneralContextProvider>
-                <App />
-              </GeneralContextProvider>
+              <PostsContextProvider>
+                <GeneralContextProvider>
+                  <App />
+                </GeneralContextProvider>
+              </PostsContextProvider>
             </RemoteUserContextProvider>
           </MessagesContextProvider>
         </UserChatsContextProvider>

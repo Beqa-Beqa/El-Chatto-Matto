@@ -617,8 +617,9 @@ html {
   }
 
   .loggedin-friends {
-    z-index: 900;
     background-color: $background;
+    position: fixed;
+    right: 0;
 
     .last-message {
       font-size: 15px;
@@ -669,9 +670,22 @@ html {
 }
 
 .user-card {
-  
+  .displayname {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .user-card-border {
     border: 1px solid #333;
+    color: $primary;
+
+    &:hover {
+      background-color: $background-second;
+      color: $secondary;
+    }
   }
 
   img {
@@ -779,6 +793,10 @@ html {
 .loggedin-content-post {
   .dropdown-menu {
     margin: 0;
+  }
+
+  .post-text {
+    color: $secondary-second;
   }
 
   .post-options-button {

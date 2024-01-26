@@ -46,7 +46,7 @@ const Friends = () => {
           }
         </div>
         <div className="mt-5 w-100">
-          <FriendsContainer isOwner filterBySearch={inputValue.toLowerCase().trim()} />
+          <FriendsContainer isOwner friendsPage filterBySearch={inputValue.toLowerCase().trim()} />
         </div>
       </main>
       <footer>

@@ -4,7 +4,7 @@ import { Camera } from "../assets/images";
 import { GeneralContext } from "../contexts/GeneralContextProvider";
 import { Footer, NavbarLoggedIn, PhotosContainer } from "../containers";
 import { FriendsContainer } from "../containers";
-import { BigImage, MessagingWindow } from "../components";
+import { BigImage, MessagingWindow, Post } from "../components";
 import { AuthContext } from "../contexts/AuthContextProvider";
 import { UserChatsContext } from "../contexts/UserChatsContextProvider";
 import { deletePrompt } from "../App";
@@ -14,6 +14,7 @@ import { useOutsideClick } from "../hooks";
 import { FaRegEnvelope } from "react-icons/fa";
 import { IoMdPersonAdd, IoMdClose } from "react-icons/io";
 import { IoPersonRemove } from "react-icons/io5";
+import { PostsContext } from "../contexts/PostsContextProvider";
 
 const RemoteUserProfile = () => {
   // info of current user.
@@ -26,6 +27,8 @@ const RemoteUserProfile = () => {
   const {width} = useContext(GeneralContext);
   // State for checking if image is open or not.
   const [isImageOpen, setIsImageOpen] = useState<{isOpen: boolean, imageSrc: string, type: string}>({isOpen: false, imageSrc: "", type: ""});
+  // posts info.
+  const {postsData, setPostsData} = useContext(PostsContext);
   // State for delte prompt.
   const [isDeletePromptOpen, setIsDeletePromptOpen] = useState<boolean>(false);
   // Dynamic styles for profile image container.
@@ -40,6 +43,15 @@ const RemoteUserProfile = () => {
   // Prompt reference and useoutsideclick custom hook to update state on outside click.
   const deletePromptRef = useRef<HTMLDivElement | null>(null);
   useOutsideClick(deletePromptRef, setIsDeletePromptOpen, false);
+
+  const [extendedPost, setExtendedPost] = useState<string>("");
+
+  let postsByRemoteUser: {[key: string]: PostData} = {};
+  for(let key in postsData) {
+    if(postsData[key].by === remUserGenInfo.uid) {
+      postsByRemoteUser[key] = postsData[key];
+    }
+  }
 
   return (
     <div className="profile-page">
@@ -102,15 +114,36 @@ const RemoteUserProfile = () => {
               <span>{Object.keys(remUserGenInfo.profileImageRefs || {}).length} Photos</span>
             </div>
           </div>
-          <div className="profile-photos mb-4">
-            <h5>Photos</h5>
-            <hr />
-            <PhotosContainer isOwner={false}/>
-          </div>
-          <div className="profile-friends mb-4">
-            <h5>Mutual friends with {remUserGenInfo.displayName}</h5>
-            <hr/>
-            <FriendsContainer isOwner={false} />
+          <div className="d-flex flex-column flex-lg-row gap-lg-5 gap-3">
+            <div className="col-lg-4 col-12"> 
+              <div className="profile-photos mb-4">
+                <h5>Photos</h5>
+                <hr/>
+                <PhotosContainer isOwner={false}/>
+              </div>
+              <div className="profile-friends mb-4">
+                <h5>Mutual friends with {remUserGenInfo.displayName}</h5>
+                <hr/>
+                <FriendsContainer friendsPage={false} isOwner={false} />
+              </div>
+            </div>
+            <div className="posts-container col-12 col-lg-7">
+              <h5>Posts</h5>
+              <hr/>
+              {Object.keys(postsByRemoteUser).length ?
+                Object.keys(postsByRemoteUser).map((postKey: string, key: number) => {
+                  return <Post 
+                  postsData={postsData} 
+                  setPostsData={setPostsData} 
+                  postKey={postKey} 
+                  key={key} 
+                  extendedPost={extendedPost}
+                  setExtendedPost={setExtendedPost}
+                  />
+                })
+                : <div className="w-100 text-center mb-3"><span className="fs-1 text-muted">No posts to show</span></div>
+              }
+            </div>
           </div>
         </div>
       </main>

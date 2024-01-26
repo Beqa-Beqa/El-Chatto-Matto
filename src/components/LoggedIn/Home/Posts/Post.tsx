@@ -75,36 +75,47 @@ const Post = (props: {
       newPostsData[postKey].likes! = updateChunk;
       props.setPostsData(newPostsData);
     }
-    await updateDoc(doc(firestore, "posts", post.postId), {likes: updateChunk});
+    try {
+      await updateDoc(doc(firestore, "posts", post.postId), {likes: updateChunk});
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   const handlePostDelete = async (post: PostData, postKey?: string) => {
-    post.media.ref && await deleteObject(ref(storage, post.media.ref));
-    await deleteDoc(doc(firestore, "posts", post.postId));
-    await updateDoc(doc(firestore, "userChats", currentUser!.uid), {
-      postsCount: postsCount - 1
-    });
-    const newPostsData = {...props.postsData};
-    postKey && delete newPostsData[postKey];
-    props.setPostsData(newPostsData);
+    try {
+      post.media.ref && await deleteObject(ref(storage, post.media.ref));
+      await deleteDoc(doc(firestore, "posts", post.postId));
+      await updateDoc(doc(firestore, "userChats", currentUser!.uid), {
+        postsCount: postsCount - 1
+      });
+      const newPostsData = {...props.postsData};
+      postKey && delete newPostsData[postKey];
+      props.setPostsData(newPostsData);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   const handlePostEdit = async (post: PostData, postKey: string) => {
-    const postDocRef = doc(firestore, "posts", post.postId);
-    await updateDoc(postDocRef, {
-      text: postInputValue
-    });
+    try {
 
-    let newPostsData = {...props.postsData};
-    newPostsData[postKey].text = postInputValue;
-    props.setPostsData(newPostsData);
+      const postDocRef = doc(firestore, "posts", post.postId);
+      await updateDoc(postDocRef, {
+        text: postInputValue
+      });
+      
+      let newPostsData = {...props.postsData};
+      newPostsData[postKey].text = postInputValue;
+      props.setPostsData(newPostsData);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   const isPostLiked = post.likes ? currentUser!.uid in post.likes : false;
   const likesQuantity = Object.keys(post.likes as Object || {}).length;
   const commentsQuantity = Object.keys(post.comments as Object || {}).length;
-
-  console.log(post.media.url);
 
   return (
     <>
@@ -113,10 +124,9 @@ const Post = (props: {
           <div className="d-flex w-100 justify-content-between align-items-center mb-2">
             <div className="post-owner-info d-flex align-items-center gap-2">
               <img onClick={() => {navigate(`${post.by}`); setTrigger(prev => !prev)}} className="image cursor-pointer" src={post.photoURL} alt="user image" />
-              <div className="d-flex flex-md-row flex-column align-items-md-center gap-md-4">
+              <div className="post-text d-flex flex-md-row flex-column align-items-md-center gap-md-4">
                 <span className="fs-5">{post.displayName}</span>
-                <small className="text-secondary opacity-50">Date: {post.date}</small>
-                {!post && <span className="text-error">Deleted</span>}
+                <small className="opacity-50">Date: {post.date}</small>
               </div>
             </div>
             {post.by === currentUser?.uid &&
@@ -126,7 +136,7 @@ const Post = (props: {
               </NavDropdown>
             }
           </div>
-          <div className="d-inline">
+          <div className="d-inline post-text">
             {post.text &&
               <p className={post.text.length <= 50 ? "mb-0 fs-4" : "mb-0"}>
               {
@@ -147,7 +157,7 @@ const Post = (props: {
             {
               needsExtension.needs && <small onClick={() => {
                   props.extendedPost === post.postId ? props.setExtendedPost("") : props.setExtendedPost(post.postId);
-                }} role="button" className="extension text-hover-secondary w-100 d-flex justify-content-end">
+                }} role="button" className="post-text extension text-hover-secondary w-100 d-flex justify-content-end">
                 {props.extendedPost !== post.postId ? "... See More" : "Show Less"}
               </small>
             }
@@ -156,12 +166,12 @@ const Post = (props: {
             post.media.type === "image" ?
               <>
                 <hr className="mb-1 mt-1"/>
-                <img className="w-100 rounded" src={post.media.url!} alt="user post image" />
+                <img className="w-100 rounded object-fit-cover" style={{maxHeight: 350}} src={post.media.url!} alt="user post image" />
               </>
             : post.media.type === "video" ?
               <div className="w-100">
                 <hr className="mb-1 mt-1"/>
-                <video playsInline={true} className="w-100" controls>
+                <video playsInline={true} style={{maxHeight: 450}} className="w-100 rounded object-fit-cover" controls>
                   <source className="w-100" src={post.media.url!} type="video/mp4" />
                 </video>
               </div>
@@ -169,7 +179,7 @@ const Post = (props: {
           : null
           }
           <hr className="mb-1 mt-1"/>
-          <div className="mb-2 d-flex justify-content-between">
+          <div className="post-text mb-2 d-flex justify-content-between">
             <small>{likesQuantity ? `${likesQuantity} Likes` : null}</small>
             <small>{commentsQuantity ? `${commentsQuantity} Comments` : null}</small>
           </div>

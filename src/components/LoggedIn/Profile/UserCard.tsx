@@ -1,6 +1,4 @@
 import { DocumentData } from "firebase/firestore";
-import { IoPersonRemove } from "react-icons/io5";
-import { CgProfile } from "react-icons/cg";
 import { useNavigate } from "react-router-dom";
 import { useContext, useRef, useState } from "react";
 import { RemoteUserContext } from "../../../contexts/RemoteUserContextProvider";
@@ -39,20 +37,10 @@ const UserCard = (props: {
   }
 
   return (
-    <div className="user-card col-xxl-3 col-lg-4 col-md-6 col-12">
-      <div className="user-card-border py-3 d-flex flex-column align-items-center rounded">
+    <div className="user-card col-xxl-4 col-lg-6 col-md-4 col-6 h-100">
+      <div onClick={() => {navigate(`/${props.userData.uid}`); setTrigger(prev => !prev)}} className="cursor-pointer user-card-border py-3 d-flex flex-column align-items-center rounded">
         <img className="rounded object-fit-cover" src={props.userData.photoURL} alt="user" />
-        <h5 className="mt-3 text-primary">{props.userData.displayName}</h5>
-        <div className="d-flex gap-2 mt-2">
-          <button onClick={() => {setTrigger(prev => !prev); navigate(`/${props.userData.uid}`);}} className="action-button rounded d-flex align-items-center">
-            View Profile
-            <CgProfile className="action-button-icon ms-md-2 ms-1" />
-          </button>
-          <button onClick={() => setActionPromptVisible(true)} className="action-button rounded d-flex align-items-center">
-            Delete Friend
-            <IoPersonRemove className="action-button-icon ms-md-2 ms-1" />
-          </button>
-        </div>
+        <span className="text-break displayname mt-3 text-center">{props.userData.displayName}</span>
       </div>
       {actionPromptVisible && <div className="user-prompt" >
         <div ref={promptRef}>

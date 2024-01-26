@@ -3,8 +3,12 @@ import { LogoWhite } from "../../assets/images";
 import { Notifications, ProfileCorner, UserSearch } from "../../components";
 import { GeneralContext } from "../../contexts/GeneralContextProvider";
 import { useNavigate } from "react-router-dom";
+import { FaRegRectangleXmark } from "react-icons/fa6";
+import { AiOutlineMessage } from "react-icons/ai";
 
-const Navbar = () => {
+const Navbar = (props: {showContacts?: boolean, setShowContacts?: React.Dispatch<React.SetStateAction<boolean>>}) => {
+  const showContacts = props.showContacts;
+  const setShowContacts = props.setShowContacts;
   // Window inner width served by general context provider.
   const {width} = useContext(GeneralContext);
   const navigate = useNavigate();
@@ -32,7 +36,9 @@ const Navbar = () => {
             setShowClose={setShowClose}
           />
         </div>
-        {(width > 574 || !showInput) && <div className="d-flex align-items-center mt-3">
+        {(width > 574 || !showInput) && <div className="d-flex align-items-center mt-3 gap-1">
+          {width < 992 && setShowContacts && showContacts && <FaRegRectangleXmark style={{width: 25, height: 25}} className="navbar-icon" onClick={() => setShowContacts(false)} />}
+          {width < 992 && setShowContacts && !showContacts && <AiOutlineMessage style={{width: 25, height: 25}} className="navbar-icon" onClick={() => setShowContacts(true)} />}
           <Notifications />
           <ProfileCorner />
         </div>}

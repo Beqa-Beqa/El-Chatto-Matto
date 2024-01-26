@@ -78,21 +78,26 @@ const WritePost = (props: {
 
       setPostMedia(null);
 
-      await setDoc(postRef, postToUpload);
-      await updateDoc(currentUserChatsRef, {
-        postsCount: postsCount + 1
-      });
+      try {
 
-      let newPostsData = {...props.postsData};
-      newPostsData[currentUnix] = postToUpload;
-      newPostsData = sortObject(newPostsData);
-      props.setPostsData(newPostsData);
+        await setDoc(postRef, postToUpload);
+        await updateDoc(currentUserChatsRef, {
+          postsCount: postsCount + 1
+        });
+        
+        let newPostsData = {...props.postsData};
+        newPostsData[currentUnix] = postToUpload;
+        newPostsData = sortObject(newPostsData);
+        props.setPostsData(newPostsData);
+      } catch (err) {
+        console.error(err);
+      }
     }
   }
 
   return (
     <>
-      <div className="w-100 ps-lg-0 pe-lg-0 pe-2 ms-lg-5 rounded mb-3">
+      <div className="w-100 ps-lg-0 pe-lg-0 rounded mb-3">
         <div className="p-2 bg-primary rounded d-flex flex-column">
           <div className="d-flex align-items-center">
             <img onClick={() => {navigate(`/${currentUser?.uid}`); setTrigger(prev => !prev)}} role="button" className="image me-2" src={currentUser?.photoURL!} alt="your image" />

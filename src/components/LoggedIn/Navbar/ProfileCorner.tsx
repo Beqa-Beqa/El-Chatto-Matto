@@ -6,10 +6,12 @@ import { firestore, auth } from "../../../config/firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { RemoteUserContext } from "../../../contexts/RemoteUserContextProvider";
+import { GeneralContext } from "../../../contexts/GeneralContextProvider";
 
 const ProfileCorner = () => {
   const {currentUser, setIsLoading} = useContext(AuthContext);
   const {setTrigger} = useContext(RemoteUserContext);
+  const {width} = useContext(GeneralContext);
   // function to navigate through different routes.
   const navigate = useNavigate();
 
@@ -37,11 +39,16 @@ const ProfileCorner = () => {
     }
   }
 
+  const title = <div className="d-flex align-items-center">
+    <img style={{userSelect: "none", WebkitUserSelect: "none", MozUserSelect: "none"}} className="user-photo rounded-circle me-1" src={currentUser?.photoURL!} alt="user photo" /> 
+    {width > 1024 ? currentUser?.displayName : width > 574 ? currentUser?.displayName?.split(" ")[0] : null}
+  </div>
+
   return (
     <NavDropdown 
       style={{userSelect: "none", WebkitUserSelect: "none", MozUserSelect: "none"}} 
       className="navbar-button"
-      title={<div className="d-flex align-items-center gap-2"><img style={{userSelect: "none", WebkitUserSelect: "none", MozUserSelect: "none"}} className="user-photo rounded-circle me-1" src={currentUser?.photoURL!} alt="user photo" /> {currentUser?.displayName}</div>}
+      title={title}
       id="nav-dropdown"
     >
       <NavDropdown.Item onClick={() => {setTrigger(prev => !prev); navigate(`/${currentUser?.uid}`);}}>Your Profile</NavDropdown.Item>
