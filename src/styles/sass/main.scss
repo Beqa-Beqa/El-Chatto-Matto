@@ -618,6 +618,7 @@ html {
 
   .loggedin-friends {
     background-color: $background;
+    z-index: 990;
     position: fixed;
     right: 0;
 

@@ -11,6 +11,7 @@ import { updateDoc, doc, deleteDoc } from "firebase/firestore";
 import { firestore, storage } from "../../../../config/firebase";
 import { UserChatsContext } from "../../../../contexts/UserChatsContextProvider";
 import { deleteObject, ref } from "firebase/storage";
+import { BigImage } from "../../..";
 
 const Post = (props: {
   postKey: string, 
@@ -40,6 +41,8 @@ const Post = (props: {
   const [postPromptVisible, setPostPromptVisible] = useState<boolean>(false);
   // state for storing post input value.
   const [postInputValue, setPostInputValue] = useState<string>(post.text ? post.text : "");
+
+  const [showPostImage, setShowPostImage] = useState<{isOpen: boolean, imageSrc: string, type: string}>({isOpen: false, imageSrc: "", type: ""});
 
   // navigate for navigating through urls.
   const navigate = useNavigate();
@@ -132,7 +135,7 @@ const Post = (props: {
             {post.by === currentUser?.uid &&
               <NavDropdown title={<BiDotsHorizontalRounded style={{width: 25, height: 25}} className="align-self-start cursor-pointer mb-0 py-0 post-options-button" />}>
                 <NavDropdown.Item onClick={() => setPostPromptVisible(true)}>Edit</NavDropdown.Item>
-                <NavDropdown.Item onClick={async () => await handlePostDelete(post, props.postKey)}>Delete Post</NavDropdown.Item>
+                <NavDropdown.Item onClick={() => handlePostDelete(post, props.postKey)}>Delete Post</NavDropdown.Item>
               </NavDropdown>
             }
           </div>
@@ -166,7 +169,10 @@ const Post = (props: {
             post.media.type === "image" ?
               <>
                 <hr className="mb-1 mt-1"/>
-                <img className="w-100 rounded object-fit-cover" style={{maxHeight: 350}} src={post.media.url!} alt="user post image" />
+                <img onClick={(e) => {
+                  const src = (e.target as HTMLImageElement).src;
+                  setShowPostImage({isOpen: true, imageSrc: src, type: "post"})
+                }} className="w-100 rounded object-fit-cover cursor-pointer" style={{maxHeight: 350}} src={post.media.url!} alt="user post image" />
               </>
             : post.media.type === "video" ?
               <div className="w-100">
@@ -184,7 +190,7 @@ const Post = (props: {
             <small>{commentsQuantity ? `${commentsQuantity} Comments` : null}</small>
           </div>
           <div className="post-buttons w-100 d-flex gap-2">
-            <button onClick={async () => await handleLike(post)} className={`${isPostLiked && "post-button-activated"} w-100 post-button rounded text-secondary d-flex align-items-center justify-content-center gap-2`}>
+            <button onClick={() => handleLike(post)} className={`${isPostLiked && "post-button-activated"} w-100 post-button rounded text-secondary d-flex align-items-center justify-content-center gap-2`}>
               <FaThumbsUp />
               <span>{post.likes && (currentUser!.uid in post.likes) ? "liked" : "Like"}</span>
             </button>
@@ -207,7 +213,7 @@ const Post = (props: {
             />
             <small onClick={() => setPostInputValue("")} role="button" className="text-primary text-decoration-underline">clear</small>
             <div className="mt-2 d-flex justify-content-center gap-3">
-              <button onClick={async () => {setPostPromptVisible(false); await handlePostEdit(post, props.postKey);}} style={{width: 80}} disabled={!post.media.url && !postInputValue.trim()} className="action-button rounded">
+              <button onClick={() => {setPostPromptVisible(false); handlePostEdit(post, props.postKey);}} style={{width: 80}} disabled={!post.media.url && !postInputValue.trim()} className="action-button rounded">
                 Edit
               </button>
               <button style={{width: 80}} onClick={() => setPostPromptVisible(false)} className="action-button rounded">
@@ -216,6 +222,9 @@ const Post = (props: {
             </div>
           </div>
         </div>
+      }
+      {
+        showPostImage.isOpen && <BigImage isImageOpen={showPostImage} setIsImageOpen={setShowPostImage} options={{hasDownload: true}} />
       }
     </>
   );

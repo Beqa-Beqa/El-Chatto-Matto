@@ -951,6 +951,10 @@ textarea {
   font-size: 1.25rem !important;
 }
 
+.fw-bold {
+  font-weight: 700 !important;
+}
+
 .text-center {
   text-align: center !important;
 }
@@ -974,6 +978,11 @@ textarea {
 .text-secondary {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-secondary-rgb), var(--bs-text-opacity)) !important;
+}
+
+.text-danger {
+  --bs-text-opacity: 1;
+  color: rgba(var(--bs-danger-rgb), var(--bs-text-opacity)) !important;
 }
 
 .text-muted {
@@ -1017,6 +1026,9 @@ textarea {
 @media (min-width: 768px) {
   .flex-md-row {
     flex-direction: row !important;
+  }
+  .align-items-md-start {
+    align-items: flex-start !important;
   }
   .align-items-md-center {
     align-items: center !important;
@@ -1523,6 +1535,7 @@ textarea {
 }
 .home-content-logged-in .loggedin-friends {
   background-color: #6082B6;
+  z-index: 990;
   position: fixed;
   right: 0;
 }

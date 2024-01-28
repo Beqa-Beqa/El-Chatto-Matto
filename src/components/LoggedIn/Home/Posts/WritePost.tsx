@@ -31,67 +31,79 @@ const WritePost = (props: {
   const [postPromptVisible, setPostPromptVisible] = useState<boolean>(false);
   // state for storing post input value.
   const [postInputValue, setPostInputValue] = useState<string>("");
-
+  // state for holding post media (image or video).
   const [postMedia, setPostMedia] = useState<File | null>(null);
+  // state for error.
+  const [error, setError] = useState<{type: string, text: string}>({type: "", text: ""});
 
   // navigate for navigating through urls.
   const navigate = useNavigate();
 
   const handlePostUpload = async () => {
-    const mediaValidity = postMedia && isValidImageOrVideo(postMedia);
+    try {
+      const mediaValidity = postMedia && isValidImageOrVideo(postMedia);
 
-    if(postInputValue.trim() || (mediaValidity && mediaValidity.isValid)) {
+      if(postInputValue.trim() || (mediaValidity && mediaValidity.isValid)) {
+        if(postInputValue.trim().length > 20000) throw Error("The post characters exceed 20000");
 
-      const text: string | null = postInputValue.trim() ? postInputValue.trim() : null;
-      const media: File | null = postMedia && isValidImageOrVideo(postMedia) ? postMedia : null;
-      const uid: string = uuid();
-      const postRef = doc(firestore, "posts", uid);
-      const currentUserChatsRef = doc(firestore, "userChats", currentUser!.uid);
-      const currentDate = new Date().toLocaleString();
-      const currentUnix = new Date(currentDate).getTime();
+        const text: string | null = postInputValue.trim() ? postInputValue.trim() : null;
+        const media: File | null = postMedia && isValidImageOrVideo(postMedia) ? postMedia : null;
+        const uid: string = uuid();
+        const postRef = doc(firestore, "posts", uid);
+        const currentUserChatsRef = doc(firestore, "userChats", currentUser!.uid);
+        const currentDate = new Date().toLocaleString();
+        const currentUnix = new Date(currentDate).getTime();
 
-      setPostPromptVisible(false);
-      setPostInputValue("");
+        setPostPromptVisible(false);
+        setPostInputValue("");
 
-      let downloadUrl: string | null = null;
-      const postStorageRefString = media ? `postMedia/${currentUser!.uid}/${uuid()}` : null;
-      const postStorageRef =  media ? ref(storage, postStorageRefString!) : undefined;
+        let downloadUrl: string | null = null;
+        const postStorageRefString = media ? `postMedia/${currentUser!.uid}/${uuid()}` : null;
+        const postStorageRef =  media ? ref(storage, postStorageRefString!) : undefined;
 
-      if(postStorageRef) {
-        await uploadBytesResumable(postStorageRef, media!);
-        downloadUrl = await getDownloadURL(postStorageRef);
-      }
-      
-      const postToUpload: PostData = {
-        text: text,
-        media: {
-          url: downloadUrl,
-          ref: postStorageRefString,
-          type: mediaValidity?.type || null
-        }, 
-        by: currentUser!.uid, 
-        date: currentDate,
-        photoURL: currentUser!.photoURL!,
-        displayName: currentUser!.displayName!,
-        postId: uid
-      }
-
-      setPostMedia(null);
-
-      try {
-
-        await setDoc(postRef, postToUpload);
-        await updateDoc(currentUserChatsRef, {
-          postsCount: postsCount + 1
-        });
+        if(postStorageRef) {
+          await uploadBytesResumable(postStorageRef, media!);
+          downloadUrl = await getDownloadURL(postStorageRef);
+        }
         
-        let newPostsData = {...props.postsData};
-        newPostsData[currentUnix] = postToUpload;
-        newPostsData = sortObject(newPostsData);
-        props.setPostsData(newPostsData);
-      } catch (err) {
-        console.error(err);
+        const postToUpload: PostData = {
+          text: text,
+          media: {
+            url: downloadUrl,
+            ref: postStorageRefString,
+            type: mediaValidity?.type || null
+          }, 
+          by: currentUser!.uid, 
+          date: currentDate,
+          photoURL: currentUser!.photoURL!,
+          displayName: currentUser!.displayName!,
+          postId: uid
+        }
+
+        setPostMedia(null);
+
+        try {
+
+          await setDoc(postRef, postToUpload);
+          await updateDoc(currentUserChatsRef, {
+            postsCount: postsCount + 1
+          });
+          
+          let newPostsData = {...props.postsData};
+          newPostsData[currentUnix] = postToUpload;
+          newPostsData = sortObject(newPostsData);
+          props.setPostsData(newPostsData);
+        } catch (err) {
+          console.error(err);
+        }
+
+        error.type === "Post" && setError({type: "", text: ""});
       }
+    } catch (err) {
+      setError({
+        type: "Post",
+        text: (err as Error).message
+      })
     }
   }
 
@@ -131,12 +143,29 @@ const WritePost = (props: {
               className="textarea-for-post w-100"
               placeholder={`Hello ${currentUser?.displayName?.split(" ")[0]}, Would you like to share your thoughts ?`}
             />
-            <small onClick={() => setPostInputValue("")} role="button" className="text-primary text-decoration-underline">clear</small>
+            <div className="d-flex align-items-center justify-content-between flex-md-row flex-column">
+              <div className="d-flex gap-1 flex-column align-items-center align-items-md-start">
+                <small onClick={() => setPostInputValue("")} role="button" className="text-primary text-decoration-underline">clear text</small>
+                <small onClick={() => setPostMedia(null)} role="button" className="text-primary text-decoration-underline">clear media</small>
+              </div>
+              <span className={`fw-bold text-danger ${error.type === "Post" ? "d-block" : "d-none"}`}>{error.text}</span>
+            </div>
             <div className="mt-2 d-flex justify-content-center gap-3">
               <button onClick={handlePostUpload} style={{width: 80}} disabled={!postInputValue.trim() && !postMedia} className="action-button rounded">
                 Post
               </button>
-              <button style={{width: 80}} onClick={() => {setPostPromptVisible(false); setPostMedia(null);}} className="action-button rounded">
+              <button style={{width: 80}} onClick={() => {
+                setPostPromptVisible(false); 
+                setPostMedia(null); 
+                setError(prev => {
+                  if(prev.type === "Post") {
+                    return {type: "", text: ""}
+                  } else {
+                    return prev;
+                  }
+                })}} 
+                className="action-button rounded"
+              >
                 Cancel
               </button>
             </div>

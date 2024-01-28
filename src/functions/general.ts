@@ -118,6 +118,13 @@ export const sortObject = (object: any) => {
 export const isValidImageOrVideo = (src: File, options: {onlyImage: boolean, onlyVideo: boolean} = {onlyImage: false, onlyVideo: false}) => {
   const isImage: boolean = src.type.match("image.*") ? true : false;
   const isVideo: boolean = src.type.match("video.*") ? true : false;
+  const sizeInMb = parseFloat((src.size / (1024 * 1024)).toFixed(2));
+  
+  // If media is more than 20mb in size it throws size error.
+  if(sizeInMb > 50) {
+    throw Error("Post media size can not exceed 20mb");
+  }
+  
   // If by options only image is set to true, we only check for image validity.
   // If by options only video is set to true, we only check for video validity.
   // If both options are set to true only image validation will be considered anyways,
