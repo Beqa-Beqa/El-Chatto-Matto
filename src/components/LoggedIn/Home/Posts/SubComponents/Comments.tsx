@@ -159,6 +159,7 @@ const Comments = (props: {
           Object.keys(commentsCache).length ?
             Object.keys(commentsCache).sort().map((commentKey: string, key: number) => {
               const comment: any = commentsCache[commentKey];
+              console.log(comment);
 
               return <React.Fragment key={key}>
                 <span className="post-text opacity-75">Commenting...</span>
@@ -198,7 +199,7 @@ const Comments = (props: {
                     <span className="opacity-50">at {comment.date.split(",")[0]}</span>
                   </div>
                   {comment.text && <p style={{fontSize: 15}} className="mb-0">{renderText(comment.text)}</p>}
-                  {comment.mediaUrl && 
+                  {comment.mediaUrl ? 
                     comment.mediaUrl.type === "image" ?
                       <img style={{maxHeight: 250}} className="w-100 rounded mt-2" src={comment.mediaUrl.url} alt="comment"/>
                     : comment.mediaUrl.type === "video" ?
@@ -206,7 +207,8 @@ const Comments = (props: {
                         <source className="w-100" src={comment.mediaUrl.url} type="video/mp4"/>
                       </video>
                     : null
-                    }
+                  : null
+                  }
                 </div>
               </div>
             })
@@ -245,7 +247,7 @@ const Comments = (props: {
           </div>
         </div>
       </div>
-      {error.type && <span className="text-danger fw-bold">{error.text}</span>}
+      {error && <span className="text-danger fw-bold">{error.text}</span>}
     </div>
   );
 }
