@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { findAllInstances } from "../../../../functions/general";
 import { AuthContext } from "../../../../contexts/AuthContextProvider";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
@@ -7,11 +7,11 @@ import { NavDropdown } from "react-bootstrap";
 import { FaThumbsUp } from "react-icons/fa"
 import { useNavigate } from "react-router-dom";
 import { RemoteUserContext } from "../../../../contexts/RemoteUserContextProvider";
-import { updateDoc, doc, deleteDoc } from "firebase/firestore";
-import { firestore, storage } from "../../../../config/firebase";
 import { UserChatsContext } from "../../../../contexts/UserChatsContextProvider";
-import { deleteObject, ref } from "firebase/storage";
 import { BigImage } from "../../..";
+import { renderText } from "../../Chat/ChatBoxMessages";
+import { handlePostDelete, handlePostEdit, handlePostLike } from "./post-functions";
+import Comments from "./SubComponents/Comments";
 
 const Post = (props: {
   postKey: string, 
@@ -41,88 +41,35 @@ const Post = (props: {
   const [postPromptVisible, setPostPromptVisible] = useState<boolean>(false);
   // state for storing post input value.
   const [postInputValue, setPostInputValue] = useState<string>(post.text ? post.text : "");
-
+  // state for displaying post image on fullscreen.
   const [showPostImage, setShowPostImage] = useState<{isOpen: boolean, imageSrc: string, type: string}>({isOpen: false, imageSrc: "", type: ""});
+  // state for showing comments.
+  const [showComments, setShowComments] = useState<boolean>(false);
+
+  useEffect(() => {
+    setShowComments(false);
+  }, [props.postsData])
+
+  // state for error.
+  const [error, setError] = useState<{type: string, text: string}>({type: "", text: ""});
 
   // navigate for navigating through urls.
   const navigate = useNavigate();
 
-  // Render posts without swallowing shift + enter new lines.
-  const renderPost = (post: string) => {
-    return post.split("\n").map((line: string, index: number) => {
-      return <React.Fragment key={index}>
-        {line}
-        {index !== post.split("\n").length - 1 && <br />}
-      </React.Fragment>
-    });
-  }
-
-  const handleLike = async (post: PostData) => {
-    const currentDate = new Date().toLocaleString();
-    const postKey = new Date(post.date).getTime();
-    const newPostsData: {[key: string]: PostData} = {...props.postsData};
-    let updateChunk: any = {};
-    if(post.likes && (currentUser!.uid in post.likes)) {
-      updateChunk = {...post.likes};
-      delete updateChunk[currentUser!.uid];
-      delete newPostsData[postKey].likes![currentUser!.uid];
-      props.setPostsData(newPostsData);
-    } else {
-      const data = {
-        date: currentDate,
-        displayName: currentUser?.displayName!,
-        photoURL: currentUser?.photoURL!
-      }
-      updateChunk = {...post.likes, [currentUser!.uid]: data};
-
-      newPostsData[postKey].likes! = updateChunk;
-      props.setPostsData(newPostsData);
-    }
-    try {
-      await updateDoc(doc(firestore, "posts", post.postId), {likes: updateChunk});
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  const handlePostDelete = async (post: PostData, postKey?: string) => {
-    try {
-      post.media.ref && await deleteObject(ref(storage, post.media.ref));
-      await deleteDoc(doc(firestore, "posts", post.postId));
-      await updateDoc(doc(firestore, "userChats", currentUser!.uid), {
-        postsCount: postsCount - 1
-      });
-      const newPostsData = {...props.postsData};
-      postKey && delete newPostsData[postKey];
-      props.setPostsData(newPostsData);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  const handlePostEdit = async (post: PostData, postKey: string) => {
-    try {
-
-      const postDocRef = doc(firestore, "posts", post.postId);
-      await updateDoc(postDocRef, {
-        text: postInputValue
-      });
-      
-      let newPostsData = {...props.postsData};
-      newPostsData[postKey].text = postInputValue;
-      props.setPostsData(newPostsData);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   const isPostLiked = post.likes ? currentUser!.uid in post.likes : false;
   const likesQuantity = Object.keys(post.likes as Object || {}).length;
-  const commentsQuantity = Object.keys(post.comments as Object || {}).length;
+  const commentsQuantity = Object.keys(post.comments as Object || {}).reduce((quantity: number, key: string) => {
+    if(post.comments) {
+      quantity += post.comments[key].comments.length;
+      return quantity;
+    } else {
+      return 0;
+    }
+  }, 0);
 
   return (
     <>
-      <div className="loggedin-content-post p-2 bg-primary rounded mb-3">
+      <div className={`loggedin-content-post p-2 bg-primary ${showComments ? "rounded-top" : "rounded"}`}>
         <div>
           <div className="d-flex w-100 justify-content-between align-items-center mb-2">
             <div className="post-owner-info d-flex align-items-center gap-2">
@@ -135,7 +82,7 @@ const Post = (props: {
             {post.by === currentUser?.uid &&
               <NavDropdown title={<BiDotsHorizontalRounded style={{width: 25, height: 25}} className="align-self-start cursor-pointer mb-0 py-0 post-options-button" />}>
                 <NavDropdown.Item onClick={() => setPostPromptVisible(true)}>Edit</NavDropdown.Item>
-                <NavDropdown.Item onClick={() => handlePostDelete(post, props.postKey)}>Delete Post</NavDropdown.Item>
+                <NavDropdown.Item onClick={() => handlePostDelete(currentUser, props.postsData, props.setPostsData, post, postsCount, props.postKey)}>Delete Post</NavDropdown.Item>
               </NavDropdown>
             }
           </div>
@@ -144,23 +91,23 @@ const Post = (props: {
               <p className={post.text.length <= 50 ? "mb-0 fs-4" : "mb-0"}>
               {
                 props.extendedPost === post.postId ?
-                  renderPost(post.text)
+                  renderText(post.text)
                 : 
                   needsExtension.needs ?
-                    renderPost(
+                    renderText(
                       needsExtension.why === "length" ? 
                         post.text.substring(0, 147) + " ..."
                       : 
                         post.text.substring(0, newLines[0]) + " ..."
                     ) 
-                  : renderPost(post.text)
+                  : renderText(post.text)
               }
             </p>
             }
             {
               needsExtension.needs && <small onClick={() => {
                   props.extendedPost === post.postId ? props.setExtendedPost("") : props.setExtendedPost(post.postId);
-                }} role="button" className="post-text extension text-hover-secondary w-100 d-flex justify-content-end">
+                }} role="button" className="post-text extension w-100 d-flex justify-content-end">
                 {props.extendedPost !== post.postId ? "... See More" : "Show Less"}
               </small>
             }
@@ -184,23 +131,27 @@ const Post = (props: {
             : null
           : null
           }
-          <hr className="mb-1 mt-1"/>
+          <hr className="my-1"/>
           <div className="post-text mb-2 d-flex justify-content-between">
             <small>{likesQuantity ? `${likesQuantity} Likes` : null}</small>
             <small>{commentsQuantity ? `${commentsQuantity} Comments` : null}</small>
           </div>
           <div className="post-buttons w-100 d-flex gap-2">
-            <button onClick={() => handleLike(post)} className={`${isPostLiked && "post-button-activated"} w-100 post-button rounded text-secondary d-flex align-items-center justify-content-center gap-2`}>
+            <button onClick={() => handlePostLike(currentUser!, props.postsData, props.setPostsData, post)} className={`${isPostLiked && "post-button-activated"} w-100 post-button rounded text-secondary d-flex align-items-center justify-content-center gap-2`}>
               <FaThumbsUp />
               <span>{post.likes && (currentUser!.uid in post.likes) ? "liked" : "Like"}</span>
             </button>
-            <button className="w-100 post-button rounded text-secondary d-flex align-items-center justify-content-center gap-2">
+            <button onClick={() => setShowComments(!showComments)} className="w-100 post-button rounded text-secondary d-flex align-items-center justify-content-center gap-2">
               <FaRegCommentDots />
               <span>Comment</span>
             </button>
           </div>
+          {showComments && <hr className="mb-1 mt-2" />}
         </div>
       </div>
+      {
+        showComments ? <Comments postKey={props.postKey} postsData={props.postsData} /> : <div className="mb-3"/>
+      }
       {
         postPromptVisible && <div className="user-prompt">
           <div className="bg-secondary rounded py-2 px-1 col-md-6 col-sm-11 col-12">
@@ -211,9 +162,14 @@ const Post = (props: {
               className="textarea-for-post w-100"
               placeholder={`Hello ${currentUser?.displayName?.split(" ")[0]}, Would you like to edit your post ?`}
             />
-            <small onClick={() => setPostInputValue("")} role="button" className="text-primary text-decoration-underline">clear</small>
+            <div className="d-flex align-items-center justify-content-between flex-md-row flex-column">
+              <div className="d-flex gap-1 flex-column align-items-center align-items-md-start">
+                <small onClick={() => setPostInputValue("")} role="button" className="text-primary text-decoration-underline">clear text</small>
+              </div>
+              <span className={`fw-bold text-danger ${error.type === "Post" ? "d-block" : "d-none"}`}>{error.text}</span>
+            </div>
             <div className="mt-2 d-flex justify-content-center gap-3">
-              <button onClick={() => {setPostPromptVisible(false); handlePostEdit(post, props.postKey);}} style={{width: 80}} disabled={!post.media.url && !postInputValue.trim()} className="action-button rounded">
+              <button onClick={() => handlePostEdit(props.postsData, props.setPostsData ,post, props.postKey, postInputValue, setError, setPostPromptVisible)} style={{width: 80}} disabled={!post.media.url && !postInputValue.trim()} className="action-button rounded">
                 Edit
               </button>
               <button style={{width: 80}} onClick={() => setPostPromptVisible(false)} className="action-button rounded">

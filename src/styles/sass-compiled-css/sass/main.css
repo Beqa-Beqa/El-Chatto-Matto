@@ -743,6 +743,11 @@ textarea {
   margin-left: auto !important;
 }
 
+.my-1 {
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
 .my-4 {
   margin-top: 1.5rem !important;
   margin-bottom: 1.5rem !important;
@@ -911,6 +916,14 @@ textarea {
   padding-bottom: 0 !important;
 }
 
+.pb-1 {
+  padding-bottom: 0.25rem !important;
+}
+
+.pb-2 {
+  padding-bottom: 0.5rem !important;
+}
+
 .ps-0 {
   padding-left: 0 !important;
 }
@@ -1011,6 +1024,16 @@ textarea {
 
 .rounded-circle {
   border-radius: 50% !important;
+}
+
+.rounded-top {
+  border-top-left-radius: var(--bs-border-radius) !important;
+  border-top-right-radius: var(--bs-border-radius) !important;
+}
+
+.rounded-bottom {
+  border-bottom-right-radius: var(--bs-border-radius) !important;
+  border-bottom-left-radius: var(--bs-border-radius) !important;
 }
 
 .visible {
@@ -1660,15 +1683,16 @@ textarea {
 .extension:hover {
   color: #fff;
 }
-.loggedin-content-post .post-text {
-  color: #E0E0E0;
-}
 .loggedin-content-post .post-options-button {
   fill: #E0E0E0;
   transition: 0.1s;
 }
 .loggedin-content-post .post-options-button:hover {
   fill: #fff;
+}
+
+.post-text {
+  color: #E0E0E0;
 }
 
 .post-button-activated {

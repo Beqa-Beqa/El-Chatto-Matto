@@ -103,8 +103,10 @@ export const findAllInstances = (str: string, target: string) => {
 
 
 // Sort object in descending way if keys are strings which can be parsed as integers.
-export const sortObject = (object: any) => {
-  return Object.keys(object).sort((a: string, b: string) => parseInt(b) - parseInt(a)).reduce((obj: any, key: string) => {
+export const sortObject = (object: any, reverse: boolean = true) => {
+  const sorted = Object.keys(object).sort();
+  const reverseApplied = reverse ? sorted.reverse() : sorted;
+  return reverseApplied.reduce((obj: any, key: string) => {
     obj[key] = object[key];
     return obj;
   }, {})
@@ -122,7 +124,7 @@ export const isValidImageOrVideo = (src: File, options: {onlyImage: boolean, onl
   
   // If media is more than 20mb in size it throws size error.
   if(sizeInMb > 50) {
-    throw Error("Post media size can not exceed 20mb");
+    throw Error("Post media size can not exceed 50mb");
   }
   
   // If by options only image is set to true, we only check for image validity.

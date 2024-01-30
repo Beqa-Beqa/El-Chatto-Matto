@@ -11,7 +11,7 @@ declare interface PostData {
   displayName: string,
   postId: string,
   likes?: PostLike,
-  comments?: PostComment
+  comments?: PostCommentData
 }
 
 declare interface PostLike {
@@ -22,14 +22,22 @@ declare interface PostLike {
   }
 }
 
-declare interface PostComment {
+declare interface PostCommentData {
   [by: string]: {
     photoURL: string,
     displayName: string,
-    date: string,
-    text: string | null,
-    imgURL: string | null
+    comments: PostComment[]
   }
+}
+
+declare interface PostComment {
+  id: string,
+  text: string | null,
+  mediaUrl: string | null,
+  date: string,
+  isReply?: {
+    replyTo: string
+  } | false
 }
 
 declare interface UserDoc {

@@ -796,10 +796,6 @@ html {
     margin: 0;
   }
 
-  .post-text {
-    color: $secondary-second;
-  }
-
   .post-options-button {
     fill: $secondary-second;
     transition: $base-transition-duration;
@@ -808,6 +804,10 @@ html {
       fill: $secondary;
     }
   }
+}
+
+.post-text {
+  color: $secondary-second;
 }
 
 .post-button-activated {

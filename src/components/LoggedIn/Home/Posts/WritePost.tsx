@@ -103,7 +103,7 @@ const WritePost = (props: {
       setError({
         type: "Post",
         text: (err as Error).message
-      })
+      });
     }
   }
 

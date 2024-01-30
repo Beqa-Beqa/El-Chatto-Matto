@@ -167,7 +167,7 @@ const ChatBoxInput = (props: {
         // Prevent event from default action, in this case writing a new line.
         event.preventDefault();
         try {
-          await sendMessage(trimmedMessage, image);
+          sendMessage(trimmedMessage, image);
         } catch (err) {
           console.error(err);
         }
@@ -237,7 +237,7 @@ const ChatBoxInput = (props: {
           <div onClick={handleEmojiClick} className="chat-box-input-icon">
             <MdOutlineEmojiEmotions />
           </div>
-          <div onClick={async () => await sendMessage(message.trim(), image)} className="chat-box-input-icon">
+          <div onClick={() => sendMessage(message.trim(), image)} className="chat-box-input-icon">
             <AiOutlineSend />
           </div>
         </div>

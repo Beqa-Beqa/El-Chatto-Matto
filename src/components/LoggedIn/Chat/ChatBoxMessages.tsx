@@ -9,6 +9,16 @@ import { IoCheckmarkDoneCircleSharp, IoCheckmarkDoneCircleOutline } from "react-
 import { FaRegCircle } from "react-icons/fa";
 import { BigImage } from "../..";
 
+// Render messages without swallowing shift + enter new lines.
+export const renderText = (msg: string) => {
+    return msg.split("\n").map((line: string, index: number) => {
+      return <React.Fragment key={index}>
+        {line}
+        {index !== msg.split("\n").length - 1 && <br />}
+      </React.Fragment>
+    });
+  }
+
 const ChatBoxMessages = (props: {
   user: DocumentData | null,
   setRef: React.Dispatch<React.SetStateAction<React.RefObject<HTMLDivElement> | null>>,
@@ -85,16 +95,6 @@ const ChatBoxMessages = (props: {
     }
 
   }, [threeDotsRef.current, ref.current, imageRef.current]);
-
-  // Render messages without swallowing shift + enter new lines.
-  const renderMessage = (msg: string) => {
-    return msg.split("\n").map((line: string, index: number) => {
-      return <React.Fragment key={index}>
-        {line}
-        {index !== msg.split("\n").length - 1 && <br />}
-      </React.Fragment>
-    });
-  }
   
   const messageBoxStyles = width > 574 ? {width: "100%", height: 418} : {width: "100%", height: "100%"};
 
@@ -138,12 +138,12 @@ const ChatBoxMessages = (props: {
             <div ref={ref} className="sent-message d-flex align-items-center justify-content-end">
               {incomingMessageFrom !== currentUser?.uid ?
                 <div className="d-flex flex-column align-items-end justify-content-end">
-                  {messages[doc].message && <p style={{flexShrink: 0}} className="bg-primary px-2 py-1 mb-2 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>}
+                  {messages[doc].message && <p style={{flexShrink: 0}} className="bg-primary px-2 py-1 mb-2 me-1 text-secondary">{renderText(messages[doc].message)}</p>}
                   {messages[doc].img && <img onClick={handleImageClick} ref={imageRef} style={{flexShrink: 0}} className="cursor-pointer attachment-image rounded mb-2" src={messages[doc].img} alt="sent resource image" />}
                 </div>
               :
                 <div className="d-flex flex-column align-items-end justify-content-end">
-                  {messages[doc].message && <p style={{flexShrink: 0}} className="bg-primary px-2 py-1 mb-1 me-1 text-secondary">{renderMessage(messages[doc].message)}</p>}
+                  {messages[doc].message && <p style={{flexShrink: 0}} className="bg-primary px-2 py-1 mb-1 me-1 text-secondary">{renderText(messages[doc].message)}</p>}
                   {messages[doc].img && <img onClick={handleImageClick} ref={imageRef} style={{flexShrink: 0}} className="cursor-pointer attachment-image rounded mb-1" src={messages[doc].img} alt="sent resource image" />}
                 </div>
               }
@@ -159,7 +159,7 @@ const ChatBoxMessages = (props: {
                   <div className="d-flex align-items-end">
                     <img style={{flexShrink: 0}} className="image mb-2" src={props.user!.photoURL} alt="icon" /> 
                     <div className="d-flex flex-column align-items-start">
-                      {messages[doc].message && <p style={{flexShrink: 0}} className="bg-secondary px-2 py-1 mb-2 ms-2 text-primary">{renderMessage(messages[doc].message)}</p>}
+                      {messages[doc].message && <p style={{flexShrink: 0}} className="bg-secondary px-2 py-1 mb-2 ms-2 text-primary">{renderText(messages[doc].message)}</p>}
                       {messages[doc].img && <img onClick={handleImageClick} ref={imageRef} style={{flexShrink: 0}} className="cursor-pointer attachment-image rounded mb-1 ms-2" src={messages[doc].img} alt="sent resource image" />}
                     </div>
                   </div>
@@ -168,7 +168,7 @@ const ChatBoxMessages = (props: {
                 <div className="d-flex flex-column align-items-start justify-content-start">
                   <div className="d-flex align-items-center">
                     {messages[doc].message && <div className="mb-0" style={{width: 35, height: 35, flexShrink: 0}} />}
-                    {messages[doc].message && <p style={{flexShrink: 0}} className="bg-secondary px-2 py-1 mb-1 ms-2 text-primary">{renderMessage(messages[doc].message)}</p>}
+                    {messages[doc].message && <p style={{flexShrink: 0}} className="bg-secondary px-2 py-1 mb-1 ms-2 text-primary">{renderText(messages[doc].message)}</p>}
                   </div>
                   <div className="d-flex align-items-center">
                     {messages[doc].img && <div className="mb-0" style={{width: 35, height: 35, flexShrink: 0}} />}
@@ -216,7 +216,7 @@ const ChatBoxMessages = (props: {
                   {currentUserPendingMessages.text.map((text: string) => {
                     return <> 
                       <p style={{flexShrink: 0}} className="bg-primary px-2 py-1 mb-0 mt-1 me-1 text-secondary">
-                        {renderMessage(text)}
+                        {renderText(text)}
                       </p>
                       <small className="text-primary">
                         <span>Sending</span> <FaRegCircle />
