@@ -608,6 +608,10 @@ textarea {
   opacity: 0.5 !important;
 }
 
+.opacity-75 {
+  opacity: 0.75 !important;
+}
+
 .overflow-hidden {
   overflow: hidden !important;
 }

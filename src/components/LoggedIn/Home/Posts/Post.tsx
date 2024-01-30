@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { findAllInstances } from "../../../../functions/general";
 import { AuthContext } from "../../../../contexts/AuthContextProvider";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
@@ -20,7 +20,8 @@ const Post = (props: {
     [key: string]: PostData;
   }>>,
   extendedPost: string,
-  setExtendedPost: React.Dispatch<React.SetStateAction<string>>
+  setExtendedPost: React.Dispatch<React.SetStateAction<string>>,
+  classname?: string
 }) => {
 
   const {currentUser} = useContext(AuthContext);
@@ -46,10 +47,6 @@ const Post = (props: {
   // state for showing comments.
   const [showComments, setShowComments] = useState<boolean>(false);
 
-  useEffect(() => {
-    setShowComments(false);
-  }, [props.postsData])
-
   // state for error.
   const [error, setError] = useState<{type: string, text: string}>({type: "", text: ""});
 
@@ -69,7 +66,7 @@ const Post = (props: {
 
   return (
     <>
-      <div className={`loggedin-content-post p-2 bg-primary ${showComments ? "rounded-top" : "rounded"}`}>
+      <div className={`loggedin-content-post p-2 bg-primary ${props.classname} ${showComments ? "rounded-top" : "rounded"}`}>
         <div>
           <div className="d-flex w-100 justify-content-between align-items-center mb-2">
             <div className="post-owner-info d-flex align-items-center gap-2">
@@ -102,7 +99,7 @@ const Post = (props: {
                     ) 
                   : renderText(post.text)
               }
-            </p>
+              </p>
             }
             {
               needsExtension.needs && <small onClick={() => {
@@ -150,7 +147,7 @@ const Post = (props: {
         </div>
       </div>
       {
-        showComments ? <Comments postKey={props.postKey} postsData={props.postsData} /> : <div className="mb-3"/>
+        showComments ? <Comments postKey={props.postKey} setPostsData={props.setPostsData} postsData={props.postsData} /> : <div className="mb-3"/>
       }
       {
         postPromptVisible && <div className="user-prompt">

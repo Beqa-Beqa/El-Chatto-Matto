@@ -33,7 +33,10 @@ declare interface PostCommentData {
 declare interface PostComment {
   id: string,
   text: string | null,
-  mediaUrl: string | null,
+  mediaUrl: {
+    type: string | null,
+    url: string | null
+  },
   date: string,
   isReply?: {
     replyTo: string

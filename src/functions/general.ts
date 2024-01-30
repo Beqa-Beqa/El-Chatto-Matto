@@ -117,14 +117,14 @@ export const sortObject = (object: any, reverse: boolean = true) => {
 
 
 // Check if file is valid image or video.
-export const isValidImageOrVideo = (src: File, options: {onlyImage: boolean, onlyVideo: boolean} = {onlyImage: false, onlyVideo: false}) => {
+export const isValidImageOrVideo = (src: File, sizeLimit = 50, options: {onlyImage: boolean, onlyVideo: boolean} = {onlyImage: false, onlyVideo: false}) => {
   const isImage: boolean = src.type.match("image.*") ? true : false;
   const isVideo: boolean = src.type.match("video.*") ? true : false;
   const sizeInMb = parseFloat((src.size / (1024 * 1024)).toFixed(2));
   
   // If media is more than 20mb in size it throws size error.
-  if(sizeInMb > 50) {
-    throw Error("Post media size can not exceed 50mb");
+  if(sizeInMb > sizeLimit) {
+    throw Error(`Media size can not exceed ${sizeLimit}mb`);
   }
   
   // If by options only image is set to true, we only check for image validity.

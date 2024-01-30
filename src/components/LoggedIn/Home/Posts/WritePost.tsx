@@ -16,7 +16,8 @@ const WritePost = (props: {
   },
   setPostsData: React.Dispatch<React.SetStateAction<{
     [key: string]: PostData;
-  }>>
+  }>>,
+  setPostCache: React.Dispatch<any>
 }) => {
   // trigger for refetching data.
   const {setTrigger} = useContext(RemoteUserContext);
@@ -39,6 +40,9 @@ const WritePost = (props: {
   // navigate for navigating through urls.
   const navigate = useNavigate();
 
+  const cachedPosts = JSON.parse(window.localStorage.getItem("posts") || "{}");
+  console.log(cachedPosts);
+
   const handlePostUpload = async () => {
     try {
       const mediaValidity = postMedia && isValidImageOrVideo(postMedia);
@@ -53,6 +57,23 @@ const WritePost = (props: {
         const currentUserChatsRef = doc(firestore, "userChats", currentUser!.uid);
         const currentDate = new Date().toLocaleString();
         const currentUnix = new Date(currentDate).getTime();
+
+        const cacheIndex = Object.keys(cachedPosts).length;
+        window.localStorage.setItem("posts", JSON.stringify({
+          [cacheIndex]: {
+            postId: uid,
+            text: text,
+            date: currentDate,
+            photoURL: currentUser!.photoURL,
+            displayName: currentUser!.displayName,
+            media: {
+              url: media ? URL.createObjectURL(media) : null,
+              type: mediaValidity?.type || null
+            }
+          },
+          ...cachedPosts
+        }));
+        props.setPostCache(JSON.parse(window.localStorage.getItem("posts") || "{}"));
 
         setPostPromptVisible(false);
         setPostInputValue("");
@@ -98,6 +119,9 @@ const WritePost = (props: {
         }
 
         error.type === "Post" && setError({type: "", text: ""});
+
+        window.localStorage.removeItem("posts");
+        props.setPostCache({});
       }
     } catch (err) {
       setError({
