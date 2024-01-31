@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { findAllInstances } from "../../../../functions/general";
 import { AuthContext } from "../../../../contexts/AuthContextProvider";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
@@ -64,6 +64,10 @@ const Post = (props: {
     }
   }, 0);
 
+  useEffect(() => {
+    setShowComments(false);
+  }, [Object.keys(props.postsData).length]);
+
   return (
     <>
       <div className={`loggedin-content-post p-2 bg-primary ${props.classname} ${showComments ? "rounded-top" : "rounded"}`}>
@@ -73,7 +77,7 @@ const Post = (props: {
               <img onClick={() => {navigate(`${post.by}`); setTrigger(prev => !prev)}} className="image cursor-pointer" src={post.photoURL} alt="user image" />
               <div className="post-text d-flex flex-md-row flex-column align-items-md-center gap-md-4">
                 <span className="fs-5">{post.displayName}</span>
-                <small className="opacity-50">Date: {post.date}</small>
+                <small className="opacity-50">Date: {new Date(post.date).toLocaleString()}</small>
               </div>
             </div>
             {post.by === currentUser?.uid &&

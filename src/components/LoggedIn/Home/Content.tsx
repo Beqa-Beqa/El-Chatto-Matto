@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Post, WritePost } from "../..";
 import { PostsContext } from "../../../contexts/PostsContextProvider";
 import { renderText } from "../Chat/ChatBoxMessages";
@@ -17,9 +17,9 @@ const Content = () => {
           Object.keys(postsCache).sort().map((postKey: string, key: number) => {
             const post = postsCache[postKey];
 
-            return <>
+            return <React.Fragment key={key}>
               {<span className="text-muted">Posting...</span>}
-              <div className="opacity-75 bg-primary p-2 rounded mb-3" key={key}>
+              <div className="opacity-75 bg-primary p-2 rounded mb-3">
                 <div className="d-flex align-items-center gap-2">
                   <img className="image" src={post.photoURL} alt="user"/>
                   <div className="post-text d-flex flex-md-row flex-column align-items-md-center gap-md-4">
@@ -47,7 +47,7 @@ const Content = () => {
                 : null
                 }
               </div>
-            </>
+            </React.Fragment>
           })
         : null
         }

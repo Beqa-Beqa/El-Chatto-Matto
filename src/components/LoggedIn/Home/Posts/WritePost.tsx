@@ -41,7 +41,6 @@ const WritePost = (props: {
   const navigate = useNavigate();
 
   const cachedPosts = JSON.parse(window.localStorage.getItem("posts") || "{}");
-  console.log(cachedPosts);
 
   const handlePostUpload = async () => {
     try {
@@ -55,7 +54,7 @@ const WritePost = (props: {
         const uid: string = uuid();
         const postRef = doc(firestore, "posts", uid);
         const currentUserChatsRef = doc(firestore, "userChats", currentUser!.uid);
-        const currentDate = new Date().toLocaleString();
+        const currentDate = new Date();
         const currentUnix = new Date(currentDate).getTime();
 
         const cacheIndex = Object.keys(cachedPosts).length;
@@ -63,7 +62,7 @@ const WritePost = (props: {
           [cacheIndex]: {
             postId: uid,
             text: text,
-            date: currentDate,
+            date: currentDate.toLocaleString(),
             photoURL: currentUser!.photoURL,
             displayName: currentUser!.displayName,
             media: {
@@ -95,7 +94,7 @@ const WritePost = (props: {
             type: mediaValidity?.type || null
           }, 
           by: currentUser!.uid, 
-          date: currentDate,
+          date: currentDate.toUTCString(),
           photoURL: currentUser!.photoURL!,
           displayName: currentUser!.displayName!,
           postId: uid

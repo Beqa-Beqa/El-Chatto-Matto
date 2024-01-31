@@ -111,25 +111,27 @@ const Comments = (props: {
 
         const commentsByCurrentUser = commentsData && commentsData[currentUser!.uid] && commentsData[currentUser!.uid].comments;
 
-        const commentData: PostCommentData = {...commentsData};
-        commentData[currentUser!.uid] = {
+        const currentUserCommentData: any = {
           photoURL: currentUser!.photoURL!,
           displayName: currentUser!.displayName!,
           comments: commentsByCurrentUser ? [...commentsByCurrentUser, commentToUpload]
           : [commentToUpload]
         }
 
+        const newCommentsData: PostCommentData = {...commentsData};
+        newCommentsData[currentUser!.uid] = currentUserCommentData;
+
         const postDocRef = doc(firestore, "posts", post.postId);
-        await updateDoc(postDocRef, {
-          comments: commentData
-        })
+        const updateChunk: any = {};
+        updateChunk[`comments.${currentUser!.uid}`] = currentUserCommentData;
+        await updateDoc(postDocRef, updateChunk);
 
         window.localStorage.removeItem("comments");
         setCommentsCache({});
-        setCommentsData(commentData);
+        setCommentsData(newCommentsData);
 
         const postsData: any = {...props.postsData}
-        postsData[new Date(post.date).getTime()].comments = commentData;
+        postsData[props.postKey].comments = newCommentsData;
         props.setPostsData(postsData);        
 
         setError({text: "", type: ""});
