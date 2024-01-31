@@ -104,12 +104,12 @@ export const findAllInstances = (str: string, target: string) => {
 
 // Sort object in descending way if keys are strings which can be parsed as integers.
 export const sortObject = (object: any, reverse: boolean = true) => {
-  const sorted = Object.keys(object).sort();
+  const sorted = Object.keys(object).sort((a: string, b: string) => parseInt(a) - parseInt(b));
   const reverseApplied = reverse ? sorted.reverse() : sorted;
   return reverseApplied.reduce((obj: any, key: string) => {
     obj[key] = object[key];
     return obj;
-  }, {})
+  }, {});
 }
 
 

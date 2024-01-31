@@ -26,7 +26,21 @@ const Navbar = (props: {showContacts?: boolean, setShowContacts?: React.Dispatch
       <div className="navbar py-0 px-md-5 px-sm-4 px-2 bg-primary position-fixed w-100 d-flex align-items-center">
         <div className="d-flex justify-content-between align-items-center h-100">
           <div className="w-100 h-100 logo-wrapper">
-            {width > 768 || !showInput ? <img onClick={() => navigate("/")} style={logoStyles} className="logo" src={LogoWhite} alt="logo" /> : null}
+            {width > 768 || !showInput ? <img onClick={() => {
+                navigate("/"); 
+                window.location.reload();
+                window.scrollTo({
+                  top: 0,
+                  left: 0,
+                  behavior: "instant"
+                });
+              }} 
+              style={logoStyles} 
+              className="logo" 
+              src={LogoWhite} 
+              alt="logo" 
+              />
+            : null}
           </div>
           <UserSearch 
             className="mt-3 ms-md-3"

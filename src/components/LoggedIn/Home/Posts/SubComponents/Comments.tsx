@@ -111,7 +111,7 @@ const Comments = (props: {
 
         const commentsByCurrentUser = commentsData && commentsData[currentUser!.uid] && commentsData[currentUser!.uid].comments;
 
-        const commentData: PostCommentData = {};
+        const commentData: PostCommentData = {...commentsData};
         commentData[currentUser!.uid] = {
           photoURL: currentUser!.photoURL!,
           displayName: currentUser!.displayName!,
@@ -159,7 +159,6 @@ const Comments = (props: {
           Object.keys(commentsCache).length ?
             Object.keys(commentsCache).sort().map((commentKey: string, key: number) => {
               const comment: any = commentsCache[commentKey];
-              console.log(comment);
 
               return <React.Fragment key={key}>
                 <span className="post-text opacity-75">Commenting...</span>
@@ -216,7 +215,7 @@ const Comments = (props: {
         }
       </div>
       {
-        commentKeyRef > limit && <div className="w-100 d-flex justify-content-end">
+        commentKeyRef >= limit && <div className="w-100 d-flex justify-content-end">
           <small 
             onClick={() => setLimit(prev => prev + 10)} 
             role="button" 
