@@ -6,17 +6,28 @@ import { firestore } from "../../../config/firebase";
 import { AuthContext } from "../../../contexts/AuthContextProvider";
 import { useOutsideClick } from "../../../hooks";
 import { handleRequestAnswer } from "../../../functions/firebase";
+import { useNavigate } from "react-router-dom";
+import { RemoteUserContext } from "../../../contexts/RemoteUserContextProvider";
 
 const Notifications = () => {
   // check userchats context provider.
   const {notiCount, filteredNotifications, notifications} = useContext(UserChatsContext);
   // check auth context provider.
   const {currentUser} = useContext(AuthContext);
+  // Trigger to trigger changes when redirecting to user profile.
+  const {setTrigger} = useContext(RemoteUserContext);
   // State whether show notifications or not.
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
 
   // Notification data.
   const [notificationUserData, setNotificationUserData] = useState<DocumentData[]>([]);
+  // function to navigate through urls.
+  const navigate = useNavigate();
+
+  const handleUserClick = (url: string) => {
+    navigate(url);
+    setTrigger(prev => !prev);
+  }
 
   // Styles for notification and notification icon.
   let notiStyle: string;
@@ -145,10 +156,10 @@ const Notifications = () => {
               const isRead = filteredNotifications[timestamp]["isRead"];
               const userData: DocumentData = notificationUserData.filter((user) => user.uid === from)[0];
 
-              return <div key={key} className="d-flex flex-column">
+              return <div key={key} className="d-flex flex-column notification-item">
                 <div className="d-flex align-items-center p-2">
-                  <img className="rounded-circle image me-3" src={userData.photoURL} alt="user" />
-                  {!isRead ? <strong>{userData.displayName}</strong> : <p className="m-0">{userData.displayName}</p>}
+                  <img onClick={() => handleUserClick(from)} className="rounded-circle image me-3 cursor-pointer" src={userData && userData.photoURL} alt="user" />
+                  {!isRead ? <strong>{userData && userData.displayName}</strong> : <p className="m-0">{userData && userData.displayName}</p>}
                 </div>
                 <div className="p-2">
                   {renderActions(from, type, isRead)}

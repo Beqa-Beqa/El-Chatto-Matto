@@ -7,7 +7,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { firestore, storage } from "../../../../../config/firebase";
 import uuid from "react-uuid";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { isValidImageOrVideo, sortObject } from "../../../../../functions/general";
+import { getGlobalTimeUnix, isValidImageOrVideo, sortObject } from "../../../../../functions/general";
 import { renderText } from "../../../Chat/ChatBoxMessages";
 
 const Comments = (props: {
@@ -65,8 +65,9 @@ const Comments = (props: {
 
     if (text || commentMedia) {
       const uid = uuid();
+      const dateInUnix = await getGlobalTimeUnix();
       const commentToUpload: PostComment = {
-        date: new Date().toLocaleString(),
+        date: new Date(dateInUnix).toLocaleString(),
         id: uid,
         mediaUrl: {
           type: null,

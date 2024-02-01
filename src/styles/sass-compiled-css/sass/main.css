@@ -1397,6 +1397,12 @@ textarea {
 .homepage-logged-in .notifications-container, .profile-page .notifications-container, .friends .notifications-container {
   right: 0;
 }
+.homepage-logged-in .notifications-container .notification-item, .profile-page .notifications-container .notification-item, .friends .notifications-container .notification-item {
+  transition: 0.1s;
+}
+.homepage-logged-in .notifications-container .notification-item:hover, .profile-page .notifications-container .notification-item:hover, .friends .notifications-container .notification-item:hover {
+  background-color: rgba(64, 64, 64, 0.2);
+}
 .homepage-logged-in .found-users-container .found-users, .profile-page .found-users-container .found-users, .friends .found-users-container .found-users {
   transition: 0.1s;
   cursor: pointer;

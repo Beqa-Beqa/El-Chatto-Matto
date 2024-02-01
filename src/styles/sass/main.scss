@@ -422,6 +422,14 @@ html {
 
   .notifications-container {
     right: 0;
+
+    .notification-item {
+      transition: $base-transition-duration;
+
+      &:hover {
+        background-color: rgba($primary, 0.2);
+      }
+    }
   }
 
   .found-users-container {
@@ -815,7 +823,6 @@ html {
   color: $secondary;
   fill: $secondary;
 }
-
 
 
 

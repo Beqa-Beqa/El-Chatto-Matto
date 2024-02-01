@@ -8,6 +8,7 @@ import { MdDoneAll } from "react-icons/md";
 import { IoCheckmarkDoneCircleSharp, IoCheckmarkDoneCircleOutline } from "react-icons/io5";
 import { FaRegCircle } from "react-icons/fa";
 import { BigImage } from "../..";
+import { sortObject } from "../../../functions/general";
 
 // Render messages without swallowing shift + enter new lines.
 export const renderText = (msg: string) => {
@@ -99,24 +100,26 @@ const ChatBoxMessages = (props: {
   const messageBoxStyles = width > 574 ? {width: "100%", height: 418} : {width: "100%", height: "100%"};
 
   if(props.user) {
+    const sortedMessages = sortObject(messages, false);
       // Conditional rendering for sent and recieved messages. Object.keys(messages) is an array of timestamps
       // these timestamps represent when the data was sent and are in unix format, therefore we are able to sort
       // them from highest to lowest value, which means the earliest message will be rendered first and latest will
       // render last. in documents we have objects with name of these timestamps (eg: (random timestamp) 1224915912951: {senderId: "id", message: "message" or "null", img: "downloadurl" or "null"})
       // we check for senderid and if it's same as current user's id then we render it as sent, otherwise as recieved.
       // check the classnames of divs in conditional render.
-      const messageElements = Object.keys(messages).sort().map((doc: string, key:number) => {
-        const incomingMessageFrom = messages[Object.keys(messages).sort()[key + 1]] ? messages[Object.keys(messages).sort()[key + 1]].senderId : undefined;
+      const messageElements = Object.keys(sortedMessages).map((doc: string, key:number) => {
+        const orderKey = parseInt(Object.keys(sortedMessages)[key]);
+        const incomingMessageFrom = messages[Object.keys(sortedMessages)[key + 1]] ? messages[Object.keys(sortedMessages)[key + 1]].senderId : undefined;
         // Has time distinction is time range from previous message to current message.
         // if previous does not exist it will be set to "No Time", otherwise it will be false.
         // if has time distinction is more than 6000 (it's in miliseconds (10min)) then we want
         // to visually show difference in chat. 
-        const hasTimeDistinction: number | string | boolean = messages[Object.keys(messages).sort()[key - 1]] ?
-        parseInt(Object.keys(messages).sort()[key]) - parseInt(Object.keys(messages).sort()[key - 1]) :
-        !messages[Object.keys(messages).sort()[key - 1]] ? "No Time" : false;
+        const hasTimeDistinction: number | string | boolean = messages[Object.keys(sortedMessages)[key - 1]] ?
+        parseInt(Object.keys(sortedMessages)[key]) - parseInt(Object.keys(sortedMessages)[key - 1]) :
+        !messages[Object.keys(sortedMessages)[key - 1]] ? "No Time" : false;
 
         // Current time when message was sent. (used when hasTimeDistinction is set as "No Time")
-        const sendingTime = new Date(parseInt(Object.keys(messages).sort()[key]));
+        const sendingTime = new Date(parseInt(Object.keys(sortedMessages)[key]));
 
         const timeDistinctionElement = hasTimeDistinction === "No Time" ? 
           <div>
@@ -127,13 +130,13 @@ const ChatBoxMessages = (props: {
             <span style={{fontSize: 14}} className="text-primary d-block text-center mt-3 mb-3">{sendingTime.toLocaleString()}</span>
           </div>
         : typeof hasTimeDistinction === "number" && hasTimeDistinction >= 120000 ?
-          <div style={{height: 12}} />
+          <div style={{height: 10}} />
         : null;
 
         return (
           // If sender's id is equal to current user's id.
           messages[doc].senderId === currentUser?.uid ?
-          <React.Fragment key={key}>
+          <React.Fragment key={orderKey}>
             {timeDistinctionElement}
             <div ref={ref} className="sent-message d-flex align-items-center justify-content-end">
               {incomingMessageFrom !== currentUser?.uid ?
@@ -151,7 +154,7 @@ const ChatBoxMessages = (props: {
           </React.Fragment>
           :
           // If sender's id is equal to remote user's id.
-          <React.Fragment key={key}>
+          <React.Fragment key={orderKey}>
             {timeDistinctionElement}
             <div ref={ref} className="recieved-message d-flex align-items-center justify-content-start">
               {incomingMessageFrom !== props.user!.uid ?
@@ -213,15 +216,15 @@ const ChatBoxMessages = (props: {
             {Object.keys(currentUserPendingMessages).length ?
               <div ref={ref} className="sent-message d-flex align-items-center justify-content-end">
                 <div className="d-flex flex-column align-items-end justify-content-end">
-                  {currentUserPendingMessages.text.map((text: string) => {
-                    return <> 
+                  {currentUserPendingMessages.text.map((text: string, key: number) => {
+                    return <React.Fragment key={key}> 
                       <p style={{flexShrink: 0}} className="bg-primary px-2 py-1 mb-0 mt-1 me-1 text-secondary">
                         {renderText(text)}
                       </p>
                       <small className="text-primary">
                         <span>Sending</span> <FaRegCircle />
                       </small>
-                    </>
+                    </React.Fragment>
                   })}
                   {currentUserPendingMessages.images.map((image: string) => {
                     return <>

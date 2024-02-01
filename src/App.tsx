@@ -29,7 +29,6 @@ function App() {
 
   useEffect(() => {
     if(currentUser) {
-
       const currentUserDocRef = doc(firestore, "userChats", currentUser.uid);
 
       const handleVisibilityChange = async () => {
@@ -65,11 +64,24 @@ function App() {
         }
       }
 
+      const handleLoad = async () => {
+        try {
+          await updateDoc(currentUserDocRef, {
+            isOnline: true,
+            isAway: false
+          });
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      window.addEventListener("DOMContentLoaded", handleLoad);
       window.addEventListener("beforeunload", handleBeforeUnload);
       document.addEventListener("visibilitychange", handleVisibilityChange);
 
       return () => {
         window.removeEventListener("beforeunload", handleBeforeUnload);
+        window.removeEventListener("DOMContentLoaded", handleLoad);
         document.removeEventListener("visibilitychange", handleVisibilityChange);
       }
     }

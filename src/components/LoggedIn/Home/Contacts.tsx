@@ -25,8 +25,8 @@ const Contacts = (props: {showContacts?: boolean}) => {
   const messagingWindowStyles = width > 768 ? {width: 370, height: 520} : {width: "100%", height: "90vh"};
   // count for all unread messages.
   const allUnreadMessagesCount = Object.values(readByData).reduce((totalUnreadCount, data) => { 
-    if(data.readBy && !data.readBy[currentUser!.uid]) {
-      totalUnreadCount += data.unreadMessagesCount;
+    if(data && data.readBy && !data.readBy[currentUser!.uid]) {
+      totalUnreadCount += data.unreadMessagesCount ? data.unreadMessagesCount : 1;
     }
 
     return totalUnreadCount
@@ -51,7 +51,7 @@ const Contacts = (props: {showContacts?: boolean}) => {
                 {friendsData.map((userInfo: DocumentData | undefined, key: number) => {
                   // thisReadBy is an isReadBy object with an user on which array.prototype.map is currently.
                   const thisReadBy = readByData[`chatWith-${userInfo?.uid}`];
-                  const isReadByCurrentUser: boolean = thisReadBy.readBy && thisReadBy.readBy[currentUser!.uid] || false;
+                  const isReadByCurrentUser: boolean = thisReadBy && thisReadBy.readBy && thisReadBy.readBy[currentUser!.uid] || false;
                   const unreadMessagesCount: number = !isReadByCurrentUser && thisReadBy.unreadMessagesCount || 0;
                   const showAsUnread: boolean = !isReadByCurrentUser && unreadMessagesCount > 0;
                   const messageData = allMessagesData![userInfo!.uid];

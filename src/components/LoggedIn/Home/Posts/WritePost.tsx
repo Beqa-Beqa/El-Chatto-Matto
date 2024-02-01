@@ -7,7 +7,7 @@ import { UserChatsContext } from "../../../../contexts/UserChatsContextProvider"
 import uuid from "react-uuid";
 import { setDoc, doc, updateDoc } from "firebase/firestore";
 import { firestore, storage } from "../../../../config/firebase";
-import { isValidImageOrVideo, sortObject } from "../../../../functions/general";
+import { getGlobalTimeUnix, isValidImageOrVideo, sortObject } from "../../../../functions/general";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 const WritePost = (props: {
@@ -54,8 +54,8 @@ const WritePost = (props: {
         const uid: string = uuid();
         const postRef = doc(firestore, "posts", uid);
         const currentUserChatsRef = doc(firestore, "userChats", currentUser!.uid);
-        const currentDate = new Date();
-        const currentUnix = new Date(currentDate).getTime();
+        const currentUnix = await getGlobalTimeUnix();
+        const currentDate = new Date(currentUnix);
 
         const cacheIndex = Object.keys(cachedPosts).length;
         window.localStorage.setItem("posts", JSON.stringify({

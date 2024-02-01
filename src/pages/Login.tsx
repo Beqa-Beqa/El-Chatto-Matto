@@ -1,7 +1,8 @@
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, firestore, googleProvider} from "../config/firebase";
+import { auth, firestore, googleProvider, storage} from "../config/firebase";
+import { getDownloadURL, ref } from "firebase/storage";
 import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { genSubStrings } from "../functions/general";
 import { Button } from "react-bootstrap";
@@ -53,16 +54,24 @@ const Login = () => {
       // Get info about the user from docs.
       const existingDoc = await getDoc(doc(firestore, "users", signedUser.user.uid));
 
+      // Default image
+      const defaultImage = await getDownloadURL(ref(storage, "userImages/user-icon.jpg"));
+
       // If the user docs does not exists create user instance document in firestore.
-      !existingDoc.exists() &&
+      if(!existingDoc.exists()) {
         await setDoc(doc(firestore, "users", signedUser.user.uid), {
           displayName: signedUser.user.displayName!,
           email: signedUser.user.email,
-          photoURL: signedUser.user.photoURL,
-          defaultPhotoURL: signedUser.user.photoURL,
+          photoURL: defaultImage,
+          defaultPhotoURL: defaultImage,
           uid: signedUser.user.uid,
           searchArray: genSubStrings(signedUser.user.displayName!)
         });
+
+        await updateProfile(signedUser.user, {
+         photoURL: defaultImage
+        })
+      }
 
       // If the user docs does not exists, therefore user chats does not exist as well so we create one.
       // isOnline and isWriting are for chatting purposes.

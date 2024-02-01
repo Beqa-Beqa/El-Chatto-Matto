@@ -142,3 +142,19 @@ export const isValidImageOrVideo = (src: File, sizeLimit = 50, options: {onlyIma
     }
   }
 }
+
+
+// <---------------------------------------------------------------------------------------------------------->
+
+
+// Function to get global unix time and not system time.
+export const getGlobalTimeUnix = async () => {
+  // Helper function that fetches data.
+  const getGlobalTimeHelper = async () => {
+    const globalTime: any = (await fetch("http://worldtimeapi.org/api/timezone/Asia/Tbilisi")).json();
+    return globalTime;
+  }
+
+  const time = await getGlobalTimeHelper();
+  return new Date(time.utc_datetime).getTime();
+}

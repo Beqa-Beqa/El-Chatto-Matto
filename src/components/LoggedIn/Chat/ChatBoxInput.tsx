@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { AiOutlineSend } from "react-icons/ai";
-import { combineIds } from "../../../functions/general";
+import { combineIds, getGlobalTimeUnix } from "../../../functions/general";
 import { AuthContext } from "../../../contexts/AuthContextProvider";
 import { DocumentData, doc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -118,7 +118,7 @@ const ChatBoxInput = (props: {
       // doc ref to which doc should be updated.
       const docRef = doc(firestore, "chats", combId);
       // date with which data is stored.
-      const curDate = new Date().getTime();
+      const curDate = await getGlobalTimeUnix();
       // temporary readby is object which holds readBy data for firestore.
       const temporaryReadBy: any = {};
       // if current user send's message this means it's read by current user.

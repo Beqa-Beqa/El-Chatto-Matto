@@ -117,7 +117,7 @@ const MessagingWindow = (props: {
   }, [props.user]);
 
   return (
-    <div style={props.styles} className={`${props.classname} messaging-window d-flex flex-column`}>
+    <div style={props.styles} className={`${props.classname} messaging-window d-flex flex-column rounded-top`}>
       <ChatBoxNavbar 
         setShowMessagingWindow={props.setShowMessagingWindow}
         user={props.user} 
