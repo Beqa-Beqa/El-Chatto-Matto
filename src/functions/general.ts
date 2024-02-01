@@ -151,7 +151,7 @@ export const isValidImageOrVideo = (src: File, sizeLimit = 50, options: {onlyIma
 export const getGlobalTimeUnix = async () => {
   // Helper function that fetches data.
   const getGlobalTimeHelper = async () => {
-    const globalTime: any = (await fetch("http://worldtimeapi.org/api/timezone/Asia/Tbilisi")).json();
+    const globalTime: any = (await fetch("https://worldtimeapi.org/api/timezone/Asia/Tbilisi")).json();
     return globalTime;
   }
 
