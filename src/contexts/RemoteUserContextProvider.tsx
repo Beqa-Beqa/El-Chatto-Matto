@@ -1,11 +1,11 @@
-import { DocumentData, doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
 import { firestore } from "../config/firebase";
 import { AuthContext } from "./AuthContextProvider";
 
 export const RemoteUserContext = createContext<{
-  remUserGenInfo: DocumentData,
-  remUserUserChatsInfo: DocumentData,
+  remUserGenInfo: UserDoc,
+  remUserUserChatsInfo: UserChatsDoc,
   setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
   filteredUserProfileImages: {
       [date: number]: {
@@ -14,8 +14,8 @@ export const RemoteUserContext = createContext<{
       };
   }
 }>({
-  remUserGenInfo: {},
-  remUserUserChatsInfo: {},
+  remUserGenInfo: {defaultPhotoURL: "", displayName: "", email: "", photoURL: "", searchArray: [], uid: ""},
+  remUserUserChatsInfo: {friends: [], isAway: false, isOnline: false, requestsSent: []},
   setTrigger: () => {},
   filteredUserProfileImages: {}
 });
@@ -26,8 +26,8 @@ const RemoteUserContextProvider = ({children}: any) => {
   // Trigger for useEffect.
   const [trigger, setTrigger] = useState<boolean>(false);
   // Set general info and user chats info according to session storage, if data exists then set it as default value otherwise set empty object {}.
-  const [remUserGenInfo, setRemUserGenInfo] = useState<DocumentData>(JSON.parse(window.sessionStorage.getItem("remUserGenInfo")!) || {});
-  const [remUserUserChatsInfo, setRemUserUserChatsInfo] = useState<DocumentData>(JSON.parse(window.sessionStorage.getItem("remUserUserChatsInfo")!) || {});
+  const [remUserGenInfo, setRemUserGenInfo] = useState<UserDoc>(JSON.parse(window.sessionStorage.getItem("remUserGenInfo")!) || {});
+  const [remUserUserChatsInfo, setRemUserUserChatsInfo] = useState<UserChatsDoc>(JSON.parse(window.sessionStorage.getItem("remUserUserChatsInfo")!) || {});
 
   // Filter images data with the specific data structure of this project.
   const filterImageData = (dataObj: {[url: string]: {date: number, ref: string}}) => {
@@ -56,7 +56,7 @@ const RemoteUserContextProvider = ({children}: any) => {
     return finalObj;
   }
 
-  const filteredUserProfileImages = filterImageData(remUserGenInfo.profileImageRefs);
+  const filteredUserProfileImages = remUserGenInfo.profileImageRefs && filterImageData(remUserGenInfo.profileImageRefs) || {};
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -78,8 +78,8 @@ const RemoteUserContextProvider = ({children}: any) => {
           window.sessionStorage.setItem("remUserUserChatsInfo", JSON.stringify(remUserUserChatsInfo.data()));
           
           // Update states with fetched data.
-          setRemUserGenInfo(remUserGenInfo.data());
-          setRemUserUserChatsInfo(remUserUserChatsInfo.data());
+          setRemUserGenInfo((remUserGenInfo.data() as UserDoc));
+          setRemUserUserChatsInfo((remUserUserChatsInfo.data() as UserChatsDoc));
         }
       }
     }

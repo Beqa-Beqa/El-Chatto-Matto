@@ -23,6 +23,8 @@ const RemoteUserProfile = () => {
   const {friends, requestsSent} = useContext(UserChatsContext);
   // Info about remote user on whose profile we are.
   const {remUserGenInfo, remUserUserChatsInfo} = useContext(RemoteUserContext);
+  // Notifications of the current user (NOT THE REMOTE).
+  const {notifications} = useContext(UserChatsContext);
   // With of window.
   const {width} = useContext(GeneralContext);
   // State for checking if image is open or not.
@@ -44,7 +46,11 @@ const RemoteUserProfile = () => {
   const deletePromptRef = useRef<HTMLDivElement | null>(null);
   useOutsideClick(deletePromptRef, setIsDeletePromptOpen, false);
 
+  // State for holding extended post id.
   const [extendedPost, setExtendedPost] = useState<string>("");
+
+  // Check if user has sent request to current user or not.
+  const isRequest = notifications && notifications[remUserGenInfo.uid] && notifications[remUserGenInfo.uid].friendRequest ? true : false;
 
   let postsByRemoteUser: {[key: string]: PostData} = {};
   for(let key in postsData) {
@@ -96,9 +102,27 @@ const RemoteUserProfile = () => {
                   </>
                   :
                     requestsSent.includes(remUserGenInfo.uid) ?
-                      <button onClick={async () => {
-                        await handleCancelFriendRequest(firestore, currentUser!, remUserGenInfo);
-                      }} className="action-button rounded d-flex align-items-center justify-content-center gap-2">Cancel Friend Request <IoMdClose className="action-button-icon" /></button>
+                      <button 
+                        onClick={() => handleCancelFriendRequest(firestore, currentUser!, remUserGenInfo)} 
+                        className="action-button rounded d-flex align-items-center justify-content-center gap-2"
+                      >
+                        Cancel Friend Request <IoMdClose className="action-button-icon" />
+                      </button>
+                    : isRequest ?
+                      <>
+                        <button
+                          onClick={() => handleRequestAnswer(firestore, currentUser!, "accept", remUserGenInfo.uid)}
+                          className="action-button rounded d-flex align-items-center justify-content-center gap-2"
+                        >
+                          Accept <IoMdPersonAdd className="action-button-icon" />
+                        </button>
+                        <button
+                          onClick={() => handleRequestAnswer(firestore, currentUser!, "decline", remUserGenInfo.uid)}
+                          className="action-button rounded d-flex align-items-center justify-content-center gap-2"
+                        >
+                          Decline <IoMdClose className="action-button-icon" />
+                        </button>
+                      </>
                     :
                       <button onClick={async () => {
                         await handleSendFriendRequest(firestore, currentUser!, remUserGenInfo);
@@ -109,7 +133,7 @@ const RemoteUserProfile = () => {
             <div style={profileImageContainerStyles} className={`${width > 574 && "fs-5"} d-flex justify-content-center position-relative mt-3`}>
               <span>{(remUserUserChatsInfo.friends || []).length} Friends</span>
               <hr style={{width: 20, transform: "rotate(90deg)"}} className="mx-2"/>
-              <span>{remUserUserChatsInfo.postsCount} Posts</span>
+              <span>{remUserUserChatsInfo.postsCount || "0"} Posts</span>
               <hr style={{width: 20, transform: "rotate(90deg)"}} className="mx-2"/>
               <span>{Object.keys(remUserGenInfo.profileImageRefs || {}).length} Photos</span>
             </div>

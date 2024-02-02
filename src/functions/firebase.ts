@@ -1,5 +1,5 @@
 import { DocumentData, writeBatch, getDoc, doc, arrayUnion, arrayRemove, deleteField, Firestore, updateDoc } from "firebase/firestore";
-import { combineIds } from "./general";
+import { combineIds, getGlobalTimeUnix } from "./general";
 import { User, updateProfile } from "firebase/auth";
 import { FirebaseStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import Compressor from "compressorjs";
@@ -8,7 +8,8 @@ import uuid from "react-uuid";
 // Send friend request.
 export const handleSendFriendRequest = async (firestore: Firestore, currentUser: User, userData: DocumentData) => {
   const batch = writeBatch(firestore);
-  const currentUserDocRef = doc(firestore, "userChats", currentUser.uid)
+  const currentUserDocRef = doc(firestore, "userChats", currentUser.uid);
+  const curDate = await getGlobalTimeUnix();
   try {
     // Get target user's data so override won't happen while sneding notification.
     const targUserData = await getDoc(doc(firestore, "userChats", userData.uid));
@@ -27,7 +28,7 @@ export const handleSendFriendRequest = async (firestore: Firestore, currentUser:
     // Set notification with current time with respective information.
     targetUserDataToServe.notifications[userIndex!] = {}
     targetUserDataToServe.notifications[userIndex!]["friendRequest"] = {
-      timestamp: new Date().getTime(),
+      timestamp: curDate,
       isRead: false
     }
 

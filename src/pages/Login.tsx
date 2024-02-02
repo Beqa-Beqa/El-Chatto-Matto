@@ -38,8 +38,6 @@ const Login = () => {
       // Otherwise log an error and set error state to true.
       console.error(err);
       setErr(true);
-    } finally {
-      // setIsLoading(false);
     }
   }
 
@@ -71,6 +69,18 @@ const Login = () => {
         await updateProfile(signedUser.user, {
          photoURL: defaultImage
         })
+      } else {
+        const googleProviderData = signedUser.user.providerData.filter((data) => data.providerId === "google.com");
+        if(googleProviderData.length) {
+          const isGoogleDefaultImage = googleProviderData[0].photoURL === signedUser.user.photoURL;
+          const isGoogleDefaultName = googleProviderData[0].displayName === signedUser.user.displayName;
+
+          const toUpdateProfileChunk: any = {};
+          if(isGoogleDefaultImage) toUpdateProfileChunk.photoURL = defaultImage;
+          if(isGoogleDefaultName && existingDoc.data()) toUpdateProfileChunk.displayName = existingDoc.data().displayName;
+
+          isGoogleDefaultImage || isGoogleDefaultName && await updateProfile(signedUser.user, toUpdateProfileChunk);
+        }
       }
 
       // If the user docs does not exists, therefore user chats does not exist as well so we create one.
