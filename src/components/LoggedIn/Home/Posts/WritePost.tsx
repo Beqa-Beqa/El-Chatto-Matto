@@ -55,14 +55,13 @@ const WritePost = (props: {
         const postRef = doc(firestore, "posts", uid);
         const currentUserChatsRef = doc(firestore, "userChats", currentUser!.uid);
         const currentUnix = await getGlobalTimeUnix();
-        const currentDate = new Date(currentUnix);
 
         const cacheIndex = Object.keys(cachedPosts).length;
         window.localStorage.setItem("posts", JSON.stringify({
           [cacheIndex]: {
             postId: uid,
             text: text,
-            date: currentDate.toLocaleString(),
+            date: currentUnix,
             photoURL: currentUser!.photoURL,
             displayName: currentUser!.displayName,
             media: {
@@ -94,7 +93,7 @@ const WritePost = (props: {
             type: mediaValidity?.type || null
           }, 
           by: currentUser!.uid, 
-          date: currentDate.toUTCString(),
+          date: currentUnix,
           photoURL: currentUser!.photoURL!,
           displayName: currentUser!.displayName!,
           postId: uid

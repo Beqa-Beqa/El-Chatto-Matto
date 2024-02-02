@@ -1,6 +1,7 @@
 import { User, onAuthStateChanged } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
-import { auth } from "../config/firebase"; 
+import { auth, firestore } from "../config/firebase"; 
+import { doc, updateDoc } from "firebase/firestore";
 
 // Create context so that all components will be able
 // to reach currentuser value without need to pass
@@ -43,6 +44,15 @@ const AuthContextProvider = ({children}: any) => {
     unsubscribe();
   };
   }, []);
+
+  useEffect(() => {
+    if(isLoading === false && currentUser) {
+      updateDoc(doc(firestore, "userChats", currentUser.uid), {
+        isOnline: true,
+        isAway: false
+      });
+    }
+  }, [isLoading]);
 
   return (
     // Provide context values to all the children elements 

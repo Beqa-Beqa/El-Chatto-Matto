@@ -1,5 +1,4 @@
 import { useState, useContext } from "react";
-import { DocumentData } from "firebase/firestore";
 import { MessagingWindow } from "../..";
 import { GeneralContext } from "../../../contexts/GeneralContextProvider";
 import { UserChatsContext } from "../../../contexts/UserChatsContextProvider";
@@ -20,7 +19,7 @@ const Contacts = (props: {showContacts?: boolean}) => {
   // State for showing messaging window or not.
   const [showMessagingWindow, setShowMessagingWindow] = useState<boolean>(false);
   // User state of which we chose to chat with.
-  const [user, setUser] = useState<DocumentData | null>(null);
+  const [user, setUser] = useState<UserDoc | null>(null);
 
   const messagingWindowStyles = width > 768 ? {width: 370, height: 520} : {width: "100%", height: "90vh"};
   // count for all unread messages.
@@ -48,7 +47,7 @@ const Contacts = (props: {showContacts?: boolean}) => {
               </div>
               <div className="h-100 friends-container mt-2">
                 {/* Map all user data and render them */}
-                {friendsData.map((userInfo: DocumentData | undefined, key: number) => {
+                {friendsData.length && friendsData.map((userInfo: UserDoc, key: number) => {
                   // thisReadBy is an isReadBy object with an user on which array.prototype.map is currently.
                   const thisReadBy = readByData[`chatWith-${userInfo?.uid}`];
                   const isReadByCurrentUser: boolean = thisReadBy && thisReadBy.readBy && thisReadBy.readBy[currentUser!.uid] || false;
@@ -73,12 +72,12 @@ const Contacts = (props: {showContacts?: boolean}) => {
                         <span>{userInfo!.displayName}</span>
                         {showAsUnread && <span className="d-flex align-items-center justify-content-center gap-2"> {unreadMessagesCount <= 9 ? unreadMessagesCount : "9+"} New <BsChatTextFill /></span>}
                       </div>
-                      {lastMessageKey !== 0 && 
+                      {messageData && lastMessageKey !== 0 && 
                         <span className="last-message">
                           {
-                            `${messageData[lastMessageKey].senderId === currentUser?.uid ? "You: " : ""} 
-                            ${messageData[lastMessageKey].message ? messageData[lastMessageKey].message 
-                            : messageData[lastMessageKey].img ? "Sent an image" : ""}`
+                            `${messageData[lastMessageKey] && messageData[lastMessageKey].senderId === currentUser?.uid ? "You: " : ""} 
+                            ${messageData[lastMessageKey] && messageData[lastMessageKey].message ? messageData[lastMessageKey].message 
+                            : messageData[lastMessageKey] && messageData[lastMessageKey].img ? "Sent an image" : ""}`
                           }
                         </span>
                       }

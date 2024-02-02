@@ -57,6 +57,7 @@ $tertiary: #6B1E7B;
 $tertiary-second: #FF4081;
 $background: #6082B6;
 $background-second: #0F52BA;
+$active-status-color: #0FFF50;
 $base-transition-duration: 0.1s;
 
 @import '../../../node_modules/bootstrap/scss/bootstrap'; // Import Bootstrap styles
@@ -534,11 +535,12 @@ html {
     }
 
     .onlineCircle {
-      background-color: #FF4081;
+      background-color: $active-status-color;
     }
 
     .awayCircle {
-      background-color: #FFAA33;
+      border: 1px solid $active-status-color;
+      background-color: transparent;
     }
   }
 
@@ -650,11 +652,12 @@ html {
     }
 
     .onlineCircle {
-      background-color: #FF4081;
+      background-color: $active-status-color;
     }
 
     .awayCircle {
-      background-color: #FFAA33;
+      border: 1px solid $active-status-color;
+      background-color: transparent;
     }
 
     .friends-container {

@@ -1489,10 +1489,11 @@ textarea {
   top: 10px;
 }
 .messaging-window .chatbox-navbar .onlineCircle {
-  background-color: #FF4081;
+  background-color: #0FFF50;
 }
 .messaging-window .chatbox-navbar .awayCircle {
-  background-color: #FFAA33;
+  border: 1px solid #0FFF50;
+  background-color: transparent;
 }
 .messaging-window .messages-container {
   background-color: #E0E0E0;
@@ -1590,10 +1591,11 @@ textarea {
   top: 10px;
 }
 .home-content-logged-in .loggedin-friends .onlineCircle {
-  background-color: #FF4081;
+  background-color: #0FFF50;
 }
 .home-content-logged-in .loggedin-friends .awayCircle {
-  background-color: #FFAA33;
+  border: 1px solid #0FFF50;
+  background-color: transparent;
 }
 .home-content-logged-in .loggedin-friends .friends-container {
   background-color: #6082B6;

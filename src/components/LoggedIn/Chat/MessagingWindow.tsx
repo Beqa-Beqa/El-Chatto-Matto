@@ -42,7 +42,6 @@ const MessagingWindow = (props: {
   // 2 users chat doc reference.
   const combDocRef = doc(firestore, "chats", combIds);
 
-
   useEffect(() => {
     if(props.user) {
       // user data with whom the chat is open.
@@ -55,7 +54,7 @@ const MessagingWindow = (props: {
       const inChatKeys: any = {};
 
       // filtering messages so that writingKeys and inChatKeys are taken out of messages.
-      const filteredMessages = Object.keys(data).reduce((obj: any, key) => {
+      const filteredMessages = Object.keys(data || {}).reduce((obj: any, key) => {
         if(key.split("-")[1] === "isWriting") {
           writingKeys[key] = data[key];
         } else if (key.split("-")[1] === "isInChat") {

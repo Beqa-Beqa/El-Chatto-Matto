@@ -83,19 +83,12 @@ const Login = () => {
         }
       }
 
-      // If the user docs does not exists, therefore user chats does not exist as well so we create one.
-      // isOnline and isWriting are for chatting purposes.
-      !existingDoc.exists() ?
-        await setDoc(doc(firestore, "userChats", signedUser.user.uid), {
-          chats: [],
-          isOnline: true,
-          isAway: false
-        })
-      : 
-        await updateDoc(doc(firestore, "userChats", signedUser.user.uid), {
-          isOnline: true,
-          isAway: false,
-        });
+      // update isOnline and isWriting which are for chatting purposes.
+      await setDoc(doc(firestore, "userChats", signedUser.user.uid), {
+        isOnline: true,
+        isAway: false
+      })
+
 
       navigate("/");
     } catch (err) {

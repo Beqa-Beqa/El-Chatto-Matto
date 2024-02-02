@@ -7,7 +7,7 @@ declare interface PostData {
   },
   by: string,
   photoURL: string,
-  date: string,
+  date: number,
   displayName: string,
   postId: string,
   likes?: PostLike,

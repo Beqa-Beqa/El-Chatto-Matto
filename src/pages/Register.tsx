@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { CiImageOn } from "react-icons/ci";
 import { Link, useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
+import { UserCredential, createUserWithEmailAndPassword, reload, sendEmailVerification, updateProfile } from "firebase/auth";
 import { auth, firestore, storage } from "../config/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { ref, getDownloadURL } from "firebase/storage";
@@ -23,14 +23,67 @@ const Register = () => {
   // Error state. Used for conditional rendering if error occurs.
   const [err, setErr] = useState<string>("");
   
+  // Save user documents in database.
+  const saveUserDocs = async (userData: UserCredential) => {
+    // Upload user image on firebase storage if image exists, if not use default one.
+    let downloadUrl: string | null | undefined;
+    let imageRefString: string | null | undefined;
+    
+    const defaultImage = ref(storage, "userImages/user-icon.jpg");
+    const defaultImageUrl = await getDownloadURL(defaultImage);
+
+    const profileImageRefsObj: any = {};
+
+    if(image) {
+      // Get download url
+      const urlAndRef = await handleImageUpload(firestore, storage, userData.user)("profile", image, {returnURL: true, returnRef: true});
+      downloadUrl = urlAndRef?.url;
+      imageRefString = urlAndRef?.ref;
+
+      profileImageRefsObj[`${downloadUrl}`] = imageRefString;
+    } else {
+      // Set default image if no image is provided.
+      downloadUrl = defaultImageUrl;
+    }
+
+    // Save user data on firestore.
+    const docRef = doc(firestore, "users", userData.user.uid);
+    
+    await setDoc(docRef, {
+      uid: userData.user.uid,
+      displayName: username,
+      email: email,
+      photoURL: downloadUrl,
+      defaultPhotoURL: defaultImageUrl,
+      searchArray: genSubStrings(username),
+      profileImageRefs: profileImageRefsObj
+    });
+
+    // Update user's profile.
+    await updateProfile(auth.currentUser!, {
+      displayName: username,
+      photoURL: downloadUrl
+    });
+
+    // Set userChat info for user, isOnline, isWriting for chatting purposes.
+    const userChatRef = doc(firestore, "userChats", userData.user.uid!);
+    await setDoc(userChatRef, {
+      friends: [],
+      isOnline: true,
+      isAway: false,
+      notifications: {},
+      requestsSent: []
+    });
+
+    // If successfull navigate to homepage.
+    navigate("/");
+  }
 
   // Handle registration of the user with email and password.
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     // Prevent default action of form submit.
     event.preventDefault();
-    // Set loading state to true to show spinning circle.
-    // setIsLoading(true);
-    
+
     try {
       // If username is not valid do throw an error.
       if(username.length < 3) {
@@ -44,62 +97,27 @@ const Register = () => {
       // Try and create account for the user with given email and password.
       // Upload data on firestore about the user.
       const userData = await createUserWithEmailAndPassword(auth, email, password);
-
-      // Upload user image on firebase storage if image exists, if not use default one.
-      let downloadUrl: string | null | undefined;
-      let imageRefString: string | null | undefined;
-      
-      const defaultImage = ref(storage, "userImages/user-icon.jpg");
-      const defaultImageUrl = await getDownloadURL(defaultImage);
-
-      const profileImageRefsObj: any = {};
-
-      if(image) {
-        // Get download url
-        const urlAndRef = await handleImageUpload(firestore, storage, userData.user)("profile", image, {returnURL: true, returnRef: true});
-        downloadUrl = urlAndRef?.url;
-        imageRefString = urlAndRef?.ref;
-
-        profileImageRefsObj[`${downloadUrl}`] = imageRefString;
-      } else {
-        // Set default image if no image is provided.
-        downloadUrl = defaultImageUrl;
-      }
-
-      // Save user data on firestore.
-      const docRef = doc(firestore, "users", userData.user.uid);
-      
-      await setDoc(docRef, {
-        uid: userData.user.uid,
-        displayName: username,
-        email: email,
-        photoURL: downloadUrl,
-        defaultPhotoURL: defaultImageUrl,
-        searchArray: genSubStrings(username),
-        profileImageRefs: profileImageRefsObj
-      });
-
-      // Update user's profile.
-      await updateProfile(auth.currentUser!, {
-        displayName: username,
-        photoURL: downloadUrl
-      });
-
-      // Set userChat info for user, isOnline, isWriting for chatting purposes.
-      const userChatRef = doc(firestore, "userChats", userData.user.uid!);
-      await setDoc(userChatRef, {
-        friends: [],
-        isOnline: true,
-        isAway: false,
-        notifications: {},
-        requestsSent: []
-      });
-      
       // Send user a verification email.
       await sendEmailVerification(userData.user);
+      
+      // Save user documents in database if email is verified.
+      const maxVerificationCheck = 200;
+      let currentVerificationCheck = 0;
+      while(currentVerificationCheck <= maxVerificationCheck || !userData.user.emailVerified) {
+        currentVerificationCheck++;
+        // Promise for 3seconds delay (does nothing, just delay).
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        // reload user.
+        await reload(userData.user);
+        // if email is verified, save docs.
+        if(userData.user.emailVerified) {
+          await saveUserDocs(userData);
+          break;
+        } 
+      }
 
-      // If successfull navigate to homepage.
-      navigate("/");
+      // If after timeout email is not verified, delete account.
+      !userData.user.emailVerified && userData.user.delete();
 
     } catch (error: any) {
       // If any errors, catch and log them, set error state to true.

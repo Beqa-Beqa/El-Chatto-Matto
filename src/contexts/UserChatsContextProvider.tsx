@@ -11,7 +11,7 @@ export const UserChatsContext = createContext<{
   notiCount: number,
   online: string[],
   away: string[],
-  friendsData: (DocumentData | undefined)[],
+  friendsData: UserDoc[],
   postsCount: number
 }>({
   requestsSent: [],
@@ -43,7 +43,7 @@ const UserChatsContextProvider = ({children}: any) => {
   // State for storing ids of away users
   const [away, setAway] = useState<string[]>([]);
   // State for user information storing (whole user object)
-  const [friendsData, setFriendsData] = useState<(DocumentData | undefined)[]>([]);
+  const [friendsData, setFriendsData] = useState<UserDoc[]>([]);
   // state for posts count.
   const [postsCount, setPostsCount] = useState<number>(0);
 
@@ -54,7 +54,7 @@ const UserChatsContextProvider = ({children}: any) => {
       const docRef = doc(firestore, "userChats", currentUser.uid);
       // Document snapshot listener for updating: requestsSent, notifications and friends id's.
       const unsub = onSnapshot(docRef, (snapshot: DocumentSnapshot) => {
-        const convertedData: DocumentData = snapshot.data()!;
+        const convertedData = (snapshot.data()! as UserChatsDoc);
         if(convertedData) {
           convertedData.requestsSent && setRequestsSent(convertedData.requestsSent);
           setNotifications(convertedData.notifications ? convertedData.notifications : {});
@@ -148,7 +148,7 @@ const UserChatsContextProvider = ({children}: any) => {
     const fetchData = async () => {
       try {
         // Result array for updating friendsData state.
-        const result: (DocumentData | undefined)[] = [];
+        const result: UserDoc[] = [];
         // last query document snapshot reference for startAfter().
         let lastDoc: QueryDocumentSnapshot | undefined = undefined;
         // collection reference.
@@ -162,7 +162,7 @@ const UserChatsContextProvider = ({children}: any) => {
           // Fetch all the data from query with getDocs() (async).
           const querySnapshot: QuerySnapshot = await getDocs(qry);
           // Push all the data to the results array.
-          querySnapshot.forEach((doc: QueryDocumentSnapshot) => result.push(doc.data()));
+          querySnapshot.forEach((doc: QueryDocumentSnapshot) => result.push(doc.data() as UserDoc));
 
           // Update last query document snapshot refrence to paginate data fetch and not lose any if it exceeds query limits.
           lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1];

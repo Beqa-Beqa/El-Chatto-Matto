@@ -12,7 +12,7 @@ export const handlePostLike = async (
   post: PostData
   ) => {
   const currentDate = new Date().toLocaleString();
-  const postKey = new Date(post.date).getTime();
+  const postKey = post.date;
   const newPostsData: {[key: string]: PostData} = {...postsData};
   let updateChunk: any = {};
   if(post.likes && (currentUser!.uid in post.likes)) {
@@ -28,6 +28,8 @@ export const handlePostLike = async (
     }
     updateChunk = {...post.likes, [currentUser!.uid]: data};
 
+    console.log(newPostsData);
+    console.log(postKey);
     newPostsData[postKey].likes! = updateChunk;
     setPostsData(newPostsData);
   }
