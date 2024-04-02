@@ -75,7 +75,7 @@ const CurrentUserProfile = () => {
               {remUserGenInfo.defaultPhotoURL !== remUserGenInfo.photoURL ? <img onClick={(e) => {
                       const target = e.target as HTMLImageElement;
                       setIsImageOpen({isOpen: true, imageSrc: target.src, type: "profile"});
-                    }} style={profileImageStyles} className="rounded-circle cursor-pointer object-fit-cover bg-primary" src={remUserGenInfo.photoURL} alt="user" />
+                    }} style={{...profileImageStyles, backgroundColor: "black"}} className="rounded-circle cursor-pointer object-fit-contain" src={remUserGenInfo.photoURL} alt="user" />
                 : 
                   <>
                     <label style={{zIndex: 15}} onClick={() => setIsImageOpen({isOpen: false , imageSrc:"", type: "profile"})} htmlFor="inp-profile">
@@ -118,9 +118,14 @@ const CurrentUserProfile = () => {
           <div className="d-flex flex-column flex-lg-row gap-lg-5 gap-3">
             <div className="col-lg-4 col-12">
               <div className="profile-photos mb-4">
-                <h5>Photos</h5>
+                <h5>Cover Photos</h5>
                 <hr />
-                <PhotosContainer isOwner/>
+                <PhotosContainer type="cover" isOwner imagesPage={false}/>
+              </div>
+              <div className="profile-photos mb-4">
+                <h5>Profile Photos</h5>
+                <hr />
+                <PhotosContainer type="profile" isOwner imagesPage={false}/>
               </div>
               <div className="profile-friends mb-4">
                 <h5>Friends</h5>

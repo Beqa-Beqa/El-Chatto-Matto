@@ -49,7 +49,6 @@ table {
 
 // Above is css reset --------------------------------------------------->
 
-
 $primary:#404040;
 $secondary: #fff;
 $secondary-second: #E0E0E0;
@@ -128,17 +127,25 @@ html {
     cursor: pointer;
     color: $secondary;
     transition: $base-transition-duration;
+  }
+  
+  .notification-active, .messages-active {
+    position: relative;
+    font-size: 13px;
+    height: 20px;
+    min-width: 20px;
+    width: fit-content;
+    background-color: $tertiary-second;
+  }
 
-    .notification-active {
-      position: relative;
-      top: -10px;
-      right: -10px;
-      font-size: 13px;
-      height: 20px;
-      min-width: 20px;
-      width: fit-content;
-      background-color: $tertiary-second;
-    }
+  .notification-active {
+    top: -10px;
+    right: -10px;
+  }
+
+  .messages-active {
+    top: -10px;
+    right: -10px;
   }
 
   .navbar-image {
@@ -730,7 +737,7 @@ html {
   }
 
   .cover-user-image {
-    background-color: #333;
+    background-color: black;
   }
 
   .profile-image-container {

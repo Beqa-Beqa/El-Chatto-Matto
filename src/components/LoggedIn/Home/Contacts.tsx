@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { MessagingWindow } from "../..";
 import { GeneralContext } from "../../../contexts/GeneralContextProvider";
 import { UserChatsContext } from "../../../contexts/UserChatsContextProvider";
@@ -6,7 +6,10 @@ import { MessagesContext } from "../../../contexts/MessagesContextProvider";
 import { AuthContext } from "../../../contexts/AuthContextProvider";
 import { BsChatTextFill } from "react-icons/bs";
 
-const Contacts = (props: {showContacts?: boolean}) => {
+const Contacts = (props: {
+  showContacts?: boolean,
+  setMessagesCount?: React.Dispatch<React.SetStateAction<number>>
+}) => {
   const showContacts = props.showContacts;
   // info of currentuser.
   const {currentUser} = useContext(AuthContext);
@@ -31,6 +34,10 @@ const Contacts = (props: {showContacts?: boolean}) => {
     return totalUnreadCount
   }, 0);
 
+  useEffect(() => {
+    props.setMessagesCount && props.setMessagesCount(allUnreadMessagesCount);
+  }, [allUnreadMessagesCount])
+
   return (
     <>
       <div className={width < 992 && !showContacts ? "d-none" : ""}>
@@ -47,11 +54,11 @@ const Contacts = (props: {showContacts?: boolean}) => {
               </div>
               <div className="h-100 friends-container mt-2">
                 {/* Map all user data and render them */}
-                {friendsData.length && friendsData.map((userInfo: UserDoc, key: number) => {
+                {friendsData.length ? friendsData.map((userInfo: UserDoc, key: number) => {
                   // thisReadBy is an isReadBy object with an user on which array.prototype.map is currently.
                   const thisReadBy = readByData[`chatWith-${userInfo?.uid}`];
                   const isReadByCurrentUser: boolean = thisReadBy && thisReadBy.readBy && thisReadBy.readBy[currentUser!.uid] || false;
-                  const unreadMessagesCount: number = !isReadByCurrentUser && thisReadBy.unreadMessagesCount || 0;
+                  const unreadMessagesCount: number = !isReadByCurrentUser && thisReadBy && thisReadBy.unreadMessagesCount || 0;
                   const showAsUnread: boolean = !isReadByCurrentUser && unreadMessagesCount > 0;
                   const messageData = allMessagesData![userInfo!.uid];
                   const lastMessageKey = Math.max(...Object.keys(messageData).filter((key: string) => parseInt(key) && key).map((key: string) => parseInt(key)), 0);
@@ -83,19 +90,12 @@ const Contacts = (props: {showContacts?: boolean}) => {
                       }
                     </div>
                   </div>
-                })}
+                })
+                : null
+                }
               </div>
             </div>
-          : 
-            <>
-              {allUnreadMessagesCount > 0 &&
-                <span 
-                  className="px-2 position-relative text-secondary rounded d-flex justify-content-center align-items-center" 
-                  style={{backgroundColor: "#FF4081", width: 30, height: 20, top: -40, left: -20}} >
-                    {allUnreadMessagesCount > 9 ? "9+" : allUnreadMessagesCount}
-                </span>
-              }
-            </>
+          : null
         }
         </div>
       </div>

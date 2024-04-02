@@ -8,7 +8,13 @@ export const RemoteUserContext = createContext<{
   remUserUserChatsInfo: UserChatsDoc,
   setTrigger: React.Dispatch<React.SetStateAction<boolean>>,
   filteredUserProfileImages: {
-      [date: number]: {
+      [date: string]: {
+          url: string;
+          ref: string;
+      };
+  },
+  filteredUserCoverImages: {
+      [date: string]: {
           url: string;
           ref: string;
       };
@@ -17,7 +23,8 @@ export const RemoteUserContext = createContext<{
   remUserGenInfo: {defaultPhotoURL: "", displayName: "", email: "", photoURL: "", searchArray: [], uid: ""},
   remUserUserChatsInfo: {friends: [], isAway: false, isOnline: false, requestsSent: []},
   setTrigger: () => {},
-  filteredUserProfileImages: {}
+  filteredUserProfileImages: {},
+  filteredUserCoverImages: {}
 });
 
 const RemoteUserContextProvider = ({children}: any) => {
@@ -30,13 +37,13 @@ const RemoteUserContextProvider = ({children}: any) => {
   const [remUserUserChatsInfo, setRemUserUserChatsInfo] = useState<UserChatsDoc>(JSON.parse(window.sessionStorage.getItem("remUserUserChatsInfo")!) || {});
 
   // Filter images data with the specific data structure of this project.
-  const filterImageData = (dataObj: {[url: string]: {date: number, ref: string}}) => {
+  const filterImageData = (dataObj: {[url: string]: {date: string, ref: string}}) => {
     // Final object that will be returned.
-    const finalObj: {[date: number]: {url: string, ref: string}} = {};
+    const finalObj: {[date: string]: {url: string, ref: string}} = {};
 
     // Reconstruct the object so that date will be set as key and it will be object containing
     // url and ref.
-    const reconstructedObj = Object.keys(dataObj || {}).reduce((obj: {[date: number]: {url: string, ref: string}}, dwUrl: string) => {
+    const reconstructedObj: {[date: string]: {url: string, ref: string}} = Object.keys(dataObj || {}).reduce((obj: {[date: string]: {url: string, ref: string}}, dwUrl: string) => {
       const date = dataObj[dwUrl].date;
       obj[date] = {
         url: dwUrl,
@@ -49,7 +56,7 @@ const RemoteUserContextProvider = ({children}: any) => {
     const sortedObj = Object.keys(reconstructedObj).sort((a: string, b: string) => parseInt(b) - parseInt(a)) || [];
     // Assign finalObj keys accordingly.
     for(let key of sortedObj) {
-      finalObj[parseInt(key)] = reconstructedObj[parseInt(key)];
+      finalObj[key] = reconstructedObj[key];
     }
 
     // Return the result
@@ -57,6 +64,7 @@ const RemoteUserContextProvider = ({children}: any) => {
   }
 
   const filteredUserProfileImages = remUserGenInfo.profileImageRefs && filterImageData(remUserGenInfo.profileImageRefs) || {};
+  const filteredUserCoverImages = remUserGenInfo.coverImageRefs && filterImageData(remUserGenInfo.coverImageRefs) || {};
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -90,7 +98,7 @@ const RemoteUserContextProvider = ({children}: any) => {
     return () => window.removeEventListener("popstate", fetchUser);
   }, [trigger]);
 
-  return <RemoteUserContext.Provider value={{remUserGenInfo, remUserUserChatsInfo, setTrigger, filteredUserProfileImages}}>
+  return <RemoteUserContext.Provider value={{remUserGenInfo, remUserUserChatsInfo, setTrigger, filteredUserProfileImages, filteredUserCoverImages}}>
     {children}
   </RemoteUserContext.Provider>
 }

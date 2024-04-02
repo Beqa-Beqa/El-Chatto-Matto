@@ -600,6 +600,10 @@ textarea {
   }
 }
 
+.object-fit-contain {
+  object-fit: contain !important;
+}
+
 .object-fit-cover {
   object-fit: cover !important;
 }
@@ -1185,15 +1189,21 @@ textarea {
   color: #fff;
   transition: 0.1s;
 }
-.navbar .notifications .notification-active {
+.navbar .notification-active, .navbar .messages-active {
   position: relative;
-  top: -10px;
-  right: -10px;
   font-size: 13px;
   height: 20px;
   min-width: 20px;
   width: fit-content;
   background-color: #FF4081;
+}
+.navbar .notification-active {
+  top: -10px;
+  right: -10px;
+}
+.navbar .messages-active {
+  top: -10px;
+  right: -10px;
 }
 .navbar .navbar-image {
   width: 100px;
@@ -1655,7 +1665,7 @@ textarea {
   user-select: none;
 }
 .user-profile .cover-user-image {
-  background-color: #333;
+  background-color: black;
 }
 .user-profile .profile-image-container {
   z-index: 5;

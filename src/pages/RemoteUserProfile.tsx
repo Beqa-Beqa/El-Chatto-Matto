@@ -139,11 +139,16 @@ const RemoteUserProfile = () => {
             </div>
           </div>
           <div className="d-flex flex-column flex-lg-row gap-lg-5 gap-3">
-            <div className="col-lg-4 col-12"> 
+            <div className="col-lg-4 col-12">
               <div className="profile-photos mb-4">
-                <h5>Photos</h5>
+                <h5>Cover Photos</h5>
+                <hr />
+                <PhotosContainer type="cover" isOwner={false} imagesPage={false}/>
+              </div>
+              <div className="profile-photos mb-4">
+                <h5>Profile Photos</h5>
                 <hr/>
-                <PhotosContainer isOwner={false}/>
+                <PhotosContainer type="profile" isOwner={false} imagesPage={false}/>
               </div>
               <div className="profile-friends mb-4">
                 <h5>Mutual friends with {remUserGenInfo.displayName}</h5>

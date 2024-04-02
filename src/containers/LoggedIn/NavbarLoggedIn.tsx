@@ -6,7 +6,12 @@ import { useNavigate } from "react-router-dom";
 import { FaRegRectangleXmark } from "react-icons/fa6";
 import { AiOutlineMessage } from "react-icons/ai";
 
-const Navbar = (props: {showContacts?: boolean, setShowContacts?: React.Dispatch<React.SetStateAction<boolean>>}) => {
+const Navbar = (props: {
+  showContacts?: boolean, 
+  setShowContacts?: React.Dispatch<React.SetStateAction<boolean>>,
+  messagesCount?: number
+}) => {
+
   const showContacts = props.showContacts;
   const setShowContacts = props.setShowContacts;
   // Window inner width served by general context provider.
@@ -51,7 +56,13 @@ const Navbar = (props: {showContacts?: boolean, setShowContacts?: React.Dispatch
           />
         </div>
         {(width > 574 || !showInput) && <div className="d-flex align-items-center mt-3 gap-1">
-          {width < 992 && setShowContacts && showContacts && <FaRegRectangleXmark style={{width: 25, height: 25}} className="navbar-icon" onClick={() => setShowContacts(false)} />}
+          {width <= 992 && setShowContacts && showContacts && <FaRegRectangleXmark style={{width: 25, height: 25}} className="navbar-icon" onClick={() => setShowContacts(false)} />}
+          {!showContacts && props.messagesCount && width <= 992 && props.messagesCount > 0 ?
+            <span className="messages-active text-secondary rounded d-flex justify-content-center align-items-center">
+                {props.messagesCount > 9 ? "9+" : props.messagesCount}
+            </span>
+          : null
+          }
           {width < 992 && setShowContacts && !showContacts && <AiOutlineMessage style={{width: 25, height: 25}} className="navbar-icon" onClick={() => setShowContacts(true)} />}
           <Notifications />
           <ProfileCorner />

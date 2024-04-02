@@ -1,5 +1,5 @@
 import "./styles/sass/main.scss";
-import { Register, Login, HomepageLoggedIn, HomepageNotLoggedIn, Friends, CurrentUserProfile, RemoteUserProfile } from "./pages";
+import { Register, Login, HomepageLoggedIn, HomepageNotLoggedIn, Friends, CurrentUserProfile, RemoteUserProfile, Photos } from "./pages";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "./contexts/AuthContextProvider";
@@ -117,9 +117,14 @@ function App() {
               <HomepageLoggedIn />
             </ProtectedRoute>
           } />
-          <Route path="/friends" element={
+          <Route path={`/${remUserGenInfo.uid}/friends`} element={
             <ProtectedRoute>
               <Friends />
+            </ProtectedRoute>
+          } />
+          <Route path={`/${remUserGenInfo.uid}/images`} element={
+            <ProtectedRoute>
+              <Photos isOwner />
             </ProtectedRoute>
           } />
           <Route path={`/${remUserGenInfo.uid}`} element={

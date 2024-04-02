@@ -2,12 +2,14 @@ import { handleImageDelete, handleImageUpload } from "../../../functions/firebas
 import { firestore, storage } from "../../../config/firebase";
 import { DocumentData, doc, updateDoc } from "firebase/firestore";
 import { MdClose, MdDownload, MdUpload, MdDelete } from "react-icons/md";
-import { imageDownload } from "../../../functions/general";
+import { getGlobalTimeUnix, imageDownload } from "../../../functions/general";
 import { User } from "firebase/auth";
 import { useContext } from "react";
 import { GeneralContext } from "../../../contexts/GeneralContextProvider";
 import { RemoteUserContext } from "../../../contexts/RemoteUserContextProvider";
 import { AuthContext } from "../../../contexts/AuthContextProvider";
+import { PiSelectionBackground, PiSelectionForeground } from "react-icons/pi";
+
 
 // Handle upload of user image.
 export const userImageUpload = async (type: string, image: File | null, currentUser: User, remUserGenInfo: DocumentData) => {
@@ -18,10 +20,11 @@ export const userImageUpload = async (type: string, image: File | null, currentU
     // If we have info existing already then we need it in order to update document without data loss.
     const existingInfo = type === "profile" ? remUserGenInfo.profileImageRefs : type === "cover" ? remUserGenInfo.coverImageRefs : {} || {};
     // Create update chunk.
+    const date = await getGlobalTimeUnix();
     const updateChunk: any = {...existingInfo};
     updateChunk[`${uploadResult?.url}`] = {
       ref: uploadResult?.ref,
-      date: new Date().getTime()
+      date: date
     };
     if(type === "profile") {
       // If type is profile, set profile image references to update chunk.
@@ -62,13 +65,15 @@ const BigImage = (props: {
   options?: {
     hasDelete?: boolean,
     hasUpload?: boolean,
-    hasDownload?: boolean
+    hasDownload?: boolean,
+    hasCoverUpload?: boolean,
+    hasProfileUpload?: boolean
   }
 }) => {
   const {currentUser} = useContext(AuthContext);
   const {width} = useContext(GeneralContext);
   const {setTrigger, remUserGenInfo} = useContext(RemoteUserContext);
-  const imageStyles = width > 768 ? "w-50 h-50" : "w-75 h-75";
+  const imageStyles = width > 768 ? "w-50 h-50" : "w-100 h-75 px-2";
 
   return (
    <div className="user-prompt">
@@ -110,13 +115,27 @@ const BigImage = (props: {
           <MdDownload />
         </div>}
 
+        {props.options && 
+          props.options.hasCoverUpload && <div className="image-navbar-icon p-0 m-0 text-primary">
+            <span className="custom-tooltip">Set as Cover</span>
+            <PiSelectionBackground />
+          </div>
+        }
+
+        {props.options && 
+          props.options.hasProfileUpload && <div className="image-navbar-icon p-0 m-0 text-primary">
+            <span className="custom-tooltip">Set as Profile</span>
+            <PiSelectionForeground />
+          </div>
+        }
+
         <div onClick={() => props.setIsImageOpen({isOpen: false, imageSrc: "", type: ""})} className="image-navbar-icon p-0 m-0 text-primary">
           <span className="custom-tooltip mb-5">Close Image</span>
           <MdClose />
         </div>
       </div>
-      <div className="d-flex align-items-center justify-content-center" style={{maxHeight: "90vh", maxWidth:"90vw"}}>
-        <img className="h-100 w-100 rounded" src={props.isImageOpen.imageSrc} alt="user image" />
+      <div className="w-100 h-100 d-flex align-items-center justify-content-center">
+        <img className="h-100 w-100 object-fit-contain" src={props.isImageOpen.imageSrc} alt={`user ${props.isImageOpen.type} image`} />
       </div>
     </div>
   </div>

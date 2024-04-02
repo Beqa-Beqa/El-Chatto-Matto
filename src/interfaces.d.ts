@@ -53,7 +53,7 @@ declare interface UserDoc {
   bio?: string,
   coverImageRefs?: {[key: string]: {date: string, ref: string}},
   coverURL?: string,
-  profileImageRefs?: {[key: string]: {date: number, ref: string}}
+  profileImageRefs?: {[key: string]: {date: string, ref: string}}
 }
 
 declare interface UserChatsDoc {

@@ -198,7 +198,7 @@ const Comments = (props: {
                 <div className="d-flex flex-column">
                   <div className="d-flex align-items-center gap-2">
                     <span className="text-secondary">{comment.displayName}</span>
-                    <span className="opacity-50">at {comment.date.split(",")[0]}</span>
+                    <small className="opacity-50">{comment.date.split(",")[0]}</small>
                   </div>
                   {comment.text && <p style={{fontSize: 15}} className="mb-0">{renderText(comment.text)}</p>}
                   {comment.mediaUrl ? 
@@ -218,7 +218,7 @@ const Comments = (props: {
         }
       </div>
       {
-        commentKeyRef >= limit && <div className="w-100 d-flex justify-content-end">
+        commentKeyRef >= limit && <div className="w-100 d-flex justify-content-start ps-2">
           <small 
             onClick={() => setLimit(prev => prev + 10)} 
             role="button" 

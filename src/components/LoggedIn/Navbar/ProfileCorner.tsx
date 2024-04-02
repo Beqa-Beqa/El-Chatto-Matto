@@ -52,7 +52,7 @@ const ProfileCorner = () => {
       id="nav-dropdown"
     >
       <NavDropdown.Item onClick={() => {setTrigger(prev => !prev); navigate(`/${currentUser?.uid}`);}}>Your Profile</NavDropdown.Item>
-      <NavDropdown.Item onClick={() => navigate("/friends")}>Friends</NavDropdown.Item>
+      <NavDropdown.Item onClick={() => navigate(`/${currentUser!.uid}/friends`)}>Friends</NavDropdown.Item>
       <NavDropdown.Divider />
       <NavDropdown.Item onClick={handleSignOut}>Sign Out</NavDropdown.Item>
     </NavDropdown>

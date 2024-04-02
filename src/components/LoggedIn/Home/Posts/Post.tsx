@@ -74,10 +74,10 @@ const Post = (props: {
         <div>
           <div className="d-flex w-100 justify-content-between align-items-center mb-2">
             <div className="post-owner-info d-flex align-items-center gap-2">
-              <img onClick={() => {navigate(`${post.by}`); setTrigger(prev => !prev)}} className="image cursor-pointer" src={post.photoURL} alt="user image" />
+              <img onClick={() => {navigate(`/${post.by}`); setTrigger(prev => !prev)}} className="image cursor-pointer" src={post.photoURL} alt="user image" />
               <div className="post-text d-flex flex-md-row flex-column align-items-md-center gap-md-4">
                 <span className="fs-5">{post.displayName}</span>
-                <small className="opacity-50">Date: {new Date(post.date).toLocaleString()}</small>
+                <small className="opacity-50">{new Date(post.date).toLocaleString()}</small>
               </div>
             </div>
             {post.by === currentUser?.uid &&
@@ -116,23 +116,23 @@ const Post = (props: {
           {post.media ?
             post.media.type === "image" ?
               <>
-                <hr className="mb-1 mt-1"/>
+                <hr className="my-1 post-text"/>
                 <img onClick={(e) => {
                   const src = (e.target as HTMLImageElement).src;
                   setShowPostImage({isOpen: true, imageSrc: src, type: "post"})
-                }} className="w-100 rounded object-fit-cover cursor-pointer" style={{maxHeight: 350}} src={post.media.url!} alt="user post image" />
+                }} className="w-100 rounded object-fit-contain cursor-pointer" style={{maxHeight: 350, backgroundColor: "black"}} src={post.media.url!} alt="user post image" />
               </>
             : post.media.type === "video" ?
-              <div className="w-100">
-                <hr className="mb-1 mt-1"/>
-                <video playsInline={true} style={{maxHeight: 450}} className="w-100 rounded object-fit-cover" controls>
-                  <source className="w-100" src={post.media.url!} type="video/mp4" />
+              <>
+                <hr className="my-1 post-text"/>
+                <video playsInline={true} style={{maxHeight: 450, backgroundColor: "black"}} className="w-100 rounded object-fit-contain" controls>
+                  <source src={post.media.url!} type="video/mp4" />
                 </video>
-              </div>
+              </>
             : null
           : null
           }
-          <hr className="my-1"/>
+          <hr className="my-1 post-text"/>
           <div className="post-text mb-2 d-flex justify-content-between">
             <small>{likesQuantity ? `${likesQuantity} Likes` : null}</small>
             <small>{commentsQuantity ? `${commentsQuantity} Comments` : null}</small>
