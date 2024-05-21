@@ -1,4 +1,3 @@
-## In development
 ## Introduction
 ![](https://github.com/Beqa-Beqa/web-todo-6/blob/master/El-Chatto-Matto-banner.png)
 <hr/>
